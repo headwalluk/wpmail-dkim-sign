@@ -83,6 +83,9 @@ class Plugin {
 	 * @return void
 	 */
 	public function run(): void {
+		// Translations — loaded on init so __() calls in admin handlers resolve correctly.
+		add_action( 'init', array( $this, 'load_textdomain' ) );
+
 		// Mail signing — outbound mail can fire from any request context.
 		add_action( 'phpmailer_init', array( $this->get_signer(), 'sign' ), SIGNER_PRIORITY, 1 );
 
@@ -107,6 +110,21 @@ class Plugin {
 		} else {
 			// Non-admin requests do not need the settings UI or diagnostic actions.
 		}
+	}
+
+	/**
+	 * Load the plugin's translation files from /languages.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return void
+	 */
+	public function load_textdomain(): void {
+		load_plugin_textdomain(
+			'wpmail-dkim-sign',
+			false,
+			dirname( WPDKM_BASENAME ) . '/languages'
+		);
 	}
 
 	/**
