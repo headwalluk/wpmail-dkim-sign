@@ -1,0 +1,437 @@
+# Copyright (C) 2026 Headwall Hosting
+# This file is distributed under the GPL v2 or later.
+msgid ""
+msgstr ""
+"Language: fr_FR\n"
+"Project-Id-Version: WP Mail DKIM Sign 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wpmail-dkim-sign\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-05-22T17:09:57+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: wpmail-dkim-sign\n"
+
+#. Plugin Name of the plugin
+#: wpmail-dkim-sign.php
+msgid "WP Mail DKIM Sign"
+msgstr "Signature DKIM pour WP Mail"
+
+#. Plugin URI of the plugin
+#: wpmail-dkim-sign.php
+msgid "https://headwall-hosting.com/wpmail-dkim-sign"
+msgstr "https://headwall-hosting.com/wpmail-dkim-sign"
+
+#. Description of the plugin
+#: wpmail-dkim-sign.php
+msgid "DKIM-signs outbound wp_mail() messages at the WordPress layer, so the DKIM-Signature header is attached before the message leaves the site for the upstream MTA. RSA-2048, single signing domain."
+msgstr "DKIM signe les messages sortants via wp_mail() au niveau de WordPress ; ainsi, l'en-tête DKIM-Signature est ajouté avant que le message ne quitte le site pour être transmis au MTA en amont. RSA-2048, domaine de signature unique."
+
+#. Author of the plugin
+#: wpmail-dkim-sign.php
+msgid "Headwall Hosting"
+msgstr "Hébergement Headwall"
+
+#. Author URI of the plugin
+#: wpmail-dkim-sign.php
+msgid "https://headwall-hosting.com"
+msgstr "https://headwall-hosting.com"
+
+#: admin-templates/partials/dns-record.php:28
+msgid "DNS TXT record"
+msgstr "DNS TXT record"
+
+#: admin-templates/partials/dns-record.php:31
+msgid "Publish the following TXT record at your DNS provider. Propagation typically takes a few minutes but can be up to 24 hours."
+msgstr "Publiez l'enregistrement TXT suivant auprès de votre fournisseur DNS. La propagation prend généralement quelques minutes, mais peut prendre jusqu'à 24 heures."
+
+#: admin-templates/partials/dns-record.php:37
+msgid "Record type"
+msgstr "Type d'enregistrement"
+
+#: admin-templates/partials/dns-record.php:42
+msgid "Host name (recommended)"
+msgstr "Nom d'hôte (recommandé)"
+
+#: admin-templates/partials/dns-record.php:45
+msgid "Most DNS provider UIs have a \"Host\" or \"Name\" field that automatically appends your zone. Paste just this part into that field."
+msgstr "La plupart des interfaces utilisateur des fournisseurs DNS comportent un champ « Hôte » ou « Nom » qui ajoute automatiquement votre zone. Collez uniquement cette partie dans ce champ."
+
+#: admin-templates/partials/dns-record.php:54
+msgid "Copy host name"
+msgstr "Copier le nom d'hôte"
+
+#: admin-templates/partials/dns-record.php:58
+msgid "Full record name (FQDN)"
+msgstr "Nom complet de l'enregistrement (FQDN)"
+
+#: admin-templates/partials/dns-record.php:61
+msgid "If your DNS provider asks for the fully-qualified record name instead, use this. Do not paste this into a \"Host\" field that auto-appends your zone — you will end up with the zone duplicated."
+msgstr "Si votre fournisseur DNS vous demande plutôt le nom complet de l'enregistrement, utilisez celui-ci. Ne le collez pas dans un champ « Hôte » qui ajoute automatiquement votre zone à la fin, car cela entraînerait la duplication de la zone."
+
+#: admin-templates/partials/dns-record.php:64
+#: admin-templates/partials/verify-dns-check.php:96
+msgid "Record name"
+msgstr "Nom de l'enregistrement"
+
+#: admin-templates/partials/dns-record.php:67
+msgid "Couldn't auto-detect your DNS zone, so only the full record name is shown. Most providers accept this form."
+msgstr "La détection automatique de votre zone DNS n'a pas abouti ; seul le nom complet de l'enregistrement est donc affiché. La plupart des fournisseurs acceptent ce format."
+
+#: admin-templates/partials/dns-record.php:78
+msgid "Copy full record name"
+msgstr "Copier le nom complet de l'enregistrement"
+
+#: admin-templates/partials/dns-record.php:82
+msgid "Value (single string)"
+msgstr "Valeur (chaîne unique)"
+
+#: admin-templates/partials/dns-record.php:85
+msgid "Try this form first — most DNS providers handle the length automatically."
+msgstr "Commencez par essayer ce format : la plupart des fournisseurs DNS gèrent automatiquement la longueur."
+
+#: admin-templates/partials/dns-record.php:94
+#: admin-templates/partials/dns-record.php:110
+msgid "Copy"
+msgstr "Copier"
+
+#: admin-templates/partials/dns-record.php:98
+msgid "Value (chunked form)"
+msgstr "Valeur (format fragmenté)"
+
+#: admin-templates/partials/dns-record.php:101
+msgid "Use this form only if your DNS provider rejects the single-string value. The two forms encode the same record."
+msgstr "N'utilisez ce formulaire que si votre fournisseur DNS refuse la valeur sous forme de chaîne unique. Les deux formulaires codent le même enregistrement."
+
+#: admin-templates/partials/key-management.php:18
+msgid "Key pair"
+msgstr "Paire de clés"
+
+#: admin-templates/partials/key-management.php:23
+msgid "No key pair has been generated yet."
+msgstr "Aucune paire de clés n'a encore été générée."
+
+#: admin-templates/partials/key-management.php:37
+msgid "Generate key pair"
+msgstr "Générer une paire de clés"
+
+#. translators: %s: human-readable timestamp.
+#: admin-templates/partials/key-management.php:44
+#, php-format
+msgid "A 2048-bit RSA key pair was generated on %s."
+msgstr "Une paire de clés RSA de 2048 bits a été générée sur %s."
+
+#: admin-templates/partials/key-management.php:63
+msgid "Regenerating the key invalidates the current DNS record. You will need to publish a new TXT record before signing resumes. Continue?"
+msgstr "La régénération de la clé rend l'enregistrement DNS actuel invalide. Vous devrez publier un nouvel enregistrement TXT avant que la signature ne reprenne. Continuer ?"
+
+#: admin-templates/partials/key-management.php:64
+msgid "Regenerate key"
+msgstr "Réinitialiser la clé"
+
+#: admin-templates/partials/key-management.php:80
+msgid "Deleting the key disables signing immediately. You can regenerate later, but the new key will not match the published DNS record. Continue?"
+msgstr "La suppression de la clé désactive immédiatement la signature. Vous pourrez en régénérer une ultérieurement, mais la nouvelle clé ne correspondra pas à l'enregistrement DNS publié. Voulez-vous continuer ?"
+
+#: admin-templates/partials/key-management.php:81
+msgid "Delete key"
+msgstr "Touche Suppr"
+
+#: admin-templates/partials/notice.php:21
+msgid "Settings saved."
+msgstr "Les paramètres ont été enregistrés."
+
+#: admin-templates/partials/notice.php:25
+msgid "Some inputs were not valid. Please review the form and try again."
+msgstr "Certaines données saisies ne sont pas valides. Veuillez vérifier le formulaire et réessayer."
+
+#: admin-templates/partials/notice.php:29
+msgid "New key pair generated. Publish the DNS TXT record shown below, then tick \"Enabled\"."
+msgstr "Une nouvelle paire de clés a été générée. Publiez l'enregistrement TXT DNS indiqué ci-dessous, puis cochez la case « Activé »."
+
+#: admin-templates/partials/notice.php:33
+msgid "Key pair replaced. You must republish the DNS TXT record — the old record no longer matches."
+msgstr "La paire de clés a été remplacée. Vous devez republier l'enregistrement TXT DNS — l'ancien enregistrement n'est plus valide."
+
+#: admin-templates/partials/notice.php:37
+msgid "Key pair deleted. Signing is now disabled until a new key is generated."
+msgstr "La paire de clés a été supprimée. La signature est désormais désactivée jusqu'à ce qu'une nouvelle clé soit générée."
+
+#: admin-templates/partials/notice.php:41
+msgid "Key generation failed. Check the PHP error log for OpenSSL details."
+msgstr "Échec de la génération de la clé. Consultez le journal d'erreurs PHP pour obtenir des informations sur OpenSSL."
+
+#: admin-templates/partials/notice.php:45
+msgid "Test email sent. See the captured headers and DKIM-Signature check below."
+msgstr "E-mail de test envoyé. Consultez ci-dessous les en-têtes enregistrés et la vérification de la signature DKIM."
+
+#: admin-templates/partials/notice.php:49
+msgid "wp_mail() returned false. The captured headers below (if any) show the prepared message; the failure is most likely at the SMTP layer."
+msgstr "La fonction wp_mail() a renvoyé la valeur false. Les en-têtes capturés ci-dessous (le cas échéant) montrent le message préparé ; l'échec se situe très probablement au niveau de la couche SMTP."
+
+#: admin-templates/partials/notice.php:53
+msgid "The recipient address is not a valid email. Please correct it and try again."
+msgstr "L'adresse du destinataire n'est pas valide. Veuillez la corriger et réessayer."
+
+#: admin-templates/partials/notice.php:57
+msgid "DNS lookup complete. See the result below."
+msgstr "La recherche DNS est terminée. Voici le résultat ci-dessous."
+
+#: admin-templates/partials/settings-form.php:19
+msgid "Configuration"
+msgstr "Configuration"
+
+#: admin-templates/partials/settings-form.php:38
+msgid "Signing domain"
+msgstr "Domaine de signature"
+
+#: admin-templates/partials/settings-form.php:46
+msgid "The DKIM d= value. Must match the domain in the From: header on outbound mail, so DMARC alignment passes."
+msgstr "La valeur « d= » de DKIM. Elle doit correspondre au domaine figurant dans l'en-tête « From: » des e-mails sortants afin que la vérification de l'alignement DMARC soit réussie."
+
+#: admin-templates/partials/settings-form.php:53
+msgid "Selector"
+msgstr "Sélecteur"
+
+#: admin-templates/partials/settings-form.php:61
+msgid "DNS label used as the subdomain in <selector>._domainkey.<domain>. Lowercase letters, digits, hyphens."
+msgstr "Étiquette DNS utilisée comme sous-domaine dans <selector>._domainkey.<domain>. Lettres minuscules, chiffres, tirets."
+
+#: admin-templates/partials/settings-form.php:68
+msgid "Canonicalisation"
+msgstr "Canonicalisation"
+
+#: admin-templates/partials/settings-form.php:83
+msgid "Default relaxed/relaxed tolerates the whitespace and header changes a downstream relay (e.g. Postfix/Amavis) may apply. Use stricter modes only if your relay path does not mutate."
+msgstr "Le mode par défaut « relaxed/relaxed » tolère les modifications apportées aux espaces et aux en-têtes par un relais en aval (par exemple, Postfix/Amavis). N'utilisez les modes plus stricts que si votre chemin de relais ne subit aucune modification."
+
+#: admin-templates/partials/settings-form.php:91
+msgid "Signing"
+msgstr "Signature"
+
+#: admin-templates/partials/settings-form.php:98
+msgid "Enabled — sign outbound mail with DKIM"
+msgstr "Activé — signer les e-mails sortants avec DKIM"
+
+#: admin-templates/partials/settings-form.php:101
+msgid "Leave off until the DNS TXT record is live and verified. With this off the plugin is a no-op."
+msgstr "Ne pas activer cette option tant que l'enregistrement TXT DNS n'est pas actif et vérifié. Si cette option est désactivée, le plugin ne fait rien."
+
+#: admin-templates/partials/settings-form.php:110
+msgid "Data retention"
+msgstr "Conservation des données"
+
+#: admin-templates/partials/settings-form.php:114
+msgid "On uninstall"
+msgstr "Lors de la désinstallation"
+
+#: admin-templates/partials/settings-form.php:120
+msgid "Remove all plugin data (settings and key pair) on uninstall"
+msgstr "Supprimer toutes les données du plugin (paramètres et paire de clés) lors de la désinstallation"
+
+#: admin-templates/partials/settings-form.php:123
+msgid "Deactivating the plugin never removes data. Deleting the plugin removes data only if this box is ticked. Leave unticked to preserve settings + key across reinstalls."
+msgstr "La désactivation du plugin n'entraîne jamais la suppression des données. La suppression du plugin n'entraîne la suppression des données que si cette case est cochée. Laissez cette case décochée pour conserver les paramètres et la clé lors des réinstallations."
+
+#: admin-templates/partials/settings-form.php:128
+msgid "Save settings"
+msgstr "Enregistrer les paramètres"
+
+#: admin-templates/partials/tab-nav.php:23
+msgid "Setup"
+msgstr "Configuration"
+
+#: admin-templates/partials/tab-nav.php:27
+msgid "Verify"
+msgstr "Vérifier"
+
+#: admin-templates/partials/verify-dns-check.php:24
+msgid "Match"
+msgstr "Match"
+
+#: admin-templates/partials/verify-dns-check.php:25
+msgid "The published p= value matches the locally-stored public key. DKIM verification at receivers should succeed (assuming the message body is not modified in transit)."
+msgstr "La valeur p= publiée correspond à la clé publique enregistrée localement. La vérification DKIM chez les destinataires devrait aboutir (à condition que le corps du message n'ait pas été modifié pendant le transit)."
+
+#: admin-templates/partials/verify-dns-check.php:29
+msgid "Mismatch"
+msgstr "Incohérence"
+
+#: admin-templates/partials/verify-dns-check.php:30
+msgid "A DKIM record is published, but its p= value differs from the locally-stored public key. This typically means a key was regenerated locally without republishing the new DNS record, or the wrong record was published."
+msgstr "Un enregistrement DKIM a été publié, mais sa valeur p= diffère de celle de la clé publique stockée localement. Cela signifie généralement qu'une clé a été régénérée localement sans que le nouvel enregistrement DNS ait été republié, ou qu'un enregistrement erroné a été publié."
+
+#: admin-templates/partials/verify-dns-check.php:34
+msgid "No record found"
+msgstr "Aucun résultat trouvé"
+
+#: admin-templates/partials/verify-dns-check.php:35
+msgid "DNS reports no TXT record at this name. Either the record has not been published yet, propagation has not completed, or the wrong name was used."
+msgstr "Le DNS indique qu'il n'y a pas d'enregistrement TXT pour ce nom. Soit l'enregistrement n'a pas encore été publié, soit la propagation n'est pas terminée, soit le nom saisi est incorrect."
+
+#: admin-templates/partials/verify-dns-check.php:39
+msgid "Record present but unparseable"
+msgstr "Enregistrement présent mais non analysable"
+
+#: admin-templates/partials/verify-dns-check.php:40
+msgid "TXT records were returned at this name but none contained a valid v=DKIM1 / p= structure. Check the DNS provider for a malformed entry."
+msgstr "Des enregistrements TXT ont été renvoyés pour ce nom, mais aucun ne contenait une structure v=DKIM1 / p= valide. Vérifiez auprès de votre fournisseur DNS si une entrée est mal formée."
+
+#: admin-templates/partials/verify-dns-check.php:44
+msgid "No local key"
+msgstr "Pas de clé locale"
+
+#: admin-templates/partials/verify-dns-check.php:45
+msgid "There is no key stored locally to compare against. Generate a key pair first."
+msgstr "Il n'y a pas de clé enregistrée localement permettant d'effectuer la comparaison. Veuillez d'abord générer une paire de clés."
+
+#: admin-templates/partials/verify-dns-check.php:49
+msgid "Misconfigured DNS — zone appended twice"
+msgstr "Configuration DNS incorrecte — zone ajoutée deux fois"
+
+#: admin-templates/partials/verify-dns-check.php:50
+msgid "Your DNS provider has duplicated the zone in the record name. This usually happens when the full FQDN is pasted into the provider's \"Host\" or \"Name\" field, which then auto-appends the zone. Edit the Host field to omit the zone part — use just the \"Host name (recommended)\" value from the Setup tab."
+msgstr "Votre fournisseur DNS a dupliqué la zone dans le nom de l'enregistrement. Cela se produit généralement lorsque le nom de domaine complet (FQDN) est copié-collé dans le champ « Hôte » ou « Nom » du fournisseur, qui ajoute alors automatiquement la zone. Modifiez le champ « Hôte » pour omettre la partie « zone » : utilisez uniquement la valeur « Nom d'hôte (recommandé) » de l'onglet « Configuration »."
+
+#: admin-templates/partials/verify-dns-check.php:54
+msgid "Misconfigured DNS — missing _domainkey label"
+msgstr "Configuration DNS incorrecte — absence de l'étiquette _domainkey"
+
+#: admin-templates/partials/verify-dns-check.php:55
+msgid "A TXT record exists, but the \"_domainkey\" subdomain is missing from the name. The DKIM record name must include \"._domainkey.\" between the selector and the signing domain. Compare your DNS entry to the \"Host name (recommended)\" value on the Setup tab."
+msgstr "Un enregistrement TXT existe, mais le sous-domaine « _domainkey » n'apparaît pas dans le nom. Le nom de l'enregistrement DKIM doit inclure « ._domainkey. » entre le sélecteur et le domaine de signature. Comparez votre entrée DNS à la valeur « Nom d'hôte (recommandé) » dans l'onglet Configuration."
+
+#: admin-templates/partials/verify-dns-check.php:60
+#: admin-templates/partials/verify-dns-check.php:71
+msgid "Check DNS record"
+msgstr "Vérifier l'enregistrement DNS"
+
+#: admin-templates/partials/verify-dns-check.php:63
+msgid "Performs a fresh DNS lookup of <selector>._domainkey.<signing-domain> and compares the published p= value to the locally-stored public key. The result is not cached — propagation issues are the most common DNS gotcha and a fresh lookup is cheap."
+msgstr "Effectue une nouvelle requête DNS pour <selector>._domainkey.<signing-domain> et compare la valeur p= publiée à la clé publique stockée localement. Le résultat n'est pas mis en cache : les problèmes de propagation constituent le piège le plus courant du DNS, et une nouvelle requête ne coûte pas grand-chose."
+
+#: admin-templates/partials/verify-dns-check.php:81
+msgid "Unknown status"
+msgstr "Statut inconnu"
+
+#: admin-templates/partials/verify-dns-check.php:86
+msgid "Last DNS check result"
+msgstr "Résultat de la dernière vérification DNS"
+
+#: admin-templates/partials/verify-dns-check.php:91
+msgid "Checked at"
+msgstr "Vérifié le"
+
+#: admin-templates/partials/verify-dns-check.php:117
+msgid "Record actually found at:"
+msgstr "Enregistrement effectivement trouvé à l'adresse suivante :"
+
+#: admin-templates/partials/verify-dns-check.php:125
+msgid "Show published vs. local key"
+msgstr "Afficher la clé publiée par rapport à la clé locale"
+
+#: admin-templates/partials/verify-dns-check.php:126
+msgid "Published p="
+msgstr "Publié le :"
+
+#: admin-templates/partials/verify-dns-check.php:128
+msgid "Local key"
+msgstr "Clé locale"
+
+#: admin-templates/partials/verify-test-email.php:25
+#: admin-templates/partials/verify-test-email.php:53
+msgid "Send test email"
+msgstr "Envoyer un e-mail de test"
+
+#: admin-templates/partials/verify-test-email.php:28
+msgid "Sends a short test message from wpdkm-test@<your-signing-domain> to the address below. The prepared headers (after signing) are captured and shown here, plus a diagnostic check on the DKIM-Signature line. The most reliable real-world test is sending to an external mailbox you control (e.g. an outlook.com address) and inspecting the Authentication-Results header at the receiver."
+msgstr "Envoie un court message de test depuis wpdkm-test@<votre-domaine-de-signature> vers l'adresse ci-dessous. Les en-têtes générés (après signature) sont capturés et affichés ici, accompagnés d'une vérification diagnostique de la ligne DKIM-Signature. Le test le plus fiable en conditions réelles consiste à envoyer le message vers une boîte mail externe que vous contrôlez (par exemple, une adresse outlook.com) et à inspecter l'en-tête Authentication-Results chez le destinataire."
+
+#: admin-templates/partials/verify-test-email.php:38
+#: admin-templates/partials/verify-test-email.php:71
+msgid "Recipient"
+msgstr "Destinataire"
+
+#: admin-templates/partials/verify-test-email.php:46
+msgid "Defaults to the WordPress admin email. Change to any external mailbox you can read."
+msgstr "La valeur par défaut est l'adresse e-mail de l'administrateur WordPress. Remplacez-la par n'importe quelle boîte mail externe à laquelle vous avez accès."
+
+#: admin-templates/partials/verify-test-email.php:61
+msgid "Last test result"
+msgstr "Résultat du dernier test"
+
+#: admin-templates/partials/verify-test-email.php:66
+msgid "Sent at"
+msgstr "Envoyé le"
+
+#: admin-templates/partials/verify-test-email.php:76
+msgid "wp_mail() returned"
+msgstr "wp_mail() a renvoyé"
+
+#: admin-templates/partials/verify-test-email.php:78
+msgid "true"
+msgstr "vrai"
+
+#: admin-templates/partials/verify-test-email.php:79
+msgid "false (delivery failed at the SMTP layer; headers captured before send)"
+msgstr "false (échec de la transmission au niveau de la couche SMTP ; en-têtes enregistrés avant l'envoi)"
+
+#: admin-templates/partials/verify-test-email.php:86
+msgid "DKIM-Signature attached."
+msgstr "Signature DKIM jointe."
+
+#: admin-templates/partials/verify-test-email.php:87
+msgid "The header is present in the prepared message:"
+msgstr "L'en-tête figure dans le message préparé :"
+
+#: admin-templates/partials/verify-test-email.php:93
+msgid "No DKIM-Signature in the prepared message."
+msgstr "Le message préparé ne contient pas de signature DKIM."
+
+#. translators: %s: skip reason from Signer.
+#: admin-templates/partials/verify-test-email.php:97
+#, php-format
+msgid "Pre-flight skip reason: %s."
+msgstr "Motif de l'exclusion avant le vol : %s."
+
+#: admin-templates/partials/verify-test-email.php:100
+msgid "No pre-flight skip reason was recorded; this is unexpected."
+msgstr "Aucun motif de saut avant le vol n'a été enregistré ; cela est inattendu."
+
+#: admin-templates/partials/verify-test-email.php:105
+msgid "Full captured headers"
+msgstr "En-têtes entièrement capturés"
+
+#: includes/class-settings.php:73
+#: includes/class-settings.php:74
+#: includes/class-settings.php:149
+msgid "WP Mail DKIM"
+msgstr "WP Mail DKIM"
+
+#: includes/class-settings.php:124
+msgid "You do not have permission to view this page."
+msgstr "Vous n'êtes pas autorisé à consulter cette page."
+
+#: includes/class-settings.php:244
+#: includes/class-settings.php:529
+#: includes/class-verifier.php:538
+msgid "You do not have permission to perform this action."
+msgstr "Vous n'êtes pas autorisé(e) à effectuer cette action."
+
+#. translators: %s: site name.
+#: includes/class-verifier.php:127
+#, php-format
+msgid "[WP Mail DKIM] Test from %s"
+msgstr "[WP Mail DKIM] Test envoyé depuis %s"
+
+#. translators: %s: site URL.
+#: includes/class-verifier.php:133
+#, php-format
+msgid ""
+"This is a test email from the WP Mail DKIM Sign plugin on %s.\n"
+"\n"
+"If this message arrived, the basic delivery path is working. Inspect the Authentication-Results header at the receiving mailbox to confirm dkim=pass."
+msgstr "Ceci est un e-mail de test envoyé par le plugin WP Mail DKIM Sign sur %s.\\n\\nSi vous avez reçu ce message, cela signifie que le chemin de livraison de base fonctionne correctement. Vérifiez l'en-tête « Authentication-Results » dans la boîte de réception pour vous assurer que la valeur « dkim=pass » y figure."
