@@ -19,30 +19,40 @@ defined( 'ABSPATH' ) || die();
 	$result = $data['dns_check_result'];
 
 	$status_text = array(
-		'match'        => array(
+		'match'                   => array(
 			'kind'  => 'good',
 			'label' => __( 'Match', 'wpmail-dkim-sign' ),
 			'body'  => __( 'The published p= value matches the locally-stored public key. DKIM verification at receivers should succeed (assuming the message body is not modified in transit).', 'wpmail-dkim-sign' ),
 		),
-		'mismatch'     => array(
+		'mismatch'                => array(
 			'kind'  => 'bad',
 			'label' => __( 'Mismatch', 'wpmail-dkim-sign' ),
 			'body'  => __( 'A DKIM record is published, but its p= value differs from the locally-stored public key. This typically means a key was regenerated locally without republishing the new DNS record, or the wrong record was published.', 'wpmail-dkim-sign' ),
 		),
-		'nxdomain'     => array(
+		'nxdomain'                => array(
 			'kind'  => 'bad',
 			'label' => __( 'No record found', 'wpmail-dkim-sign' ),
 			'body'  => __( 'DNS reports no TXT record at this name. Either the record has not been published yet, propagation has not completed, or the wrong name was used.', 'wpmail-dkim-sign' ),
 		),
-		'parse_error'  => array(
+		'parse_error'             => array(
 			'kind'  => 'bad',
 			'label' => __( 'Record present but unparseable', 'wpmail-dkim-sign' ),
 			'body'  => __( 'TXT records were returned at this name but none contained a valid v=DKIM1 / p= structure. Check the DNS provider for a malformed entry.', 'wpmail-dkim-sign' ),
 		),
-		'no_local_key' => array(
+		'no_local_key'            => array(
 			'kind'  => 'bad',
 			'label' => __( 'No local key', 'wpmail-dkim-sign' ),
 			'body'  => __( 'There is no key stored locally to compare against. Generate a key pair first.', 'wpmail-dkim-sign' ),
+		),
+		'doubled_zone'            => array(
+			'kind'  => 'bad',
+			'label' => __( 'Misconfigured DNS — zone appended twice', 'wpmail-dkim-sign' ),
+			'body'  => __( 'Your DNS provider has duplicated the zone in the record name. This usually happens when the full FQDN is pasted into the provider\'s "Host" or "Name" field, which then auto-appends the zone. Edit the Host field to omit the zone part — use just the "Host name (recommended)" value from the Setup tab.', 'wpmail-dkim-sign' ),
+		),
+		'missing_domainkey_label' => array(
+			'kind'  => 'bad',
+			'label' => __( 'Misconfigured DNS — missing _domainkey label', 'wpmail-dkim-sign' ),
+			'body'  => __( 'A TXT record exists, but the "_domainkey" subdomain is missing from the name. The DKIM record name must include "._domainkey." between the selector and the signing domain. Compare your DNS entry to the "Host name (recommended)" value on the Setup tab.', 'wpmail-dkim-sign' ),
 		),
 	);
 
@@ -99,6 +109,16 @@ defined( 'ABSPATH' ) || die();
 			printf( '<p class="description">%s</p>', esc_html( (string) $result['detail'] ) );
 		} else {
 			// No extra detail line for this result.
+		}
+
+		if ( ! empty( $result['misconfig_name'] ) ) {
+			printf(
+				'<p><strong>%s</strong> <code>%s</code></p>',
+				esc_html__( 'Record actually found at:', 'wpmail-dkim-sign' ),
+				esc_html( (string) $result['misconfig_name'] )
+			);
+		} else {
+			// Not a misconfig status — no actually-found-at line.
 		}
 
 		if ( 'mismatch' === $status && ! empty( $result['published_b64'] ) ) {

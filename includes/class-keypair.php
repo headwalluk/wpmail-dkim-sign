@@ -260,29 +260,33 @@ class Keypair {
 	/**
 	 * Build the DKIM DNS TXT-record fields for display in the admin UI.
 	 *
-	 * Returns the record name, the full single-string value, and the
-	 * chunked form (quoted 255-character substrings joined by spaces)
-	 * required by some DNS providers. Returns null if no key is
-	 * stored yet.
+	 * Returns the full FQDN, the host portion (FQDN minus zone suffix —
+	 * what most DNS provider UIs actually want in the "Host" field), the
+	 * full single-string value, and the chunked-255 form for older
+	 * providers. When the zone is unknown, host_name is null and callers
+	 * should display only the FQDN.
 	 *
 	 * @since 0.1.0
 	 *
-	 * @param string $selector DKIM selector (DNS-label).
-	 * @param string $domain   Signing domain.
+	 * @param string      $selector DKIM selector (DNS-label).
+	 * @param string      $domain   Signing domain.
+	 * @param string|null $zone     Authoritative DNS zone (e.g. example.com), or null.
 	 *
-	 * @return array{name: string, value_full: string, value_chunked: string}|null
+	 * @return array{name: string, host_name: string|null, value_full: string, value_chunked: string}|null
 	 */
-	public function format_txt_record( string $selector, string $domain ): ?array {
+	public function format_txt_record( string $selector, string $domain, ?string $zone = null ): ?array {
 		$public_b64 = $this->get_public_dkim_value();
 		$result     = null;
 
 		if ( is_null( $public_b64 ) ) {
 			// No key stored yet — caller shows the "generate first" prompt instead.
 		} else {
+			$full_name  = $selector . '._domainkey.' . $domain;
 			$value_full = 'v=DKIM1; k=rsa; p=' . $public_b64;
 
 			$result = array(
-				'name'          => $selector . '._domainkey.' . $domain,
+				'name'          => $full_name,
+				'host_name'     => derive_host_name( $full_name, $zone ),
 				'value_full'    => $value_full,
 				'value_chunked' => self::chunk_quoted_strings( $value_full, 255 ),
 			);

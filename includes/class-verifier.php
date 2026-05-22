@@ -244,10 +244,11 @@ class Verifier {
 		$settings = get_plugin()->get_settings();
 		$selector = (string) $settings->get( 'selector' );
 		$domain   = (string) $settings->get( 'domain' );
+		$zone     = compute_zone( $domain );
 		$name     = $selector . '._domainkey.' . $domain;
 
 		$local_b64            = get_plugin()->get_keypair()->get_public_dkim_value();
-		$result               = self::lookup_and_compare( $name, $local_b64 );
+		$result               = self::lookup_and_compare( $name, $local_b64, $zone, $selector, $domain );
 		$result['checked_at'] = self::now_formatted();
 		$result['name']       = $name;
 
@@ -259,21 +260,31 @@ class Verifier {
 	/**
 	 * Perform the DNS lookup and produce a structured result.
 	 *
+	 * On NXDOMAIN at the intended name, probes a small set of
+	 * common misconfiguration patterns (doubled-zone, missing
+	 * _domainkey label) and reports those as distinct statuses
+	 * with corrective guidance.
+	 *
 	 * Possible outcomes (status field):
-	 * - "match"        — record present, p= matches local public key.
-	 * - "mismatch"     — record present, p= differs (typically stale).
-	 * - "nxdomain"     — no record at the queried name.
-	 * - "parse_error"  — record present but couldn't extract p=.
-	 * - "no_local_key" — nothing stored locally to compare against.
+	 * - "match"                    — record present at the right name, p= matches.
+	 * - "mismatch"                 — record present at the right name, p= differs.
+	 * - "nxdomain"                 — no record at the right name and no known misconfig variants found.
+	 * - "parse_error"              — record present but no parseable p= value.
+	 * - "no_local_key"             — nothing stored locally to compare against.
+	 * - "doubled_zone"             — record found at <intended>.<zone> (zone appended twice).
+	 * - "missing_domainkey_label"  — record found at <selector>.<domain> (without ._domainkey.).
 	 *
 	 * @since 0.1.0
 	 *
-	 * @param string      $name      DNS name to query.
+	 * @param string      $name      DNS name to query (the intended FQDN).
 	 * @param string|null $local_b64 Locally stored public-key base64, or null if no key.
+	 * @param string|null $zone      Detected authoritative zone, or null.
+	 * @param string      $selector  Configured DKIM selector.
+	 * @param string      $domain    Configured signing domain.
 	 *
-	 * @return array{status: string, published_b64: string|null, detail: string|null}
+	 * @return array{status: string, published_b64: string|null, detail: string|null, misconfig_name?: string}
 	 */
-	private static function lookup_and_compare( string $name, ?string $local_b64 ): array {
+	private static function lookup_and_compare( string $name, ?string $local_b64, ?string $zone, string $selector, string $domain ): array {
 		$result = array(
 			'status'        => 'nxdomain',
 			'published_b64' => null,
@@ -285,9 +296,7 @@ class Verifier {
 		} else {
 			$records = @dns_get_record( $name, DNS_TXT ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged -- dns_get_record warns on NXDOMAIN; we handle the empty case below.
 
-			if ( ! is_array( $records ) || empty( $records ) ) {
-				$result['status'] = 'nxdomain';
-			} else {
+			if ( is_array( $records ) && ! empty( $records ) ) {
 				$published = self::find_dkim_p_value( $records );
 
 				if ( is_null( $published ) ) {
@@ -300,7 +309,109 @@ class Verifier {
 					$result['status']        = 'mismatch';
 					$result['published_b64'] = $published;
 				}
+			} else {
+				$misconfig = self::probe_misconfigurations( $name, $zone, $selector, $domain );
+
+				if ( ! is_null( $misconfig ) ) {
+					$result = $misconfig;
+				} else {
+					// No misconfigured variants found either — genuine NXDOMAIN.
+					$result['status'] = 'nxdomain';
+				}
 			}
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Probe for common DNS misconfigurations when the intended record is missing.
+	 *
+	 * Checks (in order):
+	 * 1. Doubled zone: record at `<intended>.<zone>` (user pasted FQDN
+	 *    into a Host field that auto-appends the zone).
+	 * 2. Missing _domainkey label: record at `<selector>.<domain>` (user
+	 *    typed only the selector in the Host field and dropped the
+	 *    _domainkey subdomain).
+	 *
+	 * Returns the first match found, or null if no misconfig detected.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @param string      $intended_name FQDN the record *should* live at.
+	 * @param string|null $zone          Authoritative zone (or null if unknown — doubled-zone check is skipped).
+	 * @param string      $selector      DKIM selector.
+	 * @param string      $domain        Signing domain.
+	 *
+	 * @return array{status: string, published_b64: string|null, detail: string|null, misconfig_name: string}|null
+	 */
+	private static function probe_misconfigurations( string $intended_name, ?string $zone, string $selector, string $domain ): ?array {
+		$result = null;
+
+		if ( ! is_null( $zone ) ) {
+			$doubled = $intended_name . '.' . $zone;
+			$found   = self::find_dkim_p_at( $doubled );
+
+			if ( ! is_null( $found ) ) {
+				$result = array(
+					'status'         => 'doubled_zone',
+					'published_b64'  => $found,
+					'detail'         => sprintf(
+						'Your DNS provider has appended the zone "%s" automatically — the record landed at "%s" instead of "%s". Edit the Host field at your provider so it does NOT contain the zone portion.',
+						$zone,
+						$doubled,
+						$intended_name
+					),
+					'misconfig_name' => $doubled,
+				);
+			} else {
+				// Doubled-zone variant not present — fall through to next check.
+			}
+		} else {
+			// Zone unknown — can't construct the doubled-zone candidate.
+		}
+
+		if ( is_null( $result ) ) {
+			$missing_label = $selector . '.' . $domain;
+			$found         = self::find_dkim_p_at( $missing_label );
+
+			if ( ! is_null( $found ) ) {
+				$result = array(
+					'status'         => 'missing_domainkey_label',
+					'published_b64'  => $found,
+					'detail'         => sprintf(
+						'A DKIM record exists at "%s" — but it is missing the "_domainkey" subdomain. The record name must include "._domainkey." between the selector and the signing domain.',
+						$missing_label
+					),
+					'misconfig_name' => $missing_label,
+				);
+			} else {
+				// Missing-label variant not present.
+			}
+		} else {
+			// Earlier check already matched.
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Look up a name and return the first v=DKIM1 p= value found, or null.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @param string $name DNS name to query.
+	 *
+	 * @return string|null
+	 */
+	private static function find_dkim_p_at( string $name ): ?string {
+		$result  = null;
+		$records = @dns_get_record( $name, DNS_TXT ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged -- dns_get_record warns on NXDOMAIN; we handle the empty case below.
+
+		if ( is_array( $records ) && ! empty( $records ) ) {
+			$result = self::find_dkim_p_value( $records );
+		} else {
+			// NXDOMAIN — no record at this name.
 		}
 
 		return $result;

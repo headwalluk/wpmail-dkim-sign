@@ -219,9 +219,13 @@ class Settings {
 	 * @return array{name: string, value_full: string, value_chunked: string}|null
 	 */
 	private function get_dns_record( array $settings ): ?array {
+		$domain = (string) $settings['domain'];
+		$zone   = compute_zone( $domain );
+
 		return get_plugin()->get_keypair()->format_txt_record(
 			(string) $settings['selector'],
-			(string) $settings['domain']
+			$domain,
+			$zone
 		);
 	}
 

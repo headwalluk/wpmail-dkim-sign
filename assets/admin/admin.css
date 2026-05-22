@@ -129,3 +129,19 @@
 	cursor: pointer;
 	font-weight: 600;
 }
+
+.wpdkm-recommended-heading {
+	color: #14401d;
+	margin-bottom: 4px;
+}
+
+.wpdkm-copy-block.wpdkm-recommended {
+	padding: 12px;
+	background: #d7eed8;
+	border-left: 4px solid #46b450;
+	border-radius: 3px;
+}
+
+.wpdkm-copy-block.wpdkm-recommended textarea {
+	background: #fff;
+}
