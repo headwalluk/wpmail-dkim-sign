@@ -1,0 +1,42 @@
+/*
+ * WP Mail DKIM Sign — admin styles
+ */
+
+.wpdkm-settings .nav-tab-wrapper {
+	margin-bottom: 16px;
+}
+
+.wpdkm-settings .tab-panel {
+	background: #fff;
+	border: 1px solid #ccd0d4;
+	border-radius: 4px;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+	padding: 20px;
+}
+
+.wpdkm-section {
+	margin-bottom: 32px;
+}
+
+.wpdkm-section:last-child {
+	margin-bottom: 0;
+}
+
+.wpdkm-section > h2 {
+	margin-top: 0;
+}
+
+.wpdkm-key-status {
+	margin-bottom: 12px;
+}
+
+.wpdkm-button-row {
+	display: flex;
+	gap: 12px;
+	flex-wrap: wrap;
+}
+
+.wpdkm-inline-form {
+	display: inline-block;
+	margin: 0;
+}

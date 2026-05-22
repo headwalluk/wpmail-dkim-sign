@@ -63,6 +63,16 @@ const NONCE_DELETE_KEY     = 'wpdkm_delete_key_nonce';
 const NONCE_TEST_EMAIL     = 'wpdkm_test_email_nonce';
 const NONCE_CHECK_DNS      = 'wpdkm_check_dns_nonce';
 
+/* ---------- Admin notice query-string values ---------- */
+
+const NOTICE_QUERY_PARAM   = 'wpdkm_notice';
+const NOTICE_SAVED         = 'saved';
+const NOTICE_INVALID       = 'invalid';
+const NOTICE_KEY_GENERATED = 'key-generated';
+const NOTICE_KEY_REPLACED  = 'key-replaced';
+const NOTICE_KEY_DELETED   = 'key-deleted';
+const NOTICE_KEY_ERROR     = 'key-error';
+
 /* ---------- Transient key prefixes ---------- */
 
 const TRANSIENT_CAPTURE_PREFIX = 'wpdkm_capture_';
