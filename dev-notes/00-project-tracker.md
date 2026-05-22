@@ -1,9 +1,9 @@
 # Project Tracker
 
-**Version:** 0.1.0-dev (unreleased)
+**Version:** 0.1.0
 **Last Updated:** 2026-05-22
-**Current Phase:** Planning (pre-Milestone 1)
-**Overall Progress:** 0%
+**Current Phase:** Acceptance pass complete
+**Overall Progress:** 100% for v1 scope
 
 ---
 
@@ -17,11 +17,30 @@ Full spec: [`/HANDOFF.md`](../HANDOFF.md). Architecture and resolved decisions: 
 
 ## Active TODO Items
 
-Immediate next steps (rolls forward as work progresses):
+All v1 milestones (M1–M7) complete. See "Acceptance Criteria Status" below for the per-criterion evidence trail.
 
-- [ ] Review this tracker + `01-decisions.md` + `02-architecture.md` with Paul
-- [ ] Approve milestone breakdown and acceptance criteria
-- [ ] Begin Milestone 1 (Project Scaffold)
+Post-v1 backlog (not blocking v1 ship):
+
+- [ ] Distribution (M8) — build zip honouring `.distignore`, fresh-WP install test, companion blog post on headwall-hosting.com.
+- [ ] Optional WP.org plugin directory submission.
+- [ ] Roll out across the Headwall client fleet (chroot openssl fix automated separately).
+
+## Acceptance Criteria Status
+
+Mapped from `HANDOFF.md`:
+
+| # | Criterion | Status | Evidence |
+|---|-----------|--------|----------|
+| AC1 | Activates/deactivates clean under WP_DEBUG, no warnings | ✅ | Live on devx.headwall.tech; PHPCS clean across all PHP files |
+| AC2 | Generate produces valid RSA-2048 keypair; public matches private | ✅ | M2 wp-cli smoke test verified public_b64 derived from private PEM equals stored value |
+| AC3 | wp_mail() produces a validating DKIM-Signature header | ✅ | M5 wp-cli test produced header with all 8 RFC 6376 tags; live test confirmed via Gmail |
+| AC4 | Real Microsoft mailbox shows dkim=pass + dmarc=pass | ✅ | Production test 2026-05-22 on permajet.com → outlook.com: `dkim=pass header.d=permajet.com; dmarc=pass; compauth=pass reason=100` (see memory entry project-production-validation) |
+| AC5 | Plugin disabled → no DKIM-Signature added | ✅ | M5 signer test Case 2 |
+| AC6 | Existing DKIM_domain → no double-sign | ✅ | M5 signer test Case 4 (PHPMailer property preserved unchanged) |
+| AC7 | From: domain mismatch → unsigned + logged | ✅ | M5 signer test Cases 3, 5; Signer::log_skip writes via error_log when WP_DEBUG |
+| AC8 | Direct HTTP access returns no output | ✅ | M7 audit: every PHP file has `defined('ABSPATH') \|\| die()` or `defined('WP_UNINSTALL_PLUGIN')` guard; verified by direct-include test |
+| AC9 | Check DNS button reports match when record published | ✅ | M6 wp-cli verifier test: `lookup_and_compare` returns status "match" when published p= equals local; "mismatch"/"nxdomain"/"parse_error"/"no_local_key" branches all exercised |
+| AC10 | Uninstall checkbox controls data removal | ✅ | M7 uninstall.php simulation: unticked → options preserved; ticked → options removed cleanly |
 
 ---
 
@@ -129,6 +148,8 @@ Goal: `phpmailer_init` sets `DKIM_*` properties when pre-flight checks pass; saf
 - [ ] PHPCS-clean
 
 **Acceptance:** With plugin enabled, key generated, DNS record published, `wp_mail()` to an external address arrives with a `DKIM-Signature:` header that validates against the published TXT record. With plugin disabled, no `DKIM-Signature:` is added. With another plugin having already set `DKIM_domain`, this plugin does not double-sign. From-domain mismatch leaves the mail unsigned and logs a notice. _(Satisfies AC3, AC5, AC6, AC7.)_
+
+**M5 production validation 2026-05-22:** Real-world test on `permajet.com` (live client site) → outlook.com personal mailbox returned `dkim=pass header.d=permajet.com; dmarc=pass action=none; compauth=pass reason=100`. AC3 + AC4 both green against the actual Microsoft endpoint that prompted the project. Reference baseline captured in memory entry [project-production-validation](../../../../../home/pfaulkner/.claude/projects/-var-www-devx-headwall-tech-web-wp-content-plugins-wpmail-dkim-sign/memory/project-production-validation.md).
 
 ---
 

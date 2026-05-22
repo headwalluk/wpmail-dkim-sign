@@ -20,7 +20,8 @@ If your WordPress site sends transactional email through an SMTP relay that does
 
 * Self-service key generation in the WP admin — no shell access required.
 * Copy-paste DNS TXT record display, including a chunked-255 form for older DNS providers.
-* Built-in test-email and DNS-record verification tools.
+* Built-in Send Test Email button (captures the prepared headers post-signing so you can see the DKIM-Signature without leaving the admin).
+* Built-in Check DNS Record button (fresh dns_get_record, compares published p= to the locally stored public key).
 * Aligns the DKIM `d=` parameter with the `From:` header domain, so DMARC alignment passes.
 * Does not double-sign. If another plugin (e.g. WP Mail SMTP) is already configured for DKIM, this plugin steps aside.
 * RSA-2048 only for v1. Ed25519 (RFC 8463) is on the roadmap once receiver support broadens.
@@ -35,13 +36,13 @@ If your WordPress site sends transactional email through an SMTP relay that does
 
 1. Upload and activate the plugin.
 2. Go to **Settings → WP Mail DKIM**.
-3. Confirm the signing domain and selector (defaults are sensible).
-4. Click "Generate key pair".
-5. Copy the displayed DNS TXT record into your DNS provider.
-6. Wait for DNS propagation (typically minutes; can be up to 24 hours).
-7. Use the "Check DNS record" button to confirm the record is live.
-8. Tick "Enabled" and save.
-9. Use "Send test email" to verify signing works end-to-end.
+3. On the **Setup** tab, confirm the signing domain (defaults to your site host with any leading `www.` stripped) and the selector (defaults to `website`).
+4. Click **Generate key pair**.
+5. Copy the displayed DNS TXT record into your DNS provider — most providers accept the single-string form; a chunked quoted-strings form is also shown for older providers.
+6. Wait for DNS propagation (typically minutes, occasionally up to 24 hours).
+7. Switch to the **Verify** tab and click **Check DNS record** to confirm the published value matches the locally stored public key.
+8. Tick **Enabled** in the configuration form and save.
+9. Use **Send test email** on the Verify tab, ideally targeting an external mailbox you control (e.g. an outlook.com address), and inspect the `Authentication-Results:` header at the receiver for `dkim=pass`.
 
 == Frequently Asked Questions ==
 
@@ -55,7 +56,11 @@ The settings page shows two forms of the record value: a single-string form and 
 
 = What happens if I deactivate or delete the plugin? =
 
-Deactivation leaves all data in place. Deletion (uninstall) removes the stored key and settings only if you have ticked the "Remove all data on uninstall" checkbox in the settings page first; otherwise data is preserved across reinstalls.
+Deactivation leaves all data in place. Deletion (uninstall) removes the stored key and settings only if you have ticked the "Remove all data on uninstall" checkbox on the Setup tab first; otherwise data is preserved across reinstalls.
+
+= Key generation fails with an OpenSSL error — what's going on? =
+
+If your PHP-FPM pool runs inside a chroot jail, OpenSSL needs to be able to find its config inside the jail. On Debian/Ubuntu the config lives at `/etc/ssl/openssl.cnf` but OpenSSL is compiled with `OPENSSLDIR=/usr/lib/ssl`, so it actually looks for `/usr/lib/ssl/openssl.cnf` (a symlink to the etc copy outside the jail). Inside the jail you need both: a copy of `/etc/ssl/openssl.cnf` and a `/usr/lib/ssl/openssl.cnf` symlink pointing to it. You will also need `/dev/urandom` accessible inside the jail (most chroot setups do this already).
 
 == Changelog ==
 

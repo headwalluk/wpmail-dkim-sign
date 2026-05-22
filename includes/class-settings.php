@@ -392,10 +392,11 @@ class Settings {
 	private static function collect_form_input(): array {
 		// phpcs:disable WordPress.Security.NonceVerification.Missing -- Caller (handle_save) verifies the nonce before invoking this.
 		$result = array(
-			'domain'           => isset( $_POST['wpdkm_domain'] ) ? sanitize_text_field( wp_unslash( $_POST['wpdkm_domain'] ) ) : '',
-			'selector'         => isset( $_POST['wpdkm_selector'] ) ? sanitize_text_field( wp_unslash( $_POST['wpdkm_selector'] ) ) : '',
-			'enabled'          => isset( $_POST['wpdkm_enabled'] ) ? sanitize_text_field( wp_unslash( $_POST['wpdkm_enabled'] ) ) : '',
-			'canonicalisation' => isset( $_POST['wpdkm_canonicalisation'] ) ? sanitize_text_field( wp_unslash( $_POST['wpdkm_canonicalisation'] ) ) : '',
+			'domain'              => isset( $_POST['wpdkm_domain'] ) ? sanitize_text_field( wp_unslash( $_POST['wpdkm_domain'] ) ) : '',
+			'selector'            => isset( $_POST['wpdkm_selector'] ) ? sanitize_text_field( wp_unslash( $_POST['wpdkm_selector'] ) ) : '',
+			'enabled'             => isset( $_POST['wpdkm_enabled'] ) ? sanitize_text_field( wp_unslash( $_POST['wpdkm_enabled'] ) ) : '',
+			'canonicalisation'    => isset( $_POST['wpdkm_canonicalisation'] ) ? sanitize_text_field( wp_unslash( $_POST['wpdkm_canonicalisation'] ) ) : '',
+			'remove_on_uninstall' => isset( $_POST['wpdkm_remove_on_uninstall'] ) ? sanitize_text_field( wp_unslash( $_POST['wpdkm_remove_on_uninstall'] ) ) : '',
 		);
 		// phpcs:enable WordPress.Security.NonceVerification.Missing
 
@@ -425,10 +426,11 @@ class Settings {
 			// At least one field failed validation — bail and let the caller surface a notice.
 		} else {
 			$result = array(
-				'domain'           => $domain,
-				'selector'         => $selector,
-				'enabled'          => self::sanitize_enabled( $input['enabled'] ?? '' ),
-				'canonicalisation' => $canon,
+				'domain'              => $domain,
+				'selector'            => $selector,
+				'enabled'             => self::sanitize_enabled( $input['enabled'] ?? '' ),
+				'canonicalisation'    => $canon,
+				'remove_on_uninstall' => self::sanitize_enabled( $input['remove_on_uninstall'] ?? '' ),
 			);
 		}
 

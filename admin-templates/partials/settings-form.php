@@ -104,6 +104,27 @@ defined( 'ABSPATH' ) || die();
 
 	printf( '</tbody></table>' );
 
+	// Data retention sub-section. Same form, separate visual treatment because
+	// the checkbox is destructive and shouldn't be confused with day-to-day
+	// configuration.
+	printf( '<h3 class="wpdkm-subheading">%s</h3>', esc_html__( 'Data retention', 'wpmail-dkim-sign' ) );
+
+	$remove_attr = ! empty( $data['settings']['remove_on_uninstall'] ) ? ' checked="checked"' : '';
+	printf( '<table class="form-table" role="presentation"><tbody>' );
+	printf( '<tr><th scope="row">%s</th><td>', esc_html__( 'On uninstall', 'wpmail-dkim-sign' ) );
+	printf( '<label for="wpdkm-remove-on-uninstall">' );
+	printf(
+		'<input type="checkbox" id="wpdkm-remove-on-uninstall" name="wpdkm_remove_on_uninstall" value="1"%s />',
+		esc_attr( $remove_attr )
+	);
+	printf( ' %s</label>', esc_html__( 'Remove all plugin data (settings and key pair) on uninstall', 'wpmail-dkim-sign' ) );
+	printf(
+		'<p class="description">%s</p>',
+		esc_html__( 'Deactivating the plugin never removes data. Deleting the plugin removes data only if this box is ticked. Leave unticked to preserve settings + key across reinstalls.', 'wpmail-dkim-sign' )
+	);
+	printf( '</td></tr>' );
+	printf( '</tbody></table>' );
+
 	submit_button( __( 'Save settings', 'wpmail-dkim-sign' ) );
 
 	printf( '</form>' );
