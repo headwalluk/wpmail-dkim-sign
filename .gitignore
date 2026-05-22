@@ -1,0 +1,37 @@
+# OS metadata
+.DS_Store
+Thumbs.db
+ehthumbs.db
+
+# Editors / IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+*.bak
+*~
+
+# Dependency directories (not currently used; defensive)
+vendor/
+node_modules/
+composer.lock
+
+# Logs and temp files
+*.log
+*.tmp
+debug.log
+error_log
+
+# PHPCS / PHPUnit caches
+.phpcs-cache
+.phpunit.result.cache
+
+# Build artefacts
+build/
+dist/
+*.zip
+
+# Environment files
+.env
+.env.local
+.env.*.local

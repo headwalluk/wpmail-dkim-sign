@@ -1,0 +1,50 @@
+<?php
+/**
+ * Plugin Name:       WP Mail DKIM Sign
+ * Plugin URI:        https://headwall-hosting.com/wpmail-dkim-sign
+ * Description:       DKIM-signs outbound wp_mail() messages at the WordPress layer, so the DKIM-Signature header is attached before the message leaves the site for the upstream MTA. RSA-2048, single signing domain.
+ * Version:           0.1.0
+ * Requires at least: 6.0
+ * Requires PHP:      8.0
+ * Author:            Headwall Hosting
+ * Author URI:        https://headwall-hosting.com
+ * License:           GPL v2 or later
+ * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
+ * Text Domain:       wpmail-dkim-sign
+ * Domain Path:       /languages
+ *
+ * @package WPMail_DKIM_Sign
+ */
+
+defined( 'ABSPATH' ) || die();
+
+define( 'WPDKM_VERSION', '0.1.0' );
+define( 'WPDKM_FILE', __FILE__ );
+define( 'WPDKM_PATH', plugin_dir_path( __FILE__ ) );
+define( 'WPDKM_URL', plugin_dir_url( __FILE__ ) );
+define( 'WPDKM_BASENAME', plugin_basename( __FILE__ ) );
+
+require_once __DIR__ . '/constants.php';
+require_once __DIR__ . '/functions-private.php';
+
+require_once __DIR__ . '/includes/class-plugin.php';
+
+/**
+ * Bootstrap the plugin.
+ *
+ * Constructs the orchestrator, stores it on the global accessor
+ * variable for sub-services to reach via WPMail_DKIM_Sign\get_plugin(),
+ * and registers hooks.
+ *
+ * @since 0.1.0
+ *
+ * @return void
+ */
+function wpdkm_run(): void {
+	global $wpdkm_plugin;
+
+	$wpdkm_plugin = new \WPMail_DKIM_Sign\Plugin();
+	$wpdkm_plugin->run();
+}
+
+wpdkm_run();
