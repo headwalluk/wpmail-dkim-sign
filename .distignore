@@ -1,12 +1,49 @@
-# Development and documentation files to exclude from distribution
-build/
-dev-notes/
-sample-data/
-.github/
-.git/
+# Files and directories excluded from release builds.
+# readme.txt is the in-WP-admin equivalent of README.md and IS shipped in the zip.
+
+# Version control
+.git
 .gitignore
+.gitattributes
+.github
+
+# Development notes and public-facing docs (kept on GitHub, not in dist)
+dev-notes
+docs
+
+# Build / dependency manifests
+build
+node_modules
+vendor
+composer.json
+composer.lock
+package.json
+package-lock.json
+
+# Tooling configs
+.distignore
 phpcs.xml
-CLAUDE.md
+phpcs.xml.dist
+.phpcs.xml
+.phpcs.xml.dist
+.editorconfig
+.eslintrc
+.eslintrc.json
+.prettierrc
+.prettierrc.json
+
+# IDE / OS metadata
+.vscode
+.idea
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Project meta files (kept on GitHub, stripped from release zip).
 README.md
 CHANGELOG.md
-.distignore
+SECURITY.md
+CLAUDE.md
+.claude
