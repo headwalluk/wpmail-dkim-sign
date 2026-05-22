@@ -64,4 +64,26 @@
 			</property>
 		</properties>
 	</rule>
+
+	<!--
+		PHPMailer property allow-list. PHPMailer (in WordPress core) exposes
+		public properties in PascalCase / camelCase, not snake_case — we
+		cannot rename them. Whitelist the specific properties we touch on
+		PHPMailer instances so the snake_case sniff stops flagging them.
+	-->
+	<rule ref="WordPress.NamingConventions.ValidVariableName">
+		<properties>
+			<property name="allowed_custom_properties" type="array">
+				<element value="From"/>
+				<element value="DKIM_domain"/>
+				<element value="DKIM_selector"/>
+				<element value="DKIM_private_string"/>
+				<element value="DKIM_identity"/>
+				<element value="DKIM_passphrase"/>
+				<element value="DKIM_copyHeaderFields"/>
+				<element value="DKIM_header_canonicalization"/>
+				<element value="DKIM_body_canonicalization"/>
+			</property>
+		</properties>
+	</rule>
 </ruleset>
