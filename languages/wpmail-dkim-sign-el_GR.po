@@ -1,8 +1,5 @@
-# Copyright (C) 2026 Headwall Hosting
-# This file is distributed under the GPL v2 or later.
 msgid ""
 msgstr ""
-"Language: el_GR\n"
 "Project-Id-Version: WP Mail DKIM Sign 1.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wpmail-dkim-sign\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
@@ -12,6 +9,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: 2026-05-22T17:09:57+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Language: el_GR\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: wpmail-dkim-sign\n"
 
@@ -405,30 +403,30 @@ msgstr "Δεν καταγράφηκε κανένας λόγος παράλειψ
 msgid "Full captured headers"
 msgstr "Πλήρεις καταγεγραμμένες κεφαλίδες"
 
-#: includes/class-settings.php:73
-#: includes/class-settings.php:74
-#: includes/class-settings.php:149
+#: includes/class-settings.php:47
+#: includes/class-settings.php:48
+#: includes/class-settings.php:123
 msgid "WP Mail DKIM"
 msgstr "WP Mail DKIM"
 
-#: includes/class-settings.php:124
+#: includes/class-settings.php:98
 msgid "You do not have permission to view this page."
 msgstr "Δεν έχετε δικαίωμα πρόσβασης σε αυτή τη σελίδα."
 
-#: includes/class-settings.php:244
-#: includes/class-settings.php:529
-#: includes/class-verifier.php:538
+#: includes/class-settings.php:218
+#: includes/class-settings.php:503
+#: includes/class-verifier.php:505
 msgid "You do not have permission to perform this action."
 msgstr "Δεν έχετε δικαιώματα για να εκτελέσετε αυτήν την ενέργεια."
 
 #. translators: %s: site name.
-#: includes/class-verifier.php:127
+#: includes/class-verifier.php:94
 #, php-format
 msgid "[WP Mail DKIM] Test from %s"
 msgstr "[WP Mail DKIM] Δοκιμή από %s"
 
 #. translators: %s: site URL.
-#: includes/class-verifier.php:133
+#: includes/class-verifier.php:100
 #, php-format
 msgid ""
 "This is a test email from the WP Mail DKIM Sign plugin on %s.\n"

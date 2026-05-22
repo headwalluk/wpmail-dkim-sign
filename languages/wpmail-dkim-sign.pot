@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-05-22T17:09:57+00:00\n"
+"POT-Creation-Date: 2026-05-22T17:46:23+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: wpmail-dkim-sign\n"
@@ -404,30 +404,30 @@ msgstr ""
 msgid "Full captured headers"
 msgstr ""
 
-#: includes/class-settings.php:73
-#: includes/class-settings.php:74
-#: includes/class-settings.php:149
+#: includes/class-settings.php:47
+#: includes/class-settings.php:48
+#: includes/class-settings.php:123
 msgid "WP Mail DKIM"
 msgstr ""
 
-#: includes/class-settings.php:124
+#: includes/class-settings.php:98
 msgid "You do not have permission to view this page."
 msgstr ""
 
-#: includes/class-settings.php:244
-#: includes/class-settings.php:529
-#: includes/class-verifier.php:538
+#: includes/class-settings.php:218
+#: includes/class-settings.php:503
+#: includes/class-verifier.php:505
 msgid "You do not have permission to perform this action."
 msgstr ""
 
 #. translators: %s: site name.
-#: includes/class-verifier.php:127
+#: includes/class-verifier.php:94
 #, php-format
 msgid "[WP Mail DKIM] Test from %s"
 msgstr ""
 
 #. translators: %s: site URL.
-#: includes/class-verifier.php:133
+#: includes/class-verifier.php:100
 #, php-format
 msgid ""
 "This is a test email from the WP Mail DKIM Sign plugin on %s.\n"
