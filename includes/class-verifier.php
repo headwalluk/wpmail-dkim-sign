@@ -23,7 +23,7 @@ defined( 'ABSPATH' ) || die();
  * per-user transients and read back by Settings::build_page_data
  * for rendering inside the Verify tab.
  *
- * @since 0.1.0
+ * @since 1.0.0
  */
 class Verifier {
 
@@ -35,7 +35,7 @@ class Verifier {
 	 * Using a class-static rather than a $GLOBALS entry keeps the
 	 * flag's lifetime explicit and within this class's surface area.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @var bool
 	 */
@@ -47,7 +47,7 @@ class Verifier {
 	 * away, troubleshoot a DNS provider issue, and come back to
 	 * compare results — short enough that stale data doesn't linger.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @var int
 	 */
@@ -56,7 +56,7 @@ class Verifier {
 	/**
 	 * Constructor.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 */
 	public function __construct() {
 		// Intentionally empty. See register_hooks().
@@ -65,7 +65,7 @@ class Verifier {
 	/**
 	 * Register WordPress hooks owned by this sub-service.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @return void
 	 */
@@ -83,7 +83,7 @@ class Verifier {
 	 * other plugins might have rewritten). Captures the prepared
 	 * headers post-signing into a transient for display.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @return void
 	 */
@@ -113,7 +113,7 @@ class Verifier {
 	 * effects are intentionally linear: arm the capture flag, hook
 	 * the capture filter, run wp_mail, tear down, persist, redirect.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @param string $recipient Validated recipient email address.
 	 *
@@ -180,7 +180,7 @@ class Verifier {
 	 * apply the DKIM configuration and build the final headers —
 	 * we then read those headers via getSentMIMEMessage().
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @param PHPMailer $phpmailer PHPMailer instance.
 	 *
@@ -233,7 +233,7 @@ class Verifier {
 	 * a fresh dns_get_record call is cheap) and compares the
 	 * published p= value to the locally stored public key.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @return void
 	 */
@@ -274,7 +274,7 @@ class Verifier {
 	 * - "doubled_zone"             — record found at <intended>.<zone> (zone appended twice).
 	 * - "missing_domainkey_label"  — record found at <selector>.<domain> (without ._domainkey.).
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @param string      $name      DNS name to query (the intended FQDN).
 	 * @param string|null $local_b64 Locally stored public-key base64, or null if no key.
@@ -336,7 +336,7 @@ class Verifier {
 	 *
 	 * Returns the first match found, or null if no misconfig detected.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @param string      $intended_name FQDN the record *should* live at.
 	 * @param string|null $zone          Authoritative zone (or null if unknown — doubled-zone check is skipped).
@@ -398,7 +398,7 @@ class Verifier {
 	/**
 	 * Look up a name and return the first v=DKIM1 p= value found, or null.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @param string $name DNS name to query.
 	 *
@@ -425,7 +425,7 @@ class Verifier {
 	 * separately here — receivers and resolvers join the pieces
 	 * before delivering the record to us.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @param array<int, array<string, mixed>> $records dns_get_record output.
 	 *
@@ -455,7 +455,7 @@ class Verifier {
 	 * Returns the unfolded header value (without the "DKIM-Signature:"
 	 * prefix and without line-folding whitespace) for display.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @param string $headers_block Raw header block (CRLF-separated).
 	 *
@@ -480,7 +480,7 @@ class Verifier {
 	 * Read by Settings::build_page_data when assembling the Verify-tab
 	 * render data. Returns null if no test has been run recently.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @return array<string, mixed>|null
 	 */
@@ -492,7 +492,7 @@ class Verifier {
 	/**
 	 * Public accessor: return the most recent DNS-check result, if any.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @return array<string, mixed>|null
 	 */
@@ -504,7 +504,7 @@ class Verifier {
 	/**
 	 * Per-user transient key for the captured test-email payload.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @return string
 	 */
@@ -515,7 +515,7 @@ class Verifier {
 	/**
 	 * Per-user transient key for the DNS-check payload.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @return string
 	 */
@@ -526,7 +526,7 @@ class Verifier {
 	/**
 	 * Capability check used by both admin-post handlers.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @return void
 	 */
@@ -549,7 +549,7 @@ class Verifier {
 	 * active tab on load, so the result appears on the same tab the
 	 * user submitted from.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @param string $notice Notice identifier.
 	 * @param string $tab    Tab slug to activate after redirect.
@@ -572,7 +572,7 @@ class Verifier {
 	/**
 	 * Current timestamp in the project's human-readable format.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @return string
 	 */

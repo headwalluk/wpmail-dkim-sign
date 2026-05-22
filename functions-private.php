@@ -27,7 +27,7 @@ defined( 'ABSPATH' ) || die();
  * the unqualified call `get_plugin()` — no leading backslash, no
  * `use` statement needed.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @return \WPMail_DKIM_Sign\Plugin The orchestrator instance.
  */
@@ -55,7 +55,7 @@ function get_plugin(): \WPMail_DKIM_Sign\Plugin {
  * failing in a chroot, or a non-existent domain). Callers should
  * fall back to displaying the full FQDN only.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @param string $domain Domain to find the zone for.
  *
@@ -69,7 +69,7 @@ function compute_zone( string $domain ): ?string {
 	 * zone directly. Return null to fall back to displaying only
 	 * the full FQDN (no host-name shortcut).
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @param string|null $zone   Override zone, or null to auto-detect.
 	 * @param string      $domain Domain being resolved.
@@ -102,7 +102,7 @@ function compute_zone( string $domain ): ?string {
  * Split out for testability and to keep compute_zone's caching
  * layer separate from the lookup mechanics.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @param string $domain Domain to walk.
  *
@@ -138,7 +138,7 @@ function compute_zone_via_soa_walk( string $domain ): ?string {
  * the full name. Callers should treat null as "no host shortcut available"
  * and display only the FQDN.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @param string      $full_name Fully-qualified DNS name.
  * @param string|null $zone      Apex zone, or null.

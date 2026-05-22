@@ -23,7 +23,7 @@ defined( 'ABSPATH' ) || die();
  * performed by PHPMailer's preSend() once these properties are
  * set — we do not implement the DKIM algorithm ourselves.
  *
- * @since 0.1.0
+ * @since 1.0.0
  */
 class Signer {
 
@@ -35,7 +35,7 @@ class Signer {
 	 * the user sees *why* a test send was left unsigned without
 	 * having to enable WP_DEBUG_LOG.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @var string|null
 	 */
@@ -44,7 +44,7 @@ class Signer {
 	/**
 	 * Return the skip reason from the most recent sign() invocation, or null.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @return string|null
 	 */
@@ -55,7 +55,7 @@ class Signer {
 	/**
 	 * Constructor.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 */
 	public function __construct() {
 		// Intentionally empty. See register_hooks().
@@ -64,7 +64,7 @@ class Signer {
 	/**
 	 * Register WordPress hooks owned by this sub-service.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @return void
 	 */
@@ -78,7 +78,7 @@ class Signer {
 	 * On any failed pre-flight check, the message is left untouched
 	 * and the reason is logged at debug level (gated on WP_DEBUG).
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @param PHPMailer $phpmailer PHPMailer instance, passed by reference by WP core.
 	 *
@@ -105,7 +105,7 @@ class Signer {
 	 * Checks run in cheapest-first order so that the common
 	 * "plugin disabled" no-op exits without touching the database.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @param PHPMailer $phpmailer PHPMailer instance.
 	 *
@@ -138,7 +138,7 @@ class Signer {
 	/**
 	 * Pre-flight check 1: plugin is enabled in settings.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @return string|null Null to proceed; skip-reason string otherwise.
 	 */
@@ -154,7 +154,7 @@ class Signer {
 	/**
 	 * Pre-flight check 2: a stored key exists and loads cleanly.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @return string|null
 	 */
@@ -172,7 +172,7 @@ class Signer {
 	 * and overriding an existing signer is a fast path to two
 	 * mis-aligned signatures.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @param PHPMailer $phpmailer PHPMailer instance.
 	 *
@@ -191,7 +191,7 @@ class Signer {
 	 * the message would fail DMARC alignment at the receiver —
 	 * worse than leaving it unsigned.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @param PHPMailer $phpmailer PHPMailer instance.
 	 *
@@ -224,7 +224,7 @@ class Signer {
 	 * names are tracked separately in FromName), so a simple
 	 * split-on-@ suffices.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @param PHPMailer $phpmailer PHPMailer instance.
 	 *
@@ -257,7 +257,7 @@ class Signer {
 	 * than DKIM_private (the file-path variant) so the key never
 	 * touches disk.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @param PHPMailer $phpmailer PHPMailer instance.
 	 *
@@ -285,7 +285,7 @@ class Signer {
 	 * uses the American spelling ("canonicalization") which we mirror
 	 * only at the boundary.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @param string $value Saved canonicalisation setting (e.g. "relaxed/relaxed").
 	 *
@@ -308,7 +308,7 @@ class Signer {
 	 * key that fails to parse) are logged unconditionally by
 	 * Keypair separately.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @param string $reason Short skip-reason text.
 	 *

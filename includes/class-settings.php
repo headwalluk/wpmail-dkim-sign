@@ -18,14 +18,14 @@ defined( 'ABSPATH' ) || die();
  * Settings persistence + the admin UI shell. Templates live under
  * admin-templates/ and are loaded via render_page().
  *
- * @since 0.1.0
+ * @since 1.0.0
  */
 class Settings {
 
 	/**
 	 * Request-scoped cache of the loaded + defaults-merged settings.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @var array<string, mixed>|null
 	 */
@@ -34,7 +34,7 @@ class Settings {
 	/**
 	 * Constructor.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 */
 	public function __construct() {
 		// Intentionally empty. See register_hooks().
@@ -43,7 +43,7 @@ class Settings {
 	/**
 	 * Register WordPress hooks owned by this sub-service.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @return void
 	 */
@@ -64,7 +64,7 @@ class Settings {
 	 * the top-level menu uncluttered — this is a configure-once
 	 * plugin.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @return void
 	 */
@@ -81,7 +81,7 @@ class Settings {
 	/**
 	 * Enqueue admin CSS and JS, only on our settings page.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @param string $hook_suffix Current admin page hook suffix.
 	 *
@@ -115,7 +115,7 @@ class Settings {
 	 * action / nonce names, and pre-loaded model values, then hands
 	 * off to the template under admin-templates/.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @return void
 	 */
@@ -131,7 +131,7 @@ class Settings {
 	/**
 	 * Build the data array consumed by the settings page template.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -183,7 +183,7 @@ class Settings {
 	 * no need for it, and reducing what reaches the rendering layer
 	 * reduces the surface area for accidental disclosure.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @return array{public_b64: string, created_at: string}|null
 	 */
@@ -212,7 +212,7 @@ class Settings {
 	 * surfaced by the M6 "Check DNS record" button — this method
 	 * always reflects what *should* be published right now.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @param array<string, mixed> $settings Current settings row (merged with defaults).
 	 *
@@ -232,7 +232,7 @@ class Settings {
 	/**
 	 * Handle a settings-form submission.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @return void
 	 */
@@ -266,7 +266,7 @@ class Settings {
 	/**
 	 * Handle the "Generate key" form submission.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @return void
 	 */
@@ -287,7 +287,7 @@ class Settings {
 	 * existing key has real consequences — DNS publication needs
 	 * to follow).
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @return void
 	 */
@@ -302,7 +302,7 @@ class Settings {
 	/**
 	 * Handle the "Delete key" form submission.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @return void
 	 */
@@ -317,7 +317,7 @@ class Settings {
 	/**
 	 * Read a settings value, falling back to the configured default.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @param string $key     Field name (domain, selector, enabled, canonicalisation).
 	 * @param mixed  $default_value Fallback if neither stored value nor a typed default exists.
@@ -332,7 +332,7 @@ class Settings {
 	/**
 	 * Load settings from wp_options, merge with computed defaults, cache.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -356,7 +356,7 @@ class Settings {
 	 * www, so aligning the d= here without the prefix is the right
 	 * default.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -373,7 +373,7 @@ class Settings {
 	/**
 	 * Compute the default signing domain from the current site URL.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @return string
 	 */
@@ -389,7 +389,7 @@ class Settings {
 	 * Centralised here so that the unsanitised superglobal access is
 	 * confined to one spot, gated behind a phpcs:disable scope.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @return array<string, string>
 	 */
@@ -413,7 +413,7 @@ class Settings {
 	 * Returns null if any required field fails validation — caller
 	 * surfaces a generic "invalid input" notice in response.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @param array<string, string> $input Raw form values.
 	 *
@@ -448,7 +448,7 @@ class Settings {
 	 * conventionally matches the bare domain. Rejects anything that
 	 * does not look like a hostname.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @param string $raw Raw input.
 	 *
@@ -468,7 +468,7 @@ class Settings {
 	 * RFC 1035: label must start and end with letter or digit, may
 	 * contain letters / digits / hyphens, length 1–63.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @param string $raw Raw input.
 	 *
@@ -484,7 +484,7 @@ class Settings {
 	/**
 	 * Validate a canonicalisation choice against the allow-list.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @param string $raw Raw input.
 	 *
@@ -504,7 +504,7 @@ class Settings {
 	 * sends "1", "on", or similar) as true; absent fields are
 	 * false. Always returns a bool — never fails validation.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @param string $raw Raw input.
 	 *
@@ -517,7 +517,7 @@ class Settings {
 	/**
 	 * Wrap the capability check used by the key-management handlers.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @return void
 	 */
@@ -536,7 +536,7 @@ class Settings {
 	/**
 	 * Redirect back to the settings page with a notice query-arg.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @param string $notice Notice identifier (see NOTICE_* constants).
 	 *

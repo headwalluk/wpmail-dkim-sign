@@ -20,14 +20,14 @@ defined( 'ABSPATH' ) || die();
  * wpmail_dkim_sign() accessor rather than constructor injection,
  * matching the WordPress lazy-loading pattern.
  *
- * @since 0.1.0
+ * @since 1.0.0
  */
 class Plugin {
 
 	/**
 	 * Settings sub-service.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @var Settings|null
 	 */
@@ -36,7 +36,7 @@ class Plugin {
 	/**
 	 * Keypair sub-service.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @var Keypair|null
 	 */
@@ -45,7 +45,7 @@ class Plugin {
 	/**
 	 * Signer sub-service.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @var Signer|null
 	 */
@@ -54,7 +54,7 @@ class Plugin {
 	/**
 	 * Verifier sub-service.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @var Verifier|null
 	 */
@@ -63,7 +63,7 @@ class Plugin {
 	/**
 	 * GitHub auto-updater sub-service.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @var Github_Updater|null
 	 */
@@ -76,7 +76,7 @@ class Plugin {
 	 * can be reasoned about as a single explicit step from the
 	 * plugin entry file.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 */
 	public function __construct() {
 		// Intentionally empty. See run().
@@ -89,7 +89,7 @@ class Plugin {
 	 * from any request context (front-end form submission, REST API,
 	 * WP-Cron, admin action). Settings and Verifier are admin-only.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @return void
 	 */
@@ -108,7 +108,7 @@ class Plugin {
 	/**
 	 * Get the Settings sub-service, instantiating on first access.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @return Settings
 	 */
@@ -123,7 +123,7 @@ class Plugin {
 	/**
 	 * Get the Keypair sub-service, instantiating on first access.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @return Keypair
 	 */
@@ -138,7 +138,7 @@ class Plugin {
 	/**
 	 * Get the Signer sub-service, instantiating on first access.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @return Signer
 	 */
@@ -153,7 +153,7 @@ class Plugin {
 	/**
 	 * Get the Verifier sub-service, instantiating on first access.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @return Verifier
 	 */
@@ -168,7 +168,7 @@ class Plugin {
 	/**
 	 * Get the Github_Updater sub-service, instantiating on first access.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @return Github_Updater
 	 */

@@ -30,7 +30,7 @@ defined( 'ABSPATH' ) || die();
  * here (generate, regenerate, delete). Until that lands, the class
  * is exercised programmatically.
  *
- * @since 0.1.0
+ * @since 1.0.0
  */
 class Keypair {
 
@@ -38,7 +38,7 @@ class Keypair {
 	 * Key length in bits. Locked to 2048 for v1 (RFC 8301 minimum
 	 * recommended, broad receiver support).
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @var int
 	 */
@@ -50,7 +50,7 @@ class Keypair {
 	 * Human-readable per house style — easier troubleshooting than
 	 * a Unix timestamp.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @var string
 	 */
@@ -66,7 +66,7 @@ class Keypair {
 	 * wasteful. Never persists across requests, so regenerate
 	 * immediately takes effect on the next request.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @var array{private_pem: string, public_b64: string, created_at: string}|null
 	 */
@@ -75,7 +75,7 @@ class Keypair {
 	/**
 	 * Constructor.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 */
 	public function __construct() {
 		// Intentionally empty. Methods are stateless aside from the static cache.
@@ -88,7 +88,7 @@ class Keypair {
 	 * confirming this with the user (regenerate flow) own the UI
 	 * confirmation; this method makes no decisions about consent.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @return bool True on success, false on OpenSSL failure.
 	 */
@@ -137,7 +137,7 @@ class Keypair {
 	 * version, the disabled flag set on first generate() carries
 	 * through.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @param string $private_pem PEM-encoded private key.
 	 * @param string $public_b64  Raw base64 public key (no PEM markers).
@@ -163,7 +163,7 @@ class Keypair {
 	 * parses (corrupted at rest, openssl removed, etc.), returns
 	 * null and logs the failure.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @return array{private_pem: string, public_b64: string, created_at: string}|null
 	 */
@@ -195,7 +195,7 @@ class Keypair {
 	/**
 	 * Check whether a usable key is currently stored.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @return bool
 	 */
@@ -208,7 +208,7 @@ class Keypair {
 	 *
 	 * No-op (apart from cache clear) if no key was stored.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @return void
 	 */
@@ -220,7 +220,7 @@ class Keypair {
 	/**
 	 * Return the raw base64 public-key value for the DKIM `p=` field.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @return string|null Base64-encoded public key without PEM markers, or null if no key is stored.
 	 */
@@ -240,7 +240,7 @@ class Keypair {
 	/**
 	 * Return the PEM-encoded private key for handing to PHPMailer.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @return string|null PEM-encoded private key, or null if no key is stored.
 	 */
@@ -266,7 +266,7 @@ class Keypair {
 	 * providers. When the zone is unknown, host_name is null and callers
 	 * should display only the FQDN.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @param string      $selector DKIM selector (DNS-label).
 	 * @param string      $domain   Signing domain.
@@ -298,7 +298,7 @@ class Keypair {
 	/**
 	 * Strip PEM headers and whitespace from a PEM-encoded public key.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @param string $pem PEM-encoded key material.
 	 *
@@ -315,7 +315,7 @@ class Keypair {
 	 * logical TXT record whose value exceeds the 255-byte
 	 * single-string limit imposed by RFC 1035.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @param string $value      Full record value.
 	 * @param int    $chunk_size Maximum length of each quoted chunk.
@@ -337,7 +337,7 @@ class Keypair {
 	 * Return the current time as a human-readable string in the
 	 * site's configured timezone.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @return string
 	 */
@@ -354,7 +354,7 @@ class Keypair {
 	 * WP_DEBUG_LOG specifically. Skip-decisions in Signer (M5) will
 	 * use a debug-only logger separately.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @param string $context Short description of where the failure occurred.
 	 *

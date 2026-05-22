@@ -217,7 +217,7 @@ Bootstrap (`wpmail-dkim-sign.php`):
 /**
  * Plugin Name: WP Mail DKIM Sign
  * Description: …
- * Version: 0.1.0
+ * Version: 1.0.0
  * Requires PHP: 8.0
  * Requires at least: 6.0
  * Text Domain: wpmail-dkim-sign

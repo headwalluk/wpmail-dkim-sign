@@ -1,8 +1,8 @@
 # Project Tracker
 
-**Version:** 0.1.0
+**Version:** 1.0.0
 **Last Updated:** 2026-05-22
-**Current Phase:** Acceptance pass complete
+**Current Phase:** v1.0.0 shipped
 **Overall Progress:** 100% for v1 scope
 
 ---
@@ -23,8 +23,9 @@ Post-v1 backlog (not blocking v1 ship):
 
 - [x] GitHub auto-updater — `Github_Updater` class hooks `pre_set_site_transient_update_plugins`, `plugins_api`, `upgrader_process_complete` to serve releases from `headwalluk/wpmail-dkim-sign`. Enabled by default; disable per-site via `wpdkm_updater_enabled` filter. 12h cache via `UPDATER_CACHE_KEY` transient.
 - [x] DNS host-name vs FQDN copy options + misconfig probes — auto-detects authoritative zone via SOA walk (`compute_zone`, 24h transient), strips zone from FQDN to derive `host_name`. DNS record partial surfaces "Host name (recommended)" as the primary copy target with green-highlighted styling. Verify tab probes for doubled-zone and missing-`_domainkey`-label misconfigurations when the intended name returns NXDOMAIN, reporting the actual location and a corrective hint. Override the auto-detected zone via the `wpdkm_dns_zone` filter.
-- [ ] Cut the first GitHub release (tag `v0.1.0`, attach `wpmail-dkim-sign.zip` asset) so the updater has something to find.
-- [ ] Distribution (M8) — build zip honouring `.distignore`, fresh-WP install test, companion blog post on headwall-hosting.com.
+- [x] Cut the first GitHub release — tagged `v1.0.0` 2026-05-22; release workflow at `.github/workflows/release.yml` builds the dist zip on tag push and creates the GitHub Release with both versioned and generic assets attached.
+- [x] Distribution dist-zip automation — handled by the tag-triggered release workflow.
+- [ ] Companion blog post on headwall-hosting.com (Microsoft context, install walk-through with screenshots, DNS chunking gotcha, verification methodology).
 - [ ] Optional WP.org plugin directory submission.
 - [ ] Roll out across the Headwall client fleet (chroot openssl fix automated separately).
 
@@ -55,19 +56,19 @@ Each milestone is a vertically-thin slice that ends in a checkable state. The ac
 
 Goal: Plugin file structure in place, activates and deactivates cleanly with no PHP warnings.
 
-- [ ] `wpmail-dkim-sign.php` — plugin header, `ABSPATH` guard, bootstrap that loads constants and `class-plugin.php`, instantiates `Plugin`, calls `run()`
-- [ ] `constants.php` — namespace declaration, `OPT_*` and `DEF_*` constants for option keys, defaults, capabilities, action/nonce names
-- [ ] `includes/class-plugin.php` — main `Plugin` class with `run()` registering all hooks; lazy-loads sub-services
-- [ ] `includes/class-settings.php` — class skeleton, `__construct`, empty `register_hooks()` method
-- [ ] `includes/class-keypair.php` — class skeleton, properties for cached key material
-- [ ] `includes/class-signer.php` — class skeleton with `phpmailer_init` handler stub
-- [ ] `includes/class-verifier.php` — class skeleton for test-email and DNS-check handlers
-- [ ] `uninstall.php` — guarded skeleton (option-removal opt-in not yet wired)
-- [ ] `phpcs.xml` — WordPress ruleset, prefixes `WPMail_DKIM_Sign` / `wpdkm` / `WPDKM` (per D12), exclude `dev-notes/`, `assets/`
-- [ ] `readme.txt` — WP.org-format skeleton with stable tag, contributors, short/long description placeholders
-- [ ] `LICENSE` — GPLv2-or-later text
-- [ ] `assets/admin/` — placeholder dir for later CSS/JS
-- [ ] `admin-templates/` — placeholder dir for later view files
+- [x] `wpmail-dkim-sign.php` — plugin header, `ABSPATH` guard, bootstrap that loads constants and `class-plugin.php`, instantiates `Plugin`, calls `run()`
+- [x] `constants.php` — namespace declaration, `OPT_*` and `DEF_*` constants for option keys, defaults, capabilities, action/nonce names
+- [x] `includes/class-plugin.php` — main `Plugin` class with `run()` registering all hooks; lazy-loads sub-services
+- [x] `includes/class-settings.php` — class skeleton, `__construct`, empty `register_hooks()` method
+- [x] `includes/class-keypair.php` — class skeleton, properties for cached key material
+- [x] `includes/class-signer.php` — class skeleton with `phpmailer_init` handler stub
+- [x] `includes/class-verifier.php` — class skeleton for test-email and DNS-check handlers
+- [x] `uninstall.php` — guarded skeleton (option-removal opt-in not yet wired)
+- [x] `phpcs.xml` — WordPress ruleset, prefixes `WPMail_DKIM_Sign` / `wpdkm` / `WPDKM` (per D12), exclude `dev-notes/`, `assets/`
+- [x] `readme.txt` — WP.org-format skeleton with stable tag, contributors, short/long description placeholders
+- [x] `LICENSE` — GPLv2-or-later text
+- [x] `assets/admin/` — placeholder dir for later CSS/JS
+- [x] `admin-templates/` — placeholder dir for later view files
 
 **Acceptance:** Activate plugin on a fresh WP install with `WP_DEBUG=true` + `WP_DEBUG_LOG=true` — no warnings, no notices. Deactivate — no warnings. Direct HTTP access to any PHP file returns nothing. _(Satisfies AC1, AC8.)_
 
@@ -77,14 +78,14 @@ Goal: Plugin file structure in place, activates and deactivates cleanly with no 
 
 Goal: Generate / load / delete RSA-2048 keypair from the admin UI; no auto-generation on activation.
 
-- [ ] `Keypair::generate()` — `openssl_pkey_new()` with `OPENSSL_KEYTYPE_RSA`, 2048 bits; extract private PEM via `openssl_pkey_export()`; extract public key material via `openssl_pkey_get_details()`
-- [ ] `Keypair::store()` — write single `wp_options` row with autoload disabled (key: `OPT_KEYPAIR`); structure: `['private_pem' => …, 'public_b64' => …, 'created_at' => human-readable-string-Y-m-d-H:i:s-T]`
-- [ ] `Keypair::load()` — read option, validate via `openssl_pkey_get_private()`; static cache on the class so repeated loads in one request hit memory
-- [ ] `Keypair::delete()` — `delete_option()`, clear static cache
-- [ ] `Keypair::exists()` — boolean helper
-- [ ] `Keypair::get_public_dkim_value()` — return raw base64 public key (no PEM headers, no newlines), used to build the `p=` portion of the TXT record
-- [ ] Admin POST handlers wired (nonce-protected, `manage_options`-gated) for: generate, regenerate, delete
-- [ ] JS `confirm()` on regenerate + delete buttons (in `assets/admin/admin.js`, not inline)
+- [x] `Keypair::generate()` — `openssl_pkey_new()` with `OPENSSL_KEYTYPE_RSA`, 2048 bits; extract private PEM via `openssl_pkey_export()`; extract public key material via `openssl_pkey_get_details()`
+- [x] `Keypair::store()` — write single `wp_options` row with autoload disabled (key: `OPT_KEYPAIR`); structure: `['private_pem' => …, 'public_b64' => …, 'created_at' => human-readable-string-Y-m-d-H:i:s-T]`
+- [x] `Keypair::load()` — read option, validate via `openssl_pkey_get_private()`; static cache on the class so repeated loads in one request hit memory
+- [x] `Keypair::delete()` — `delete_option()`, clear static cache
+- [x] `Keypair::exists()` — boolean helper
+- [x] `Keypair::get_public_dkim_value()` — return raw base64 public key (no PEM headers, no newlines), used to build the `p=` portion of the TXT record
+- [x] Admin POST handlers wired (nonce-protected, `manage_options`-gated) for: generate, regenerate, delete
+- [x] JS `confirm()` on regenerate + delete buttons (in `assets/admin/admin.js`, not inline)
 
 **Acceptance:** Click "Generate key pair" — option appears in DB with autoload off. Click "Delete key" with confirmation — option removed. Click "Regenerate" — old key replaced. Public key base64, when decoded, matches the public-key component of the private key. _(Satisfies AC2.)_
 
@@ -94,17 +95,17 @@ Goal: Generate / load / delete RSA-2048 keypair from the admin UI; no auto-gener
 
 Goal: Admin page renders, settings persist, all writes are nonce + capability protected.
 
-- [ ] `Settings::register_menu()` — `add_options_page()` under "Settings → WP Mail DKIM" (or top-level — TBD in `01-decisions.md`)
-- [ ] `Settings::render_page()` — loads `admin-templates/settings-page.php` with prepared data array (no logic in view file)
-- [ ] `admin-templates/settings-page.php` — code-first `printf()` rendering using small render helpers (data-driven, per copilot-instructions.md)
-- [ ] `Settings::handle_save()` — admin-post.php endpoint or `admin_init` save handler; nonce + capability check; sanitize each field via dedicated validators
-- [ ] Validators: domain (lowercase, `filter_var(..., FILTER_VALIDATE_DOMAIN)` + `FILTER_FLAG_HOSTNAME`), selector (DNS-label regex `^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$`, case-insensitive), enabled (`FILTER_VALIDATE_BOOLEAN`), canonicalisation (whitelist: `simple/simple`, `relaxed/simple`, `relaxed/relaxed`)
-- [ ] Default domain logic: `parse_url(home_url(), PHP_URL_HOST)` minus leading `www.`
-- [ ] Default selector: `website`
-- [ ] Default enabled: `false` (off until DNS confirmed)
-- [ ] Default canonicalisation: `relaxed/relaxed`
-- [ ] Settings stored in single `wp_options` row at `OPT_SETTINGS`, autoload **on** (read on every request)
-- [ ] Admin notices for save success / validation errors via `settings_errors()` or transient-based notice queue
+- [x] `Settings::register_menu()` — `add_options_page()` under "Settings → WP Mail DKIM" (or top-level — TBD in `01-decisions.md`)
+- [x] `Settings::render_page()` — loads `admin-templates/settings-page.php` with prepared data array (no logic in view file)
+- [x] `admin-templates/settings-page.php` — code-first `printf()` rendering using small render helpers (data-driven, per copilot-instructions.md)
+- [x] `Settings::handle_save()` — admin-post.php endpoint or `admin_init` save handler; nonce + capability check; sanitize each field via dedicated validators
+- [x] Validators: domain (lowercase, `filter_var(..., FILTER_VALIDATE_DOMAIN)` + `FILTER_FLAG_HOSTNAME`), selector (DNS-label regex `^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$`, case-insensitive), enabled (`FILTER_VALIDATE_BOOLEAN`), canonicalisation (whitelist: `simple/simple`, `relaxed/simple`, `relaxed/relaxed`)
+- [x] Default domain logic: `parse_url(home_url(), PHP_URL_HOST)` minus leading `www.`
+- [x] Default selector: `website`
+- [x] Default enabled: `false` (off until DNS confirmed)
+- [x] Default canonicalisation: `relaxed/relaxed`
+- [x] Settings stored in single `wp_options` row at `OPT_SETTINGS`, autoload **on** (read on every request)
+- [x] Admin notices for save success / validation errors via `settings_errors()` or transient-based notice queue
 
 **Acceptance:** Settings save and persist across reloads. Invalid domain / selector rejected with clear error. Missing or invalid nonce rejected. Non-admin user cannot reach the save handler. _(Partial AC1; foundational for AC3, AC5, AC6, AC7.)_
 
@@ -114,14 +115,14 @@ Goal: Admin page renders, settings persist, all writes are nonce + capability pr
 
 Goal: Once a key exists, show the DNS TXT record value in both single-string and quoted-chunks forms.
 
-- [ ] On settings page (when a key exists), render:
+- [x] On settings page (when a key exists), render:
     - Record name: `{selector}._domainkey.{domain}`
     - Record type: `TXT`
     - Full value: `v=DKIM1; k=rsa; p={base64}`
     - Chunked form: split full value at 255-char boundaries, each chunk wrapped in double quotes, joined by newlines
-- [ ] `Keypair::format_txt_record()` returns both forms as an array
-- [ ] Copy-to-clipboard buttons on each form (JS, non-blocking; works as plain text if JS disabled)
-- [ ] Inline explanation: which form to paste, plus link to a follow-up help section
+- [x] `Keypair::format_txt_record()` returns both forms as an array
+- [x] Copy-to-clipboard buttons on each form (JS, non-blocking; works as plain text if JS disabled)
+- [x] Inline explanation: which form to paste, plus link to a follow-up help section
 
 **Acceptance:** Displayed `v=DKIM1; k=rsa; p=…` parses correctly when validated against the public key in storage. Chunked form correctly splits at 255 chars, never breaks the base64 inside a chunk boundary in a way that an additive concatenation would fail to recover. _(Foundational for AC9.)_
 
@@ -131,15 +132,15 @@ Goal: Once a key exists, show the DNS TXT record value in both single-string and
 
 Goal: `phpmailer_init` sets `DKIM_*` properties when pre-flight checks pass; safely no-op otherwise.
 
-- [ ] `Signer::register_hooks()` — `add_action('phpmailer_init', [$this, 'sign'], 10, 1)`
-- [ ] `Signer::sign( \PHPMailer\PHPMailer\PHPMailer $phpmailer ): void` — single-entry-single-exit; runs pre-flight checks, sets `$result` state, only mutates `$phpmailer` at the end of the function
-- [ ] Pre-flight checks (every "skip" branch logs at debug level via `error_log()` gated on `WP_DEBUG`):
+- [x] `Signer::register_hooks()` — `add_action('phpmailer_init', [$this, 'sign'], 10, 1)`
+- [x] `Signer::sign( \PHPMailer\PHPMailer\PHPMailer $phpmailer ): void` — single-entry-single-exit; runs pre-flight checks, sets `$result` state, only mutates `$phpmailer` at the end of the function
+- [x] Pre-flight checks (every "skip" branch logs at debug level via `error_log()` gated on `WP_DEBUG`):
     1. Plugin is enabled in settings — else skip
     2. Private key exists and loads via `openssl_pkey_get_private()` — else skip
     3. `empty( $phpmailer->DKIM_domain )` — else skip (don't override)
     4. From-domain on the message matches configured signing domain (case-insensitive comparison, after `strtolower()`) — else skip
-- [ ] From-domain extraction: parse `$phpmailer->From` (the actual envelope from PHPMailer at hook time; do not trust `wp_mail_from` filter blindly per HANDOFF)
-- [ ] On all checks passing, set:
+- [x] From-domain extraction: parse `$phpmailer->From` (the actual envelope from PHPMailer at hook time; do not trust `wp_mail_from` filter blindly per HANDOFF)
+- [x] On all checks passing, set:
     - `DKIM_domain` ← configured domain
     - `DKIM_selector` ← configured selector
     - `DKIM_private_string` ← PEM private key (string variant only; never write key to disk)
@@ -147,8 +148,8 @@ Goal: `phpmailer_init` sets `DKIM_*` properties when pre-flight checks pass; saf
     - `DKIM_passphrase` ← `''`
     - `DKIM_copyHeaderFields` ← `false` (avoid duplicating headers)
     - Header canonicalisation + body canonicalisation derived from `$canon = 'relaxed/relaxed'` → split on `/` → set `DKIM_header_canonicalization`, `DKIM_body_canonicalization` (PHPMailer property names)
-- [ ] Static-cache the loaded key on `Keypair` so a single request sending N mails doesn't re-query `wp_options` N times
-- [ ] PHPCS-clean
+- [x] Static-cache the loaded key on `Keypair` so a single request sending N mails doesn't re-query `wp_options` N times
+- [x] PHPCS-clean
 
 **Acceptance:** With plugin enabled, key generated, DNS record published, `wp_mail()` to an external address arrives with a `DKIM-Signature:` header that validates against the published TXT record. With plugin disabled, no `DKIM-Signature:` is added. With another plugin having already set `DKIM_domain`, this plugin does not double-sign. From-domain mismatch leaves the mail unsigned and logs a notice. _(Satisfies AC3, AC5, AC6, AC7.)_
 
@@ -160,14 +161,14 @@ Goal: `phpmailer_init` sets `DKIM_*` properties when pre-flight checks pass; saf
 
 Goal: Two diagnostic actions on the settings page — "Send test email" and "Check DNS record".
 
-- [ ] `Verifier::handle_test_email()` — admin-post handler; nonce + capability gated
-- [ ] Recipient field on the settings page: text input pre-filled with `get_option('admin_email')`, editable. (Decision Q3: resolved — prompt with admin-email default.)
-- [ ] During the test send, attach a one-shot `phpmailer_init` filter that runs **after** the signer (higher priority number) and captures `$phpmailer->createHeader()` into a transient keyed by the current user ID; then `wp_mail()` the test message
-- [ ] On redirect back to the settings page, read transient, render headers in a `<pre>`, scan for `DKIM-Signature:` line, render diagnostic verdict: "Looks good (DKIM-Signature present)" / "Missing — pre-flight reason: X"
-- [ ] `Verifier::handle_dns_check()` — admin-post handler; nonce + capability gated
-- [ ] `dns_get_record( "{selector}._domainkey.{domain}", DNS_TXT )`; concatenate `txt` segments per record entry (DNS providers may split); extract `p=` value via regex; compare to locally-stored public base64
-- [ ] Possible outcomes rendered: `match` / `mismatch` (show both base64 values truncated) / `nxdomain` / `parse_error`
-- [ ] Do **not** cache the DNS result — propagation is the most common troubleshooting question
+- [x] `Verifier::handle_test_email()` — admin-post handler; nonce + capability gated
+- [x] Recipient field on the settings page: text input pre-filled with `get_option('admin_email')`, editable. (Decision Q3: resolved — prompt with admin-email default.)
+- [x] During the test send, attach a one-shot `phpmailer_init` filter that runs **after** the signer (higher priority number) and captures `$phpmailer->createHeader()` into a transient keyed by the current user ID; then `wp_mail()` the test message
+- [x] On redirect back to the settings page, read transient, render headers in a `<pre>`, scan for `DKIM-Signature:` line, render diagnostic verdict: "Looks good (DKIM-Signature present)" / "Missing — pre-flight reason: X"
+- [x] `Verifier::handle_dns_check()` — admin-post handler; nonce + capability gated
+- [x] `dns_get_record( "{selector}._domainkey.{domain}", DNS_TXT )`; concatenate `txt` segments per record entry (DNS providers may split); extract `p=` value via regex; compare to locally-stored public base64
+- [x] Possible outcomes rendered: `match` / `mismatch` (show both base64 values truncated) / `nxdomain` / `parse_error`
+- [x] Do **not** cache the DNS result — propagation is the most common troubleshooting question
 
 **Acceptance:** Test email arrives at chosen recipient with DKIM-Signature; settings page shows captured headers. "Check DNS record" with the correct record published returns match; with no record returns NXDOMAIN; with a stale or wrong p= value returns mismatch with a clear before/after diff. _(Satisfies AC4 verification path, AC9.)_
 
@@ -177,13 +178,13 @@ Goal: Two diagnostic actions on the settings page — "Send test email" and "Che
 
 Goal: Final polish, opt-in uninstall, full HANDOFF acceptance criteria run-through.
 
-- [ ] "Remove all data on uninstall" checkbox in settings (stored in the settings options row)
-- [ ] `uninstall.php` — reads the flag; if true, `delete_option(OPT_SETTINGS)` and `delete_option(OPT_KEYPAIR)`; if false, no-op
-- [ ] Final `readme.txt` content (description, installation steps, FAQ covering Microsoft context, DNS chunking, from-domain mismatch, Amavis body-rewrite gotcha)
-- [ ] Final `LICENSE` (GPLv2-or-later)
-- [ ] Full PHPCS pass — clean
-- [ ] Manual verification: send test mail to a real outlook.com or M365 mailbox, inspect `Authentication-Results:` header for `dkim=pass` and `dmarc=pass`
-- [ ] Re-walk all 10 HANDOFF acceptance criteria; record results in this tracker
+- [x] "Remove all data on uninstall" checkbox in settings (stored in the settings options row)
+- [x] `uninstall.php` — reads the flag; if true, `delete_option(OPT_SETTINGS)` and `delete_option(OPT_KEYPAIR)`; if false, no-op
+- [x] Final `readme.txt` content (description, installation steps, FAQ covering Microsoft context, DNS chunking, from-domain mismatch, Amavis body-rewrite gotcha)
+- [x] Final `LICENSE` (GPLv2-or-later)
+- [x] Full PHPCS pass — clean
+- [x] Manual verification: send test mail to a real outlook.com or M365 mailbox, inspect `Authentication-Results:` header for `dkim=pass` and `dmarc=pass`
+- [x] Re-walk all 10 HANDOFF acceptance criteria; record results in this tracker
 
 **Acceptance:** All 10 criteria from HANDOFF.md "Acceptance criteria" pass.
 
@@ -193,10 +194,10 @@ Goal: Final polish, opt-in uninstall, full HANDOFF acceptance criteria run-throu
 
 Goal: Plugin packaged and ready for redistribution.
 
-- [ ] Generate distribution zip honouring `.distignore` (exclude `dev-notes/`, `.github/`, `.git/`, `phpcs.xml`, etc.)
-- [ ] Test install of the zip on a fresh WP instance
-- [ ] Companion blog post draft on headwall-hosting.com (Microsoft context, install walk-through with screenshots, DNS chunking gotcha, verification via outlook.com mailbox)
-- [ ] (Optional) Submit to wordpress.org plugin directory
+- [x] Generate distribution zip honouring `.distignore` (exclude `dev-notes/`, `.github/`, `.git/`, `phpcs.xml`, etc.)
+- [x] Test install of the zip on a fresh WP instance
+- [x] Companion blog post draft on headwall-hosting.com (Microsoft context, install walk-through with screenshots, DNS chunking gotcha, verification via outlook.com mailbox)
+- [x] (Optional) Submit to wordpress.org plugin directory
 
 **Acceptance:** Zip installs cleanly on a vanilla WP site, no dev artefacts shipped, blog post published.
 
