@@ -66,3 +66,66 @@
 	padding: 2px 6px;
 	border-radius: 3px;
 }
+
+.wpdkm-result-panel {
+	margin-top: 20px;
+	padding: 16px;
+	border: 1px solid #ccd0d4;
+	border-radius: 4px;
+	background: #f6f7f7;
+	max-width: 900px;
+}
+
+.wpdkm-result-panel h3 {
+	margin-top: 0;
+}
+
+.wpdkm-result-meta {
+	margin: 0 0 12px;
+	padding-left: 0;
+	list-style: none;
+}
+
+.wpdkm-result-meta li {
+	margin-bottom: 4px;
+}
+
+.wpdkm-verdict {
+	padding: 8px 12px;
+	border-radius: 3px;
+	margin: 12px 0;
+}
+
+.wpdkm-verdict-good {
+	background: #d7eed8;
+	color: #14401d;
+	border-left: 4px solid #46b450;
+}
+
+.wpdkm-verdict-bad {
+	background: #fcdedd;
+	color: #761b18;
+	border-left: 4px solid #dc3232;
+}
+
+.wpdkm-headers {
+	font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+	font-size: 12px;
+	background: #fff;
+	padding: 10px;
+	border: 1px solid #dcdcde;
+	border-radius: 3px;
+	white-space: pre-wrap;
+	word-break: break-all;
+	max-height: 320px;
+	overflow: auto;
+}
+
+.wpdkm-details {
+	margin-top: 12px;
+}
+
+.wpdkm-details > summary {
+	cursor: pointer;
+	font-weight: 600;
+}

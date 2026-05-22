@@ -65,17 +65,22 @@ const NONCE_CHECK_DNS      = 'wpdkm_check_dns_nonce';
 
 /* ---------- Admin notice query-string values ---------- */
 
-const NOTICE_QUERY_PARAM   = 'wpdkm_notice';
-const NOTICE_SAVED         = 'saved';
-const NOTICE_INVALID       = 'invalid';
-const NOTICE_KEY_GENERATED = 'key-generated';
-const NOTICE_KEY_REPLACED  = 'key-replaced';
-const NOTICE_KEY_DELETED   = 'key-deleted';
-const NOTICE_KEY_ERROR     = 'key-error';
+const NOTICE_QUERY_PARAM            = 'wpdkm_notice';
+const NOTICE_SAVED                  = 'saved';
+const NOTICE_INVALID                = 'invalid';
+const NOTICE_KEY_GENERATED          = 'key-generated';
+const NOTICE_KEY_REPLACED           = 'key-replaced';
+const NOTICE_KEY_DELETED            = 'key-deleted';
+const NOTICE_KEY_ERROR              = 'key-error';
+const NOTICE_TEST_SENT              = 'test-sent';
+const NOTICE_TEST_FAILED            = 'test-failed';
+const NOTICE_TEST_INVALID_RECIPIENT = 'test-invalid-recipient';
+const NOTICE_DNS_CHECKED            = 'dns-checked';
 
 /* ---------- Transient key prefixes ---------- */
 
-const TRANSIENT_CAPTURE_PREFIX = 'wpdkm_capture_';
+const TRANSIENT_CAPTURE_PREFIX   = 'wpdkm_capture_';
+const TRANSIENT_DNS_CHECK_PREFIX = 'wpdkm_dns_check_';
 
 /* ---------- Hook priorities ---------- */
 

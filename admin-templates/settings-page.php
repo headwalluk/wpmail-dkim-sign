@@ -37,10 +37,8 @@ if ( ! is_null( $data['dns_record'] ) ) {
 printf( '</div>' );
 
 printf( '<div id="verify-panel" class="tab-panel" style="display:none;">' );
-printf(
-	'<p>%s</p>',
-	esc_html__( 'Verification tools (test email and DNS lookup) will arrive in a future release.', 'wpmail-dkim-sign' )
-);
+require WPDKM_PATH . 'admin-templates/partials/verify-test-email.php';
+require WPDKM_PATH . 'admin-templates/partials/verify-dns-check.php';
 printf( '</div>' );
 
 printf( '</div>' );

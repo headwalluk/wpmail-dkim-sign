@@ -143,26 +143,34 @@ class Settings {
 		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 		$settings = self::load();
+		$verifier = get_plugin()->get_verifier();
 
 		return array(
-			'page_title'    => __( 'WP Mail DKIM', 'wpmail-dkim-sign' ),
-			'settings'      => $settings,
-			'keypair_meta'  => $this->get_keypair_meta(),
-			'dns_record'    => $this->get_dns_record( $settings ),
-			'allowed_canon' => ALLOWED_CANONICALISATIONS,
-			'notice'        => $notice,
-			'admin_post'    => admin_url( 'admin-post.php' ),
-			'actions'       => array(
+			'page_title'       => __( 'WP Mail DKIM', 'wpmail-dkim-sign' ),
+			'settings'         => $settings,
+			'keypair_meta'     => $this->get_keypair_meta(),
+			'dns_record'       => $this->get_dns_record( $settings ),
+			'allowed_canon'    => ALLOWED_CANONICALISATIONS,
+			'notice'           => $notice,
+			'admin_post'       => admin_url( 'admin-post.php' ),
+			'admin_email'      => (string) get_option( 'admin_email', '' ),
+			'test_result'      => $verifier->get_test_result(),
+			'dns_check_result' => $verifier->get_dns_check_result(),
+			'actions'          => array(
 				'save'           => ACTION_SAVE,
 				'generate_key'   => ACTION_GENERATE_KEY,
 				'regenerate_key' => ACTION_REGENERATE_KEY,
 				'delete_key'     => ACTION_DELETE_KEY,
+				'test_email'     => ACTION_TEST_EMAIL,
+				'check_dns'      => ACTION_CHECK_DNS,
 			),
-			'nonces'        => array(
+			'nonces'           => array(
 				'save'           => NONCE_SAVE,
 				'generate_key'   => NONCE_GENERATE_KEY,
 				'regenerate_key' => NONCE_REGENERATE_KEY,
 				'delete_key'     => NONCE_DELETE_KEY,
+				'test_email'     => NONCE_TEST_EMAIL,
+				'check_dns'      => NONCE_CHECK_DNS,
 			),
 		);
 	}

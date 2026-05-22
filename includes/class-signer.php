@@ -28,6 +28,31 @@ defined( 'ABSPATH' ) || die();
 class Signer {
 
 	/**
+	 * Skip reason recorded by the most recent sign() invocation in
+	 * this request, or null if the message was signed.
+	 *
+	 * Read by Verifier when assembling the test-email diagnostic so
+	 * the user sees *why* a test send was left unsigned without
+	 * having to enable WP_DEBUG_LOG.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @var string|null
+	 */
+	private static ?string $last_skip_reason = null;
+
+	/**
+	 * Return the skip reason from the most recent sign() invocation, or null.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @return string|null
+	 */
+	public static function get_last_skip_reason(): ?string {
+		return self::$last_skip_reason;
+	}
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 0.1.0
@@ -60,11 +85,14 @@ class Signer {
 	 * @return void
 	 */
 	public function sign( PHPMailer $phpmailer ): void {
+		self::$last_skip_reason = null;
+
 		$skip_reason = self::should_skip( $phpmailer );
 
 		if ( is_null( $skip_reason ) ) {
 			$this->apply_dkim_config( $phpmailer );
 		} else {
+			self::$last_skip_reason = $skip_reason;
 			self::log_skip( $skip_reason );
 		}
 	}
