@@ -27,6 +27,11 @@ define( 'WPDKM_BASENAME', plugin_basename( __FILE__ ) );
 require_once __DIR__ . '/constants.php';
 require_once __DIR__ . '/functions-private.php';
 
+require_once __DIR__ . '/includes/class-settings.php';
+require_once __DIR__ . '/includes/class-keypair.php';
+require_once __DIR__ . '/includes/class-signer.php';
+require_once __DIR__ . '/includes/class-verifier.php';
+require_once __DIR__ . '/includes/class-github-updater.php';
 require_once __DIR__ . '/includes/class-plugin.php';
 
 /**

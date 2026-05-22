@@ -6,10 +6,11 @@
  * are prefixed DEF_, option-row keys OPT_, capabilities CAP_,
  * admin-post action names ACTION_, nonce names NONCE_.
  *
- * Note: anything that depends on the OpenSSL extension (key bits,
- * key type) lives on the Keypair class rather than here, so that
- * constants.php remains safe to load even if ext-openssl is absent
- * at bootstrap.
+ * Note: anything that depends on the OpenSSL extension (the key
+ * type — OPENSSL_KEYTYPE_RSA) is referenced inline inside the
+ * function that uses it (Keypair::generate), rather than as a
+ * constant here, so that constants.php remains safe to load even
+ * if ext-openssl is absent at bootstrap.
  *
  * @package WPMail_DKIM_Sign
  */
@@ -27,6 +28,14 @@ defined( 'ABSPATH' ) || die();
 /* ---------- Capabilities ---------- */
 
 const CAP_MANAGE = 'manage_options';
+
+/* ---------- Cryptography ---------- */
+
+const KEY_BITS = 2048;
+
+/* ---------- Formatting ---------- */
+
+const DATE_FORMAT = 'Y-m-d H:i:s T';
 
 /* ---------- Admin menu ---------- */
 
@@ -77,10 +86,11 @@ const NOTICE_TEST_FAILED            = 'test-failed';
 const NOTICE_TEST_INVALID_RECIPIENT = 'test-invalid-recipient';
 const NOTICE_DNS_CHECKED            = 'dns-checked';
 
-/* ---------- Transient key prefixes ---------- */
+/* ---------- Transient key prefixes + TTLs ---------- */
 
 const TRANSIENT_CAPTURE_PREFIX   = 'wpdkm_capture_';
 const TRANSIENT_DNS_CHECK_PREFIX = 'wpdkm_dns_check_';
+const VERIFY_RESULT_TTL          = 30 * MINUTE_IN_SECONDS;
 
 /* ---------- Hook priorities ---------- */
 

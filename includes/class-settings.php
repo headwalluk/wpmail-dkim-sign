@@ -32,32 +32,6 @@ class Settings {
 	private static ?array $cache = null;
 
 	/**
-	 * Constructor.
-	 *
-	 * @since 1.0.0
-	 */
-	public function __construct() {
-		// Intentionally empty. See register_hooks().
-	}
-
-	/**
-	 * Register WordPress hooks owned by this sub-service.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return void
-	 */
-	public function register_hooks(): void {
-		add_action( 'admin_menu', array( $this, 'register_menu' ) );
-		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ) );
-
-		add_action( 'admin_post_' . ACTION_SAVE, array( $this, 'handle_save' ) );
-		add_action( 'admin_post_' . ACTION_GENERATE_KEY, array( $this, 'handle_generate_key' ) );
-		add_action( 'admin_post_' . ACTION_REGENERATE_KEY, array( $this, 'handle_regenerate_key' ) );
-		add_action( 'admin_post_' . ACTION_DELETE_KEY, array( $this, 'handle_delete_key' ) );
-	}
-
-	/**
 	 * Register the admin settings menu entry.
 	 *
 	 * Lives under Settings → WP Mail DKIM. Sub-menu placement keeps

@@ -7,13 +7,9 @@
  * the PEM material is ~3 KB and only needed during admin operations
  * and actual mail signing — not on every front-end request.
  *
- * Note: KEY_TYPE constant (OPENSSL_KEYTYPE_RSA) is intentionally not
- * declared as a class constant here. Class constants are evaluated
- * at class-load time; if ext-openssl is missing on the host, even
- * loading this file would fatal. Instead, OPENSSL_KEYTYPE_RSA is
- * referenced inline inside generate() — the only place that needs
- * it, and the only place where openssl absence is guaranteed to
- * fail anyway.
+ * Note: OPENSSL_KEYTYPE_RSA is referenced inline inside generate()
+ * rather than as a constant, so that loading this file does not
+ * fatal on hosts where ext-openssl is absent.
  *
  * @package WPMail_DKIM_Sign
  */
@@ -35,28 +31,6 @@ defined( 'ABSPATH' ) || die();
 class Keypair {
 
 	/**
-	 * Key length in bits. Locked to 2048 for v1 (RFC 8301 minimum
-	 * recommended, broad receiver support).
-	 *
-	 * @since 1.0.0
-	 *
-	 * @var int
-	 */
-	private const KEY_BITS = 2048;
-
-	/**
-	 * Date format used for stored timestamps.
-	 *
-	 * Human-readable per house style — easier troubleshooting than
-	 * a Unix timestamp.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @var string
-	 */
-	private const DATE_FORMAT = 'Y-m-d H:i:s T';
-
-	/**
 	 * Request-scoped cache of the loaded key material.
 	 *
 	 * Populated on the first load() call within a request and
@@ -71,15 +45,6 @@ class Keypair {
 	 * @var array{private_pem: string, public_b64: string, created_at: string}|null
 	 */
 	private static ?array $cache = null;
-
-	/**
-	 * Constructor.
-	 *
-	 * @since 1.0.0
-	 */
-	public function __construct() {
-		// Intentionally empty. Methods are stateless aside from the static cache.
-	}
 
 	/**
 	 * Generate a fresh RSA-2048 keypair and persist it.
@@ -97,7 +62,7 @@ class Keypair {
 
 		$resource = openssl_pkey_new(
 			array(
-				'private_key_bits' => self::KEY_BITS,
+				'private_key_bits' => KEY_BITS,
 				'private_key_type' => OPENSSL_KEYTYPE_RSA,
 			)
 		);
@@ -343,7 +308,7 @@ class Keypair {
 	 */
 	private static function now_formatted(): string {
 		$now = new \DateTime( 'now', wp_timezone() );
-		return $now->format( self::DATE_FORMAT );
+		return $now->format( DATE_FORMAT );
 	}
 
 	/**

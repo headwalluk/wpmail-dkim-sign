@@ -42,39 +42,6 @@ class Verifier {
 	private static bool $capturing = false;
 
 	/**
-	 * How long captured results stay in their transients before WP
-	 * sweeps them. 30 minutes is long enough for an admin to walk
-	 * away, troubleshoot a DNS provider issue, and come back to
-	 * compare results — short enough that stale data doesn't linger.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @var int
-	 */
-	private const RESULT_TTL_SECONDS = 30 * MINUTE_IN_SECONDS;
-
-	/**
-	 * Constructor.
-	 *
-	 * @since 1.0.0
-	 */
-	public function __construct() {
-		// Intentionally empty. See register_hooks().
-	}
-
-	/**
-	 * Register WordPress hooks owned by this sub-service.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return void
-	 */
-	public function register_hooks(): void {
-		add_action( 'admin_post_' . ACTION_TEST_EMAIL, array( $this, 'handle_test_email' ) );
-		add_action( 'admin_post_' . ACTION_CHECK_DNS, array( $this, 'handle_check_dns' ) );
-	}
-
-	/**
 	 * Handle a Send Test Email form submission.
 	 *
 	 * Sends a short message via wp_mail using an explicit From: header
@@ -163,7 +130,7 @@ class Verifier {
 		$captured['recipient']        = $recipient;
 		$captured['wp_mail_returned'] = (bool) $wp_mail_ok;
 
-		set_transient( self::test_transient_key(), $captured, self::RESULT_TTL_SECONDS );
+		set_transient( self::test_transient_key(), $captured, VERIFY_RESULT_TTL );
 
 		$this->redirect_with_notice(
 			$wp_mail_ok ? NOTICE_TEST_SENT : NOTICE_TEST_FAILED,
@@ -220,7 +187,7 @@ class Verifier {
 					'dkim_signature' => $dkim_signature,
 					'skip_reason'    => $skip_reason,
 				),
-				self::RESULT_TTL_SECONDS
+				VERIFY_RESULT_TTL
 			);
 		}
 	}
@@ -252,7 +219,7 @@ class Verifier {
 		$result['checked_at'] = self::now_formatted();
 		$result['name']       = $name;
 
-		set_transient( self::dns_transient_key(), $result, self::RESULT_TTL_SECONDS );
+		set_transient( self::dns_transient_key(), $result, VERIFY_RESULT_TTL );
 
 		$this->redirect_with_notice( NOTICE_DNS_CHECKED, 'verify' );
 	}
@@ -578,6 +545,6 @@ class Verifier {
 	 */
 	private static function now_formatted(): string {
 		$now = new \DateTime( 'now', wp_timezone() );
-		return $now->format( 'Y-m-d H:i:s T' );
+		return $now->format( DATE_FORMAT );
 	}
 }

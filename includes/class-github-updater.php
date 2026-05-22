@@ -7,8 +7,8 @@
  * plugin updates. Adapted from the same pattern used by quick-2fa.
  *
  * Adopts our house style: namespaced, lazy-loaded via Plugin
- * orchestrator, register_hooks pattern, SESE on all methods, and
- * uses the wpdkm_ prefix for filters and transients per D12.
+ * orchestrator, hooks wired in Plugin::run(), SESE on all methods,
+ * and uses the wpdkm_ prefix for filters and transients per D12.
  *
  * @package WPMail_DKIM_Sign
  */
@@ -53,19 +53,6 @@ class Github_Updater {
 	public function __construct() {
 		$this->plugin_basename = WPDKM_BASENAME;
 		$this->plugin_slug     = dirname( $this->plugin_basename );
-	}
-
-	/**
-	 * Register WordPress hooks owned by this sub-service.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return void
-	 */
-	public function register_hooks(): void {
-		add_filter( 'pre_set_site_transient_update_plugins', array( $this, 'check_for_update' ) );
-		add_filter( 'plugins_api', array( $this, 'plugin_info' ), 10, 3 );
-		add_action( 'upgrader_process_complete', array( $this, 'clear_cache' ), 10, 2 );
 	}
 
 	/**

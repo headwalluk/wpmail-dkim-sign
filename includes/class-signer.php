@@ -53,26 +53,6 @@ class Signer {
 	}
 
 	/**
-	 * Constructor.
-	 *
-	 * @since 1.0.0
-	 */
-	public function __construct() {
-		// Intentionally empty. See register_hooks().
-	}
-
-	/**
-	 * Register WordPress hooks owned by this sub-service.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return void
-	 */
-	public function register_hooks(): void {
-		add_action( 'phpmailer_init', array( $this, 'sign' ), SIGNER_PRIORITY, 1 );
-	}
-
-	/**
 	 * Apply DKIM configuration to a PHPMailer instance, when all pre-flight checks pass.
 	 *
 	 * On any failed pre-flight check, the message is left untouched
