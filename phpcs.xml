@@ -28,12 +28,14 @@
 		<exclude name="Generic.Arrays.DisallowShortArraySyntax"/>
 
 		<!--
-			House-style rule: "enumerate every branch" — empty else blocks
-			(with a comment explaining why no action is taken) are an explicit
-			coding-style preference per .github/copilot-instructions.md.
-			Exclude PHPCS's default sniff that flags empty else as dead code.
+			House-style rule: "enumerate every branch" — empty if/else
+			blocks (with a comment explaining why no action is taken) are
+			an explicit coding-style preference per
+			.github/copilot-instructions.md. Exclude PHPCS's default sniffs
+			that flag these as dead code.
 		-->
 		<exclude name="Generic.CodeAnalysis.EmptyStatement.DetectedElse"/>
+		<exclude name="Generic.CodeAnalysis.EmptyStatement.DetectedIf"/>
 	</rule>
 
 	<!--
