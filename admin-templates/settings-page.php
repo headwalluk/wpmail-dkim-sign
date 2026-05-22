@@ -29,6 +29,11 @@ printf( '<div class="tab-content">' );
 printf( '<div id="setup-panel" class="tab-panel">' );
 require WPDKM_PATH . 'admin-templates/partials/settings-form.php';
 require WPDKM_PATH . 'admin-templates/partials/key-management.php';
+if ( ! is_null( $data['dns_record'] ) ) {
+	require WPDKM_PATH . 'admin-templates/partials/dns-record.php';
+} else {
+	// No key stored — DNS record block is hidden until generation completes.
+}
 printf( '</div>' );
 
 printf( '<div id="verify-panel" class="tab-panel" style="display:none;">' );

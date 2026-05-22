@@ -11,6 +11,7 @@
 	document.addEventListener('DOMContentLoaded', function () {
 		initTabs();
 		initConfirms();
+		initCopyButtons();
 	});
 
 	function initTabs() {
@@ -58,5 +59,56 @@
 				}
 			});
 		});
+	}
+
+	function initCopyButtons() {
+		var buttons = document.querySelectorAll('.wpdkm-copy-button');
+		buttons.forEach(function (btn) {
+			btn.addEventListener('click', function () {
+				var selector = btn.dataset.wpdkmCopyTarget;
+				if (!selector) {
+					return;
+				}
+				var target = document.querySelector(selector);
+				if (!target) {
+					return;
+				}
+				copyText(target.value)
+					.then(function () { flashButton(btn, 'Copied'); })
+					.catch(function () { flashButton(btn, 'Copy failed'); });
+			});
+		});
+	}
+
+	function copyText(text) {
+		if (navigator.clipboard && navigator.clipboard.writeText) {
+			return navigator.clipboard.writeText(text);
+		}
+		return new Promise(function (resolve, reject) {
+			try {
+				var ta = document.createElement('textarea');
+				ta.value = text;
+				ta.setAttribute('readonly', '');
+				ta.style.position = 'absolute';
+				ta.style.left = '-9999px';
+				document.body.appendChild(ta);
+				ta.select();
+				var ok = document.execCommand('copy');
+				document.body.removeChild(ta);
+				if (ok) { resolve(); } else { reject(new Error('execCommand failed')); }
+			} catch (err) {
+				reject(err);
+			}
+		});
+	}
+
+	function flashButton(btn, label) {
+		var original = btn.textContent;
+		btn.textContent = label;
+		btn.disabled = true;
+		setTimeout(function () {
+			btn.textContent = original;
+			btn.disabled = false;
+		}, 1500);
 	}
 })();

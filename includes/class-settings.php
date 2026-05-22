@@ -142,10 +142,13 @@ class Settings {
 			: '';
 		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
+		$settings = self::load();
+
 		return array(
 			'page_title'    => __( 'WP Mail DKIM', 'wpmail-dkim-sign' ),
-			'settings'      => self::load(),
+			'settings'      => $settings,
 			'keypair_meta'  => $this->get_keypair_meta(),
+			'dns_record'    => $this->get_dns_record( $settings ),
 			'allowed_canon' => ALLOWED_CANONICALISATIONS,
 			'notice'        => $notice,
 			'admin_post'    => admin_url( 'admin-post.php' ),
@@ -190,6 +193,28 @@ class Settings {
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Build the DNS-record display array, or null when no key is stored.
+	 *
+	 * Format provided by Keypair::format_txt_record using the currently
+	 * saved selector and domain. If the saved selector/domain has
+	 * changed since the user last published DNS, that mismatch is
+	 * surfaced by the M6 "Check DNS record" button — this method
+	 * always reflects what *should* be published right now.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @param array<string, mixed> $settings Current settings row (merged with defaults).
+	 *
+	 * @return array{name: string, value_full: string, value_chunked: string}|null
+	 */
+	private function get_dns_record( array $settings ): ?array {
+		return get_plugin()->get_keypair()->format_txt_record(
+			(string) $settings['selector'],
+			(string) $settings['domain']
+		);
 	}
 
 	/**
