@@ -86,3 +86,9 @@ const TRANSIENT_DNS_CHECK_PREFIX = 'wpdkm_dns_check_';
 
 const SIGNER_PRIORITY  = 10;
 const CAPTURE_PRIORITY = 999;
+
+/* ---------- GitHub auto-updater ---------- */
+
+const UPDATER_GITHUB_REPO = 'headwalluk/wpmail-dkim-sign';
+const UPDATER_CACHE_KEY   = 'wpdkm_github_release';
+const UPDATER_CACHE_TTL   = 12 * HOUR_IN_SECONDS;

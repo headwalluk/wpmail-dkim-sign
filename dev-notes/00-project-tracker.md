@@ -21,6 +21,8 @@ All v1 milestones (M1–M7) complete. See "Acceptance Criteria Status" below for
 
 Post-v1 backlog (not blocking v1 ship):
 
+- [x] GitHub auto-updater — `Github_Updater` class hooks `pre_set_site_transient_update_plugins`, `plugins_api`, `upgrader_process_complete` to serve releases from `headwalluk/wpmail-dkim-sign`. Enabled by default; disable per-site via `wpdkm_updater_enabled` filter. 12h cache via `UPDATER_CACHE_KEY` transient.
+- [ ] Cut the first GitHub release (tag `v0.1.0`, attach `wpmail-dkim-sign.zip` asset) so the updater has something to find.
 - [ ] Distribution (M8) — build zip honouring `.distignore`, fresh-WP install test, companion blog post on headwall-hosting.com.
 - [ ] Optional WP.org plugin directory submission.
 - [ ] Roll out across the Headwall client fleet (chroot openssl fix automated separately).

@@ -61,6 +61,15 @@ class Plugin {
 	private ?Verifier $verifier = null;
 
 	/**
+	 * GitHub auto-updater sub-service.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @var Github_Updater|null
+	 */
+	private ?Github_Updater $updater = null;
+
+	/**
 	 * Constructor.
 	 *
 	 * Deliberately empty. Bootstrap work happens in run() so that it
@@ -86,6 +95,7 @@ class Plugin {
 	 */
 	public function run(): void {
 		$this->get_signer()->register_hooks();
+		$this->get_updater()->register_hooks();
 
 		if ( is_admin() ) {
 			$this->get_settings()->register_hooks();
@@ -153,5 +163,20 @@ class Plugin {
 			$this->verifier = new Verifier();
 		}
 		return $this->verifier;
+	}
+
+	/**
+	 * Get the Github_Updater sub-service, instantiating on first access.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @return Github_Updater
+	 */
+	public function get_updater(): Github_Updater {
+		if ( is_null( $this->updater ) ) {
+			require_once WPDKM_PATH . 'includes/class-github-updater.php';
+			$this->updater = new Github_Updater();
+		}
+		return $this->updater;
 	}
 }
