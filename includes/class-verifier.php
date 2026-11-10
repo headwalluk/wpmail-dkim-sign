@@ -525,13 +525,7 @@ class Verifier {
 	 * @return void
 	 */
 	private function redirect_with_notice( string $notice, string $tab = 'verify' ): void {
-		$target = add_query_arg(
-			array(
-				'page'             => MENU_SLUG,
-				NOTICE_QUERY_PARAM => $notice,
-			),
-			admin_url( 'options-general.php' )
-		);
+		$target = get_settings_url( array( NOTICE_QUERY_PARAM => $notice ) );
 
 		wp_safe_redirect( $target . '#' . $tab );
 		exit;

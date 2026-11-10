@@ -402,16 +402,16 @@ msgstr "Full captured headers"
 
 #: includes/class-settings.php:47
 #: includes/class-settings.php:48
-#: includes/class-settings.php:123
+#: includes/class-settings.php:146
 msgid "WP Mail DKIM"
 msgstr "WP Mail DKIM"
 
-#: includes/class-settings.php:98
+#: includes/class-settings.php:121
 msgid "You do not have permission to view this page."
 msgstr "You do not have permission to view this page."
 
-#: includes/class-settings.php:218
-#: includes/class-settings.php:483
+#: includes/class-settings.php:241
+#: includes/class-settings.php:506
 #: includes/class-verifier.php:506
 msgid "You do not have permission to perform this action."
 msgstr "You do not have permission to perform this action."
@@ -437,3 +437,8 @@ msgstr ""
 #: admin-templates/partials/settings-form.php:73
 msgid "Set by PHPMailer, the library WordPress uses to send email. It cannot be changed."
 msgstr "Set by PHPMailer, the library WordPress uses to send email. It cannot be changed."
+
+#: includes/class-settings.php:69
+msgctxt "plugin row action link"
+msgid "Settings"
+msgstr "Settings"

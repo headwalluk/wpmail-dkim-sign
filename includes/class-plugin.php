@@ -84,6 +84,7 @@ class Plugin {
 		if ( is_admin() ) {
 			// Settings UI and form handlers.
 			add_action( 'admin_menu', array( $this->get_settings(), 'register_menu' ) );
+			add_filter( 'plugin_action_links_' . WPDKM_BASENAME, array( $this->get_settings(), 'add_settings_action_link' ) );
 			add_action( 'admin_enqueue_scripts', array( $this->get_settings(), 'enqueue_admin_assets' ) );
 			add_action( 'admin_post_' . ACTION_SAVE, array( $this->get_settings(), 'handle_save' ) );
 			add_action( 'admin_post_' . ACTION_GENERATE_KEY, array( $this->get_settings(), 'handle_generate_key' ) );

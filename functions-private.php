@@ -38,6 +38,22 @@ function get_plugin(): \WPMail_DKIM_Sign\Plugin {
 }
 
 /**
+ * Build the URL of the plugin's settings page, with optional extra query args.
+ *
+ * @since 1.1.0
+ *
+ * @param array<string, string> $query_args Extra query args to add after `page`.
+ *
+ * @return string Absolute admin URL.
+ */
+function get_settings_url( array $query_args = array() ): string {
+	return add_query_arg(
+		array_merge( array( 'page' => MENU_SLUG ), $query_args ),
+		admin_url( 'options-general.php' )
+	);
+}
+
+/**
  * Detect the authoritative DNS zone for a given hostname.
  *
  * Walks from the most specific candidate to the least specific

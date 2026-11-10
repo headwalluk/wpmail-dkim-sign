@@ -53,6 +53,29 @@ class Settings {
 	}
 
 	/**
+	 * Append a Settings link to the plugin's row actions on the Plugins screen.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param mixed $links Row action links, keyed by action name.
+	 *
+	 * @return mixed The links with Settings appended, or the input unchanged if it is not an array.
+	 */
+	public function add_settings_action_link( mixed $links ): mixed {
+		if ( is_array( $links ) && current_user_can( CAP_MANAGE ) ) {
+			$links['settings'] = sprintf(
+				'<a href="%s">%s</a>',
+				esc_url( get_settings_url() ),
+				esc_html_x( 'Settings', 'plugin row action link', 'wpmail-dkim-sign' )
+			);
+		} else {
+			// Not an array from an earlier filter, or the user can't open the page.
+		}
+
+		return $links;
+	}
+
+	/**
 	 * Enqueue admin CSS and JS, only on our settings page.
 	 *
 	 * @since 1.0.0
@@ -497,13 +520,7 @@ class Settings {
 	 * @return void
 	 */
 	private function redirect_with_notice( string $notice ): void {
-		$target = add_query_arg(
-			array(
-				'page'             => MENU_SLUG,
-				NOTICE_QUERY_PARAM => $notice,
-			),
-			admin_url( 'options-general.php' )
-		);
+		$target = get_settings_url( array( NOTICE_QUERY_PARAM => $notice ) );
 
 		wp_safe_redirect( $target );
 		exit;
