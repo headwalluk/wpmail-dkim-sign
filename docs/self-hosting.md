@@ -96,4 +96,4 @@ For a typical WP request that sends one to five mails (e.g. WooCommerce order co
 - No external API calls during mail sending — signing is entirely local.
 - No queue or background processes.
 - No additional database tables (just two `wp_options` rows).
-- The bundled GitHub updater makes at most one outbound HTTPS call to `api.github.com` per 12 hours per site (cached via transient).
+- The bundled GitHub updater makes at most one outbound HTTPS call to `api.github.com` per 12 hours per site (cached via transient). After a failed call it waits an hour before trying again. It only runs on admin, cron and WP-CLI requests, never on front-end page loads.

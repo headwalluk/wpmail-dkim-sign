@@ -31,7 +31,6 @@ require_once __DIR__ . '/includes/class-settings.php';
 require_once __DIR__ . '/includes/class-keypair.php';
 require_once __DIR__ . '/includes/class-signer.php';
 require_once __DIR__ . '/includes/class-verifier.php';
-require_once __DIR__ . '/includes/class-github-updater.php';
 require_once __DIR__ . '/includes/class-plugin.php';
 
 /**
@@ -53,3 +52,9 @@ function wpdkm_run(): void {
 }
 
 wpdkm_run();
+
+// GitHub auto-updates (admin, cron and WP-CLI only; front-end requests never check for updates).
+if ( is_admin() || ( defined( 'DOING_CRON' ) && DOING_CRON ) || ( defined( 'WP_CLI' ) && WP_CLI ) ) {
+	require_once __DIR__ . '/includes/class-github-updater.php';
+	new \WPMail_DKIM_Sign\Github_Updater( WPDKM_FILE, \WPMail_DKIM_Sign\UPDATER_GITHUB_REPO, WPDKM_VERSION, 'wpdkm_updater_enabled' );
+}

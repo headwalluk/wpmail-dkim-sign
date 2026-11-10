@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Changed
+
+- The bundled GitHub updater is now the shared portable version used across Headwall plugins. It loads only on admin, cron and WP-CLI requests, waits an hour after a failed GitHub lookup before retrying, logs genuine failures even without `WP_DEBUG`, and warns when the plugin header and version constant disagree. The `wpdkm_updater_enabled` filter is unchanged. The release cache transient is now `wpmail_dkim_sign_github_release`; the old `wpdkm_github_release` expires on its own within 12 hours. Uninstalling with "Remove all data" also clears the updater cache.
+
 ### Fixed
 
 - The canonicalisation setting had no effect: every message was signed `c=relaxed/simple` whichever mode was selected. PHPMailer hardcodes that value and has no property to change it, so the plugin was setting two properties PHPMailer never reads, which also raised "Creation of dynamic property" deprecation notices on PHP 8.2+. The setting is removed and the Setup tab now shows the fixed `relaxed/simple` value. Introduced in 1.0.0.

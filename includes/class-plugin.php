@@ -61,22 +61,14 @@ class Plugin {
 	private ?Verifier $verifier = null;
 
 	/**
-	 * GitHub auto-updater sub-service.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @var Github_Updater|null
-	 */
-	private ?Github_Updater $updater = null;
-
-	/**
 	 * Register WordPress hooks for the plugin.
 	 *
 	 * All add_action / add_filter calls live here so the wiring is
 	 * visible in one place when diagnosing hook-related issues.
 	 *
-	 * Signer + Github_Updater register in every request context;
-	 * Settings + Verifier are admin-only.
+	 * Signer registers in every request context; Settings + Verifier
+	 * are admin-only. Github_Updater registers its own hooks from the
+	 * main plugin file.
 	 *
 	 * @since 1.0.0
 	 *
@@ -88,12 +80,6 @@ class Plugin {
 
 		// Mail signing — outbound mail can fire from any request context.
 		add_action( 'phpmailer_init', array( $this->get_signer(), 'sign' ), SIGNER_PRIORITY, 1 );
-
-		// GitHub auto-updater — WP refreshes its update_plugins transient
-		// from both cron and admin contexts.
-		add_filter( 'pre_set_site_transient_update_plugins', array( $this->get_updater(), 'check_for_update' ) );
-		add_filter( 'plugins_api', array( $this->get_updater(), 'plugin_info' ), 10, 3 );
-		add_action( 'upgrader_process_complete', array( $this->get_updater(), 'clear_cache' ), 10, 2 );
 
 		if ( is_admin() ) {
 			// Settings UI and form handlers.
@@ -181,19 +167,5 @@ class Plugin {
 			$this->verifier = new Verifier();
 		}
 		return $this->verifier;
-	}
-
-	/**
-	 * Get the Github_Updater sub-service, instantiating on first access.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return Github_Updater
-	 */
-	public function get_updater(): Github_Updater {
-		if ( is_null( $this->updater ) ) {
-			$this->updater = new Github_Updater();
-		}
-		return $this->updater;
 	}
 }
