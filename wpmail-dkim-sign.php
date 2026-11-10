@@ -3,7 +3,7 @@
  * Plugin Name:       WP Mail DKIM Sign
  * Plugin URI:        https://headwall-hosting.com/wpmail-dkim-sign
  * Description:       DKIM-signs outbound wp_mail() messages at the WordPress layer, so the DKIM-Signature header is attached before the message leaves the site for the upstream MTA. RSA-2048, single signing domain.
- * Version:           1.0.0
+ * Version:           1.1.0
  * Requires at least: 6.0
  * Requires PHP:      8.0
  * Author:            Headwall Hosting
@@ -18,7 +18,7 @@
 
 defined( 'ABSPATH' ) || die();
 
-define( 'WPDKM_VERSION', '1.0.0' );
+define( 'WPDKM_VERSION', '1.1.0' );
 define( 'WPDKM_FILE', __FILE__ );
 define( 'WPDKM_PATH', plugin_dir_path( __FILE__ ) );
 define( 'WPDKM_URL', plugin_dir_url( __FILE__ ) );
