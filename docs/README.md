@@ -1,16 +1,22 @@
-# WP Mail DKIM Sign — Documentation
+# WP Mail DKIM Sign: documentation
 
-DKIM signing for WordPress mail. The plugin is self-documenting in the admin UI; these pages exist for deeper context, troubleshooting, and developer reference.
+DKIM signing for mail sent through `wp_mail()`, attached at the WordPress layer before the message reaches your upstream relay. The admin screens explain each step as you go; these pages cover the detail behind them.
 
-## For site owners
+## For site administrators
 
-- [Installation walkthrough](installation.md) — step-by-step from install through DKIM verification at a real receiver
-- [Troubleshooting](troubleshooting.md) — common DNS gotchas, body-rewriting MTAs, alignment issues
+- [Installation walkthrough](installation.md): from install to a verified `dkim=pass` at a real mailbox
+- [How it works](how-it-works.md): what gets signed, the pre-flight checks, canonicalisation, key storage, and what the plugin doesn't cover
+- [Configuration](configuration.md): every setting, key management and rotation, data retention
+- [Troubleshooting](troubleshooting.md): DNS mistakes, unsigned mail, body-rewriting relays, alignment
 
-## For self-hosters and ops
+## For server administrators
 
-- [Self-hosting](self-hosting.md) — server requirements, chroot OpenSSL configuration, performance characteristics
+- [Self-hosting](self-hosting.md): requirements, stored data, OpenSSL inside a PHP-FPM chroot, performance
 
 ## For developers
 
-- [Hooks and filters](developers/filters.md) — the public extension surface (two filters; no actions in v1)
+- [Hooks and filters](developers/hooks-and-filters.md): the public extension surface
+
+## Reporting a problem
+
+Open an issue on the [GitHub repository](https://github.com/headwalluk/wpmail-dkim-sign/issues). Include the **Pre-flight skip reason** from the Verify tab, or the `Authentication-Results:` header from the receiving mailbox, if you have one.

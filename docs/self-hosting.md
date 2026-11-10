@@ -4,21 +4,34 @@
 
 | Requirement | Minimum | Notes |
 |---|---|---|
-| WordPress | 6.0 | The plugin uses PHPMailer's DKIM properties, which have shipped natively in WP core since 5.5. 6.0 is set as the floor to ensure consistent behaviour. |
-| PHP | 8.0 | Uses union types, nullable types, typed properties. |
-| `ext-openssl` | — | Required for key generation and validation. Loaded by default in virtually all PHP distributions. |
-| `dns_get_record` | — | Built into PHP — used for the Check DNS Record button. |
-| Outbound HTTPS to `api.github.com` | optional | Required for the bundled GitHub auto-updater. Disable per-site via the `wpdkm_updater_enabled` filter if outbound HTTPS isn't permitted. |
+| WordPress | 6.0 | The plugin works with the namespaced PHPMailer class that WordPress has bundled since 5.5. 6.0 is the tested floor |
+| PHP | 8.0 | |
+| `ext-openssl` | | Generates the key pair and reads it back. Enabled in almost every PHP build |
+| Outbound DNS | | **Check DNS record** and zone detection use PHP's `dns_get_record()`, through the server's resolver |
+| Outbound HTTPS to `api.github.com` | Optional | Used by the bundled updater. Turn it off with the [`wpdkm_updater_enabled`](developers/hooks-and-filters.md#wpdkm_updater_enabled) filter where outbound HTTPS isn't allowed |
 
-Storage:
+## What the plugin stores
 
-- Two `wp_options` rows: `wpdkm_settings` (autoload on, ~250 bytes) and `wpdkm_keypair` (autoload off, ~3 KB).
-- Two short-lived transients used only during diagnostic operations: `wpdkm_capture_<user_id>` and `wpdkm_dns_check_<user_id>` (30 min TTL each).
-- One long-lived zone-detection transient per signing domain: `wpdkm_zone_<md5>` (24h TTL).
+**Options:**
+
+- `wpdkm_settings`: the settings, around 250 bytes, autoloaded
+- `wpdkm_keypair`: the private key, the public key and the creation date, around 3 KB, not autoloaded
+
+**Transients:**
+
+| Transient | Lifetime | Holds |
+|---|---|---|
+| `wpdkm_capture_<user_id>` | 30 minutes | The last **Send test email** result for that user |
+| `wpdkm_dns_check_<user_id>` | 30 minutes | The last **Check DNS record** result for that user |
+| `wpdkm_zone_<md5 of domain>` | 24 hours | The detected DNS zone for the signing domain, or a marker that detection failed |
+| `wpmail_dkim_sign_github_release` | 12 hours | The latest release found on GitHub |
+| `wpmail_dkim_sign_github_failed` | 1 hour | Set after a failed GitHub lookup, to hold off retrying |
+
+There are no custom tables, files, cron events or background processes. Uninstalling removes the options and the updater transients only if **Remove all plugin data** is ticked; see [Configuration](configuration.md#setup-tab-data-retention).
 
 ## Chroot OpenSSL configuration
 
-If your PHP-FPM pool is configured with `chroot`, the OpenSSL library inside PHP cannot find its config file by default, and key generation will fail with errors like:
+If PHP-FPM runs the site in a `chroot`, OpenSSL inside PHP can't find its configuration file, and **Generate key pair** fails. The PHP error log shows lines like:
 
 ```
 error:10000080:BIO routines::no such file
@@ -27,73 +40,65 @@ error:FFFFFFFF80000002:system library::No such file or directory
 
 ### Cause
 
-OpenSSL on Debian/Ubuntu (and derivatives) is compiled with `OPENSSLDIR=/usr/lib/ssl`. The config file actually lives at `/etc/ssl/openssl.cnf` — `/usr/lib/ssl/openssl.cnf` on the host is a symlink to it. Inside a chroot, only the explicitly-staged files are present, so neither path resolves.
+On Debian, Ubuntu and their derivatives, OpenSSL is built with `OPENSSLDIR=/usr/lib/ssl`. On the host, `/usr/lib/ssl/openssl.cnf` is a symlink to `/etc/ssl/openssl.cnf`. Inside a chroot only the files you have copied in exist, so neither path resolves.
 
 ### Fix
 
-Run as root, replacing `/var/www/example.com` with your chroot root:
+Run as root, replacing `/var/www/example.com` with the chroot's root directory:
 
 ```bash
-# Stage the openssl.cnf inside the chroot.
-sudo mkdir -p /var/www/example.com/etc/ssl
-sudo cp /etc/ssl/openssl.cnf /var/www/example.com/etc/ssl/openssl.cnf
+# Copy openssl.cnf into the chroot.
+mkdir -p /var/www/example.com/etc/ssl
+cp /etc/ssl/openssl.cnf /var/www/example.com/etc/ssl/openssl.cnf
 
-# Add the symlink that OpenSSL's compiled-in path expects.
-sudo mkdir -p /var/www/example.com/usr/lib/ssl
-sudo ln -s /etc/ssl/openssl.cnf /var/www/example.com/usr/lib/ssl/openssl.cnf
+# Add the symlink at the path OpenSSL was built to look in.
+mkdir -p /var/www/example.com/usr/lib/ssl
+ln -s /etc/ssl/openssl.cnf /var/www/example.com/usr/lib/ssl/openssl.cnf
 ```
 
-The symlink target is an absolute path — when OpenSSL inside the chroot follows the link, the kernel resolves the path *relative to the chroot*, landing at the copied file. No FPM restart required; OpenSSL re-resolves on next key generation attempt.
+The symlink's target is absolute, and inside the chroot the kernel resolves it relative to the chroot's root, so it lands on the copied file. No PHP-FPM restart is needed: OpenSSL looks for the file again on the next attempt.
 
-Verify by clicking **Generate key pair** in the admin. Success looks like the no-error "New key pair generated" notice.
+Click **Generate key pair** to confirm. Success shows the *New key pair generated* notice.
 
-### `/dev/urandom` availability
+### `/dev/urandom`
 
-OpenSSL needs `/dev/urandom` for entropy. Most chroot setups already mount or copy device nodes — verify with:
+OpenSSL also needs `/dev/urandom` inside the chroot. Most chroot setups already provide it; check with:
 
 ```bash
 ls -la /var/www/example.com/dev/urandom
 ```
 
-If missing, your FPM chroot setup needs `/dev` populated. The simplest approach on systemd-based systems is a bind mount in the FPM service unit; consult your distribution's PHP-FPM chroot documentation for specifics.
+If it's missing, the chroot needs `/dev` populated, usually with a bind mount in the PHP-FPM service unit. Your distribution's PHP-FPM chroot documentation covers the details.
 
-## Fleet automation
+### Scripting it for many sites
 
-If you're rolling this out across multiple chrooted sites, the OpenSSL fix is a one-time-per-site configuration task. A small script for your provisioning system:
+The fix is needed once per chroot. As a script for a provisioning system:
 
 ```bash
 #!/bin/bash
-# Stage OpenSSL config for wpmail-dkim-sign inside a PHP-FPM chroot.
+# Stage the OpenSSL config for wpmail-dkim-sign inside a PHP-FPM chroot.
 # Usage: ./stage-openssl.sh /var/www/example.com
 set -euo pipefail
 
-CHROOT="${1:?chroot root required}"
+CHROOT_ROOT="${1:?chroot root required}"
 
-install -d "$CHROOT/etc/ssl"
-install -m 0644 /etc/ssl/openssl.cnf "$CHROOT/etc/ssl/openssl.cnf"
+install -d "${CHROOT_ROOT}/etc/ssl"
+install -m 0644 /etc/ssl/openssl.cnf "${CHROOT_ROOT}/etc/ssl/openssl.cnf"
 
-install -d "$CHROOT/usr/lib/ssl"
-ln -sf /etc/ssl/openssl.cnf "$CHROOT/usr/lib/ssl/openssl.cnf"
+install -d "${CHROOT_ROOT}/usr/lib/ssl"
+ln -sf /etc/ssl/openssl.cnf "${CHROOT_ROOT}/usr/lib/ssl/openssl.cnf"
 
-ls -la "$CHROOT/dev/urandom" >/dev/null || {
-    echo "WARNING: /dev/urandom not present in chroot — entropy will fail. Mount or copy /dev nodes." >&2
-}
+if [ ! -e "${CHROOT_ROOT}/dev/urandom" ]; then
+    echo "WARNING: /dev/urandom is missing from the chroot. Key generation will fail until /dev is populated." >&2
+fi
 
-echo "OpenSSL config staged in $CHROOT."
+echo "OpenSSL config staged in ${CHROOT_ROOT}."
 ```
 
-## Performance characteristics
+## Performance
 
-Signing adds approximately 1–5 ms per outbound email. The plugin's overhead is dominated by:
+Signing is local and quick. PHPMailer hashes the body and the signed headers with SHA-256 and signs the result with the RSA-2048 key. With a 5 KB message body, that takes well under a millisecond on a modern server.
 
-- Reading the keypair from `wp_options` on first sign call per request (subsequent calls in the same request hit a static cache — no further DB hits, no re-parsing of the PEM).
-- PHPMailer's DKIM-Signature computation in `preSend()` — SHA-256 hashing of the body and selected headers, RSA-2048 signing of the resulting hash.
+The plugin's own work is small next to that: a few comparisons in the pre-flight checks, and one read of the `wpdkm_keypair` option the first time a request signs a message. Later messages in the same request reuse the key already in memory.
 
-For a typical WP request that sends one to five mails (e.g. WooCommerce order completion), the total added latency is in the single-digit milliseconds and dominated by PHPMailer's signing cryptography, not by our plugin's work.
-
-## What this plugin doesn't add to your hosting bill
-
-- No external API calls during mail sending — signing is entirely local.
-- No queue or background processes.
-- No additional database tables (just two `wp_options` rows).
-- The bundled GitHub updater makes at most one outbound HTTPS call to `api.github.com` per 12 hours per site (cached via transient). After a failed call it waits an hour before trying again. It only runs on admin, cron and WP-CLI requests, never on front-end page loads.
+No network calls happen while mail is being sent. The only outbound requests are **Check DNS record**, which you run by hand, the zone detection behind the DNS record panel (cached for 24 hours), and the update check, at most once every 12 hours on admin, cron and WP-CLI requests.

@@ -1,87 +1,79 @@
 # Installation walkthrough
 
-This walks you through installing WP Mail DKIM Sign on a single WordPress site and confirming that mail leaves with a valid DKIM signature that verifies at the receiver.
+This takes a single WordPress site from installing the plugin to a confirmed `dkim=pass` at a real receiving mailbox. Allow for DNS propagation time in step 5.
 
 ## 1. Install and activate the plugin
 
-1. Download `wpmail-dkim-sign.zip` from the [latest release](https://github.com/headwalluk/wpmail-dkim-sign/releases/latest).
-2. In WordPress admin: **Plugins → Add New → Upload Plugin → choose the zip → Install Now → Activate**.
-3. Navigate to **Settings → WP Mail DKIM**.
+1. Download `wpmail-dkim-sign.zip` from the [latest release](https://github.com/headwalluk/wpmail-dkim-sign/releases/latest)
+2. In the WordPress admin, go to **Plugins → Add New → Upload Plugin**, choose the zip, then **Install Now** and **Activate**
+3. Open **Settings → WP Mail DKIM**, or click **Settings** under the plugin on the Plugins screen
 
-The plugin does nothing on activation — no key is generated, no signing happens until you complete the steps below. This is intentional.
+Activation changes nothing. No key is generated and nothing is signed until you finish the steps below. Later releases arrive as normal WordPress plugin updates.
 
-## 2. Configure the signing domain
+## 2. Check the signing domain and selector
 
-On the **Setup** tab, confirm the three settings:
+On the **Setup** tab, check the two fields that make up the DNS record name:
 
-| Field | Default | Notes |
-|---|---|---|
-| Signing domain | Site host with `www.` stripped | This is the `d=` value. Must match the From: header domain on outbound mail. |
-| Selector | `website` | DNS label used as the subdomain in `<selector>._domainkey.<domain>`. Lowercase letters, digits, hyphens. |
-| Signing | Off | Leave off until the DNS record is published and verified. |
+- **Signing domain** defaults to your site's host name without `www.`. It must be the domain your site sends mail from, as in the `From:` address
+- **Selector** defaults to `website`. Keep the default unless you already publish a DKIM record under that name
 
-The Setup tab also shows the canonicalisation, `relaxed/simple`. PHPMailer, the library WordPress sends mail through, fixes this value, so it is not a setting.
-
-Click **Save settings**.
+Leave **Signing** unticked for now, and click **Save settings**. Every setting is described in [Configuration](configuration.md).
 
 ## 3. Generate the key pair
 
-Click **Generate key pair**. The plugin generates a fresh RSA-2048 keypair and stores it in `wp_options` (autoload disabled, private key never touches disk).
+Click **Generate key pair**. The plugin creates an RSA-2048 key pair and stores it in the database. The private key never leaves the site, and is never written to a file.
 
-Once generated, the DNS record block becomes visible.
+The **DNS TXT record** panel appears below the key details.
 
 ## 4. Publish the DNS TXT record
 
-This is where most mistakes happen — DNS provider UIs vary in how they want the record name. The plugin shows two forms:
+DNS providers differ in how they want the record name entered, and this is where most mistakes happen. The panel gives the name in two forms.
 
-**Host name (recommended)** — e.g. `website._domainkey.shop`
-Paste this into the **Host**, **Name**, or **Subdomain** field at your DNS provider. The provider will automatically append your zone (e.g. `example.com`) to produce the final record name `website._domainkey.shop.example.com`.
+**Host name (recommended)**, for example `website._domainkey.shop`. Paste this into the **Host**, **Name** or **Subdomain** field at your DNS provider. The provider adds your zone (`example.com`) to make the full record name, `website._domainkey.shop.example.com`.
 
-**Full record name (FQDN)** — e.g. `website._domainkey.shop.example.com`
-Use this only if your DNS provider explicitly asks for the fully-qualified name. Most providers' Host fields will auto-append your zone, so pasting the FQDN here results in a doubled zone (`website._domainkey.shop.example.com.example.com`). See [Troubleshooting → Doubled zone](troubleshooting.md#doubled-zone) if you've done this by accident.
+**Full record name (FQDN)**, for example `website._domainkey.shop.example.com`. Use this only when your provider explicitly asks for the fully-qualified name. Pasted into a Host field that adds the zone itself, it produces a doubled zone, `website._domainkey.shop.example.com.example.com`. See [troubleshooting](troubleshooting.md#doubled-zone) if that happens.
 
-For the value, use the single-string form first — most modern DNS providers handle the length transparently. If your provider rejects it as too long, use the chunked-255 form instead.
+The host name form only appears when the plugin can detect your DNS zone. If it can't, use the full record name and check what your provider expects.
 
-| Field | Value |
+For the record's value, try **Value (single string)** first. Most providers handle its length automatically. If yours rejects it as too long, use **Value (chunked form)** instead: both encode the same record.
+
+| Field at your DNS provider | What to enter |
 |---|---|
 | Type | `TXT` |
-| Host | (from Host name above, or full record name if your provider asks for FQDN) |
-| Value | `v=DKIM1; k=rsa; p=<base64>` (single string, or chunked quoted strings) |
-| TTL | Provider default (typically 1 hour) is fine |
+| Host / Name | The host name, or the full record name if your provider asks for it |
+| Value | `v=DKIM1; k=rsa; p=...`, copied from the panel |
+| TTL | Your provider's default is fine |
 
-Save the record at your DNS provider.
+Save the record.
 
-## 5. Verify the record is live
+## 5. Check the record is live
 
-Wait a few minutes for propagation, then on the **Verify** tab click **Check DNS Record**.
+Give it a few minutes, then click **Check DNS record** on the **Verify** tab. The result is one of:
 
-Possible results:
+- **Match**: the record is published and its `p=` value matches the stored key. Carry on to step 6
+- **No record found**: the record hasn't propagated yet, wasn't saved, or the name has a typo. Wait and check again
+- **Misconfigured DNS — zone appended twice**: the full record name went into a field that adds the zone. Change it to the host name form
+- **Misconfigured DNS — missing _domainkey label**: the name is missing `._domainkey.` between the selector and the domain
+- **Mismatch**: a record exists but holds a different key, usually an old record or one copied before the key was regenerated
+- **Record present but unparseable**: a TXT record exists but isn't a valid DKIM record. Check for a truncated or mangled value
 
-- **Match** — record published correctly, `p=` matches the locally-stored key. You're good to proceed.
-- **No record found** — propagation not complete (wait), or the record wasn't published, or the Host field had a typo.
-- **Misconfigured DNS — zone appended twice** — you pasted the FQDN into the Host field; edit it to use just the Host-name form.
-- **Misconfigured DNS — missing `_domainkey` label** — the Host field is missing the `_domainkey` subdomain.
-- **Mismatch** — record present but the `p=` value differs (typically a stale record from a previous key, or you regenerated locally and forgot to update DNS).
-
-You can also verify from a shell:
+Propagation usually takes minutes, but can take up to 24 hours. You can also check from a shell:
 
 ```bash
 dig +short TXT website._domainkey.example.com
 ```
 
-## 6. Enable signing
+## 6. Turn on signing
 
-Once **Check DNS Record** reports **Match**, return to the **Setup** tab, tick **Enabled — sign outbound mail with DKIM**, and click **Save settings**.
+When **Check DNS record** reports **Match**, go back to the **Setup** tab, tick **Enabled — sign outbound mail with DKIM**, and click **Save settings**.
 
-The plugin is now active.
+From now on, mail sent through `wp_mail()` from the signing domain is signed.
 
-## 7. Verify the result at a real receiver
+## 7. Confirm at a real receiver
 
-The most reliable test is to send a message to an external mailbox you control (Gmail, outlook.com) and inspect the `Authentication-Results:` header at the receiver.
+On the **Verify** tab, enter an address at an external mailbox you can read, such as Gmail or outlook.com, and click **Send test email**. The page shows the headers as they left WordPress, so you can confirm a `DKIM-Signature:` header was attached.
 
-On the **Verify** tab, enter the test recipient address and click **Send test email**. The page captures the prepared headers locally so you can confirm a `DKIM-Signature:` line was attached.
-
-Then open the received message at the receiver and look for the `Authentication-Results:` header. A successful Microsoft result looks like:
+Then open the message at the receiver and find its `Authentication-Results:` header. A good result at Microsoft looks like this:
 
 ```
 Authentication-Results: spf=pass (sender IP is 192.0.2.1)
@@ -93,18 +85,11 @@ Authentication-Results: spf=pass (sender IP is 192.0.2.1)
                         compauth=pass reason=100
 ```
 
-Key things to look for:
+Check for:
 
-- `dkim=pass` (signature verified)
-- `header.d=example.com` matches `header.from=example.com` (DMARC alignment)
+- `dkim=pass`: the signature verified
+- `header.d=` equal to `header.from=`: the signing domain lines up with the `From:` domain, which DMARC needs
 - `dmarc=pass`
-- At Microsoft: `compauth=pass reason=100` is the strongest signal
+- At Microsoft, `compauth=pass reason=100`, its strongest authentication result
 
-If any of these are off, see [Troubleshooting](troubleshooting.md).
-
-## What this plugin deliberately doesn't do (v1)
-
-- Sign mail sent by code paths that bypass `wp_mail()` (raw PHP `mail()`, plugins that ship their own SMTP libraries).
-- Multi-domain signing within a single WordPress site (single key, single `d=`).
-- Ed25519 keys (RFC 8463) — receiver support is still patchy.
-- Automated key rotation — manual regenerate + republish is documented above.
+If any of these are missing, see [Troubleshooting](troubleshooting.md). For what the plugin covers and what it doesn't, see [How it works](how-it-works.md#what-the-plugin-doesnt-do).

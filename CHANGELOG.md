@@ -6,14 +6,28 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-11-10
+
+### Removed
+
+- The **Canonicalisation** setting. It never took effect: PHPMailer, which WordPress sends mail through, hardcodes `c=relaxed/simple` and has no way to change it, so every signature from 1.0.0 was already `relaxed/simple`, whatever was selected. Signing is unchanged; the Setup tab now shows the fixed value instead of a dropdown. The stored choice is ignored and dropped the next time the settings are saved. Introduced in 1.0.0.
+
+### Added
+
+- A **Settings** link under the plugin on the Plugins screen, for users who can manage options.
+- Documentation: [How it works](docs/how-it-works.md) and [Configuration](docs/configuration.md), including a key rotation procedure that avoids failed signatures.
+
 ### Changed
 
-- The bundled GitHub updater is now the shared portable version used across Headwall plugins. It loads only on admin, cron and WP-CLI requests, waits an hour after a failed GitHub lookup before retrying, logs genuine failures even without `WP_DEBUG`, and warns when the plugin header and version constant disagree. The `wpdkm_updater_enabled` filter is unchanged. The release cache transient is now `wpmail_dkim_sign_github_release`; the old `wpdkm_github_release` expires on its own within 12 hours. Uninstalling with "Remove all data" also clears the updater cache.
+- The bundled GitHub updater is now the shared version used across Headwall plugins. It runs only on admin, cron and WP-CLI requests, waits an hour after a failed GitHub lookup before trying again, logs real failures even without `WP_DEBUG`, and reports when the plugin header and version constant disagree. The `wpdkm_updater_enabled` filter is unchanged, and now also accepts values such as `'0'` or `'no'`. Its cache transient is now `wpmail_dkim_sign_github_release`; the old `wpdkm_github_release` expires by itself within 12 hours. Deleting the plugin with **Remove all plugin data** ticked now clears the updater cache too.
+- The developer documentation moved from `docs/developers/filters.md` to [`docs/developers/hooks-and-filters.md`](docs/developers/hooks-and-filters.md).
+- Release builds now fail if the plugin header, the version constant and the `readme.txt` stable tag don't all match the release tag.
 
 ### Fixed
 
-- The canonicalisation setting had no effect: every message was signed `c=relaxed/simple` whichever mode was selected. PHPMailer hardcodes that value and has no property to change it, so the plugin was setting two properties PHPMailer never reads, which also raised "Creation of dynamic property" deprecation notices on PHP 8.2+. The setting is removed and the Setup tab now shows the fixed `relaxed/simple` value. Introduced in 1.0.0.
-- The test email subject showed HTML entities from the site name (`&amp;` instead of `&`). The site name is now decoded before it goes into the subject. Introduced in 1.0.0.
+- PHP 8.2 and later raised two "Creation of dynamic property" deprecation notices for every signed message, from the canonicalisation properties PHPMailer doesn't have. Introduced in 1.0.0.
+- The test email's subject showed HTML entities in the site name, such as `&amp;` for `&`. Introduced in 1.0.0.
+- Documentation: the `wpdkm_dns_zone` filter page said returning an empty string hides the host name form; it doesn't, and the page now gives a working alternative. Several button and field names in the guides didn't match the admin screens, and the troubleshooting guide described an alignment failure the plugin can't produce.
 
 ## [1.0.0] - 2026-05-22
 

@@ -1,95 +1,127 @@
 # Hooks and filters
 
-The plugin exposes two filters as its public extension surface. There are no actions in v1.
+This is the **public extension surface** of WP Mail DKIM Sign: two filters. There are no actions. Anything not listed here is internal and may change between releases, including the functions and classes in the `WPMail_DKIM_Sign` namespace and the structure of the stored options.
 
-Place customisation code in a must-use plugin or in your site-specific plugin — not in `functions.php`, which can get switched out by theme changes.
+Put customisation code in a must-use plugin or a site-specific plugin rather than a theme's `functions.php`, so a theme change doesn't remove it.
+
+## Compatibility
+
+- A filter's name and arguments don't change within a major version. New arguments are only ever added at the end
+- A renamed filter keeps working under its old name until at least the next major version, with a deprecation notice while `WP_DEBUG` is on
+- Any change that could break an integration is listed in `CHANGELOG.md`
 
 ## `wpdkm_updater_enabled`
 
-Controls whether the bundled GitHub auto-updater runs.
+Whether the bundled GitHub updater checks for new releases.
 
-- **Default:** `true`
-- **Returns:** `bool`
+**Parameters:**
+- `bool $enabled`: `true` by default
 
-When this filter returns `false`, the plugin will not check GitHub for updates, will not inject itself into WordPress's `update_plugins` transient, and will not respond to the "View details" modal. The current installed version stays pinned in place until the filter is removed or returned `true` again.
+**Returns:** `bool`. Values such as `'0'`, `'no'` and `'off'` are read as `false`.
+
+When the filter returns `false`, the plugin doesn't contact GitHub, doesn't add itself to WordPress's list of available updates, and doesn't answer the **View details** request on the Plugins screen. The installed version stays as it is until the filter allows updates again. Other plugins are unaffected.
 
 Useful for:
 
-- Staging or local-dev sites where you don't want WP to surface an update prompt for a plugin you're already managing via git/symlink.
-- Sites with restrictive outbound firewall rules that block `api.github.com`.
-- Temporary pinning when a specific version is known-good and you want to defer upgrading.
+- Staging and development sites, where the plugin is deployed from git
+- Servers whose firewall blocks outbound HTTPS to `api.github.com`
+- Holding a site on a known-good version for a while
 
-### Example — pin the current version on a staging site
+### Example: turn off update checks
 
 ```php
 add_filter( 'wpdkm_updater_enabled', '__return_false' );
 ```
 
-### Example — pin only on a specific environment
+### Example: turn them off on staging only
 
 ```php
-add_filter(
-    'wpdkm_updater_enabled',
-    function ( $enabled ) {
-        if ( defined( 'WP_ENVIRONMENT_TYPE' ) && 'staging' === WP_ENVIRONMENT_TYPE ) {
-            return false;
-        }
-        return $enabled;
-    }
-);
+/**
+ * Disable WP Mail DKIM Sign update checks on staging sites.
+ *
+ * @param bool $enabled Whether update checks are enabled.
+ * @return bool
+ */
+function my_site_wpdkm_updates_off_on_staging( $enabled ) {
+	if ( 'staging' === wp_get_environment_type() ) {
+		$enabled = false;
+	}
+
+	return $enabled;
+}
+add_filter( 'wpdkm_updater_enabled', 'my_site_wpdkm_updates_off_on_staging' );
 ```
 
 ## `wpdkm_dns_zone`
 
-Overrides the auto-detected DNS zone for the configured signing domain. The zone is used to derive the "Host name (recommended)" shortcut on the Setup tab and to construct misconfiguration probes on the Verify tab.
+Overrides the automatically detected DNS zone for the signing domain. The zone is used to work out the **Host name (recommended)** form of the record name on the Setup tab, and to look for the doubled-zone and missing-label mistakes on the Verify tab.
 
-- **Default:** `null` (auto-detect via SOA walk)
-- **Returns:** `string|null` — return a non-empty string to bypass detection, or `null` to fall back to the auto-detect logic
-- **Passed arguments:**
-  - `string|null $zone` — the current value (null by default, or the previous filter's return)
-  - `string $domain` — the configured signing domain being resolved
+**Parameters:**
+- `string|null $zone`: `null` by default, or the value from an earlier callback
+- `string $domain`: the signing domain being looked up
 
-The auto-detect logic walks from most-specific to least-specific candidate (stripping one label at a time) and returns the first ancestor with an SOA record in the answer section. This works reliably for most setups but can fail on:
+**Returns:** `string|null`. A non-empty string is used as the zone, and detection is skipped. `null` or an empty string lets detection run as normal.
 
-- Sub-delegated subdomains where the SOA isn't reachable from the WP host's resolver
-- Multi-part TLDs where the apex isn't a single ancestor (the SOA walk handles this correctly, but if your resolver caches incorrectly the result may differ)
-- Environments where outbound DNS to authoritative resolvers is blocked
+Detection walks up from the signing domain one label at a time, and takes the first name with an SOA record as the zone. The result is cached for 24 hours. Detection can go wrong when:
 
-### Example — force a specific zone
+- A subdomain is delegated to separate nameservers, and its SOA isn't visible from the server's resolver
+- The server's resolver is blocked from making the lookups, as in some chroot setups
+- The resolver returns stale or incorrect answers
 
-```php
-add_filter(
-    'wpdkm_dns_zone',
-    function () {
-        return 'example.com';
-    }
-);
-```
+When detection finds nothing, the Setup tab shows only the full record name.
 
-### Example — override only for one domain
+### Example: set the zone
 
 ```php
-add_filter(
-    'wpdkm_dns_zone',
-    function ( $zone, $domain ) {
-        if ( 'tricky.example.com' === $domain ) {
-            return 'tricky.example.com';
-        }
-        return $zone;
-    },
-    10,
-    2
-);
+/**
+ * Use example.com as the DNS zone for DKIM record names.
+ *
+ * @return string
+ */
+function my_site_wpdkm_zone() {
+	return 'example.com';
+}
+add_filter( 'wpdkm_dns_zone', 'my_site_wpdkm_zone' );
 ```
 
-### Example — disable the host-name shortcut entirely
-
-If you'd rather users only see the Full FQDN form (no Host-name shortcut), return an empty string or a value that isn't a suffix of the FQDN — the host-name derivation falls back to `null` and the Setup tab shows only the full record name.
+### Example: set it for one domain only
 
 ```php
-add_filter( 'wpdkm_dns_zone', '__return_empty_string' );
+/**
+ * Treat shop.example.com as its own DNS zone; leave other domains to detection.
+ *
+ * @param string|null $zone   Zone from an earlier callback, or null.
+ * @param string      $domain Signing domain being looked up.
+ * @return string|null
+ */
+function my_site_wpdkm_zone_for_shop( $zone, $domain ) {
+	if ( 'shop.example.com' === $domain ) {
+		$zone = 'shop.example.com';
+	}
+
+	return $zone;
+}
+add_filter( 'wpdkm_dns_zone', 'my_site_wpdkm_zone_for_shop', 10, 2 );
 ```
 
-## Future hooks
+### Example: hide the host name form
 
-If you have a specific extension point you'd like to see (e.g. a `wpdkm_pre_sign` filter for last-mile customisation of the DKIM headers, or an action when a key is generated/deleted), open an issue on the [GitHub repo](https://github.com/headwalluk/wpmail-dkim-sign/issues).
+To show only the full record name, return a zone that the record name doesn't end with. Returning an empty string won't work, because that lets detection run.
+
+```php
+/**
+ * Hide the host name form of the DKIM record name.
+ *
+ * @return string
+ */
+function my_site_wpdkm_no_host_name() {
+	return 'invalid';
+}
+add_filter( 'wpdkm_dns_zone', 'my_site_wpdkm_no_host_name' );
+```
+
+`invalid` is a top-level domain reserved by RFC 2606 that never appears in a real record name. The Verify tab's doubled-zone check uses the same zone, so it can't spot that mistake while this filter is in place. The missing-label check doesn't use the zone and still works.
+
+## Requesting a hook
+
+If you need an extension point that isn't here, such as a filter on the DKIM settings just before signing, or an action when a key is generated or deleted, open an issue on the [GitHub repository](https://github.com/headwalluk/wpmail-dkim-sign/issues).

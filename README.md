@@ -18,9 +18,9 @@ Particularly relevant since Microsoft (Outlook.com, Hotmail, M365) tightened aut
 
 - Hooks `phpmailer_init` to attach a valid DKIM-Signature header to `wp_mail()` output
 - Self-service RSA-2048 key generation in the admin — no shell access required
-- DNS TXT record display with separate **Host name** and **Full FQDN** copy options, plus a chunked-255 fallback for older DNS providers
-- **Send Test Email** button captures the prepared headers post-signing so you can confirm the signature without leaving the admin
-- **Check DNS Record** button does a fresh DNS lookup, compares the published `p=` to the locally-stored public key, and actively probes for common misconfigurations (doubled zone, missing `_domainkey` label)
+- DNS TXT record display with separate **Host name** and **Full record name** copy options, plus a chunked value for DNS providers that limit string length
+- **Send test email** button captures the prepared headers post-signing so you can confirm the signature without leaving the admin
+- **Check DNS record** button does a fresh DNS lookup, compares the published `p=` to the locally-stored public key, and actively probes for common misconfigurations (doubled zone, missing `_domainkey` label)
 - Aligns the DKIM `d=` parameter with the From: header domain — DMARC alignment passes
 - Steps aside cleanly if another plugin (WP Mail SMTP, FluentSMTP, etc.) is already configured to sign — no double-signing
 - Auto-updates via the bundled GitHub updater
@@ -45,10 +45,12 @@ If your PHP-FPM pool runs in a chroot jail, OpenSSL needs a small additional con
 
 Full user and developer documentation lives in [`docs/`](docs/):
 
-- [Installation walkthrough](docs/installation.md) — step-by-step from install through DKIM verification
-- [Troubleshooting](docs/troubleshooting.md) — DNS gotchas, body-rewriting MTAs, alignment issues
-- [Self-hosting](docs/self-hosting.md) — server requirements, chroot OpenSSL configuration
-- [Hooks and filters](docs/developers/filters.md) *(for developers)*
+- [Installation walkthrough](docs/installation.md): from install to a verified `dkim=pass`
+- [How it works](docs/how-it-works.md): what gets signed, the pre-flight checks, canonicalisation
+- [Configuration](docs/configuration.md): every setting, key rotation, data retention
+- [Troubleshooting](docs/troubleshooting.md): DNS mistakes, unsigned mail, body-rewriting relays
+- [Self-hosting](docs/self-hosting.md): requirements, stored data, chroot OpenSSL configuration
+- [Hooks and filters](docs/developers/hooks-and-filters.md) *(for developers)*
 
 ## License
 

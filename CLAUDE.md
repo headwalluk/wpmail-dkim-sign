@@ -264,8 +264,10 @@ updater advertises an update that doesn't exist.
 
 `docs/` is tracked and public. **One audience per document:**
 
-- `docs/installation.md`, `docs/troubleshooting.md`, `docs/self-hosting.md`: site operators
-- `docs/developers/filters.md`: the public extension surface
+- `docs/installation.md`, `docs/how-it-works.md`, `docs/configuration.md`,
+  `docs/troubleshooting.md`: site administrators
+- `docs/self-hosting.md`: server administrators
+- `docs/developers/hooks-and-filters.md`: the public extension surface
 
 Rationale, evidence and history belong in docs, not in code comments. Where a mechanism needs
 more than a sentence to justify, write it up and reference the file from the code.

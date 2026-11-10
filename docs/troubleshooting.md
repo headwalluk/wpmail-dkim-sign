@@ -1,122 +1,120 @@
 # Troubleshooting
 
-The **Verify** tab in the admin diagnoses most issues automatically. Run **Check DNS Record** first — it'll classify the problem into one of the categories below.
+Start on the **Verify** tab. **Check DNS record** sorts DNS problems into the categories below, and **Send test email** shows whether a message was signed and, if not, why.
 
 ## DNS issues
 
-### No record found (NXDOMAIN)
+### No record found
 
-Cause: either the record wasn't published, propagation hasn't completed, or the Host field had a typo.
+There is no TXT record at `<selector>._domainkey.<signing-domain>`. Either it hasn't propagated yet, it was never saved, or the name has a typo.
 
-Steps:
-
-1. Wait a few minutes and retry — propagation is the usual culprit.
-2. Run `dig +short TXT <selector>._domainkey.<domain>` from a shell. If `dig` also returns nothing, the record isn't live.
-3. Double-check the Host field at your DNS provider matches the "Host name (recommended)" value on the Setup tab — not the Full FQDN.
+1. Wait a few minutes and check again. Propagation is the usual cause
+2. From a shell, run `dig +short TXT <selector>._domainkey.<domain>`. If that returns nothing either, the record isn't live
+3. Check that the name at your DNS provider is the **Host name (recommended)** value from the Setup tab, not the full record name
 
 ### Doubled zone
 
-Verify tab status: **Misconfigured DNS — zone appended twice**.
+Verify tab result: **Misconfigured DNS — zone appended twice**.
 
-Cause: you pasted the Full FQDN (e.g. `website._domainkey.example.com`) into your DNS provider's Host field. The provider then auto-appended your zone (`example.com`), producing the doubled-zone record `website._domainkey.example.com.example.com`.
+The full record name (for example `website._domainkey.example.com`) was pasted into a Host field that adds the zone itself, giving `website._domainkey.example.com.example.com`.
 
-Fix:
-
-1. Open the existing record at your DNS provider.
-2. Change the Host field to just the "Host name (recommended)" value from the Setup tab (e.g. `website._domainkey` for an apex zone, or `website._domainkey.subdomain` for a subdomain).
-3. Save and re-run Check DNS Record.
+1. Open the record at your DNS provider
+2. Change the name to the **Host name (recommended)** value from the Setup tab: `website._domainkey` for a site at the zone apex, or `website._domainkey.shop` for a site at `shop.example.com`
+3. Save, and run **Check DNS record** again
 
 ### Missing `_domainkey` label
 
-Verify tab status: **Misconfigured DNS — missing `_domainkey` label**.
+Verify tab result: **Misconfigured DNS — missing _domainkey label**.
 
-Cause: the Host field at your DNS provider was set to just the selector (`website`) without the `_domainkey` subdomain.
+The record was published at just the selector (`website`), without the `_domainkey` part. The name must have `._domainkey.` between the selector and the domain. Copy the **Host name (recommended)** value exactly.
 
-Fix: the Host field must include `._domainkey.` between the selector and the domain. Use the Setup tab's "Host name (recommended)" value verbatim.
+### Mismatch
 
-### Mismatch (record present, `p=` differs)
+Verify tab result: **Mismatch**. A DKIM record exists, but its `p=` value isn't the stored public key. Usually one of:
 
-Cause: typically one of:
+- The key was regenerated on the site and the DNS record wasn't updated
+- An older DKIM record, from another plugin or a manual setup, is still published at that name
+- The wrong value was pasted at the DNS provider
 
-- You regenerated the key locally and didn't update the DNS record afterwards.
-- A previous DKIM record (different plugin, manual config, etc.) is still published.
-- The wrong public key was pasted into the DNS provider.
+Copy **Value (single string)** from the Setup tab, replace the published value, and run **Check DNS record** again. **Show published vs. local key** on the Verify tab puts the two values side by side.
 
-Fix: copy the value from the Setup tab (Value, single string form) and replace the published TXT record. Then re-run Check DNS Record.
+### Record present but unparseable
 
-The Verify tab's mismatch panel includes a "Show published vs. local key" details element so you can confirm by eye which key is which.
+There is a TXT record at the name, but it doesn't contain a valid `v=DKIM1` record with a `p=` value. The value has usually been truncated or mangled while pasting. Copy it again from the Setup tab, or try **Value (chunked form)** if your provider limits string length.
 
-## Signing issues
+### No local key
 
-### Key generation fails with an OpenSSL error
+Verify tab result: **No local key**. There is no key on the site to compare against. Generate one on the Setup tab first.
 
-If clicking **Generate key pair** results in the **Key generation failed** notice, check the PHP error log for `wpmail-dkim-sign:` entries. Typical causes:
+## Mail goes out unsigned
 
-- **OpenSSL config not reachable inside a chroot** — most common on managed hosting. See [Self-hosting → Chroot OpenSSL configuration](self-hosting.md#chroot-openssl-configuration).
-- **PHP `openssl` extension not loaded** — verify with `php -m | grep openssl`. Re-enable via your PHP configuration.
+**Send test email** shows *No DKIM-Signature in the prepared message* along with a **Pre-flight skip reason**. The reasons are listed in [How it works](how-it-works.md#pre-flight-checks). The common ones:
 
-### `From:` domain mismatch — mail goes unsigned
+### `plugin disabled in settings`
 
-If the **Send test email** result shows "No DKIM-Signature in the prepared message" with a skip reason like `From: domain noreply@othercompany.com does not match configured d=example.com`, the message is being sent with a From: that doesn't align with the configured signing domain.
+Tick **Enabled — sign outbound mail with DKIM** on the Setup tab and save. Only do that once **Check DNS record** reports **Match**.
 
-This is intentional — signing with a misaligned `d=` would fail DMARC at the receiver, which is worse than leaving the message unsigned.
+### `no usable key stored`
 
-Fix options:
+No key pair has been generated, or the stored key can't be read. Generate one on the Setup tab. If generation fails, see [key generation fails](#key-generation-fails).
 
-- Configure the plugin's signing domain to match what the site actually sends as (if you only send from one domain).
-- Adjust the From: address being used by the site (check WP general settings, any SMTP plugin, contact form plugins, etc.) so it matches the configured signing domain.
+### `From: domain othercompany.com does not match configured d=example.com`
+
+The message's `From:` address is at a different domain from the signing domain. The plugin won't sign it, because a `d=` that doesn't match the `From:` domain fails DMARC alignment, which is worse than an unsigned message. The comparison is exact, so `mail.example.com` and `example.com` don't match.
+
+Either set the signing domain to the domain the site actually sends from, or change the `From:` address in whatever is sending the mail (WordPress's settings, an SMTP plugin, a contact form plugin) to use the signing domain. The plugin signs for one domain only.
+
+### `PHPMailer DKIM_domain already set — another plugin is signing`
+
+Another plugin, often an SMTP plugin, has already set up DKIM signing, and this plugin steps aside. Turn off DKIM in one of them.
+
+## Signature fails at the receiver
 
 ### `dkim=fail (body hash did not verify)` at the receiver
 
-Cause: your upstream MTA is modifying the message body after the plugin signs it. The DKIM body hash no longer matches.
+Something between the site and the receiver changed the message body after it was signed. Signatures use `relaxed/simple` canonicalisation (fixed by PHPMailer; see [how it works](how-it-works.md#canonicalisation)). Header changes such as folding or case are tolerated, but any change to the body breaks the body hash, even whitespace.
 
-Common offenders:
+Common causes:
 
-- Postfix + Amavis with content-modification rules (disclaimer footers, link rewriting, virus-scan headers injected into the body).
-- Commercial mail relays that wrap or modify content.
+- Postfix with Amavis, or a similar content filter, adding disclaimers or footers, rewriting links, or inserting scan results into the body
+- Commercial relays that wrap or alter content
 
-Mitigations (in order of preference):
+To fix it:
 
-1. Exclude the signing domain from any content-rewriting rules on the relay. Signatures use `relaxed/simple` canonicalisation (fixed by PHPMailer): header whitespace and case changes are tolerated, but any change to the body, including whitespace, breaks the body hash.
-2. For Amavis specifically, exclude the domain from disclaimer/footer addition and from any body-mangling content filters.
-3. If the relay genuinely needs to modify content, signing must happen *after* the relay — in which case this plugin can't help you. The fix is per-domain DKIM on the relay itself.
+1. Exclude the signing domain from any content-rewriting rules on the relay
+2. For Amavis, exclude the domain from disclaimer and footer addition, and from any filter that changes the body
+3. If the relay has to change the content, signing must happen after the relay, on the relay itself. This plugin can't help in that case
 
-### `dkim=pass` at Gmail but fail at Microsoft
+### `dkim=pass` but `dmarc=fail`
 
-Most likely cause: alignment. Microsoft is strictly checking that `header.d` (DKIM) matches `header.from` (From:). Gmail is more lenient.
-
-Inspect the Microsoft `Authentication-Results:` header carefully:
+The signature verified, but its `header.d=` doesn't line up with `header.from=`. Compare the two in the `Authentication-Results:` header:
 
 ```
 dkim=pass header.d=example.com
 header.from=example.com
 ```
 
-The two domain values must match. If `header.from` is `notifications.example.com` but `header.d` is `example.com`, that's a subdomain mismatch — DMARC strict alignment would fail.
-
-The plugin enforces this at sign time (the From-domain pre-flight check), so if you're seeing this, the configured signing domain is likely a parent of the actual From: domain. Set the signing domain to match the From: domain exactly.
+This plugin only signs when the two match exactly, so a mismatch means the passing signature came from somewhere else: usually a relay or mail service adding its own DKIM signature with its own domain. Look at the `DKIM-Signature:` headers on the received message. There may be more than one, and each one's `d=` names its signer. If the plugin's signature is missing, run **Send test email** to see the skip reason.
 
 ## Other issues
 
-### Mail still going to Microsoft Junk despite `dkim=pass`
+### Key generation fails
 
-DKIM + DMARC alignment is necessary but not sufficient for inbox delivery. Microsoft uses additional signals:
+Clicking **Generate key pair** shows *Key generation failed*. The plugin logs the OpenSSL error to the PHP error log, whatever the `WP_DEBUG` setting, in lines starting `wpmail-dkim-sign:`.
 
-- **Sending IP reputation** — your relay's IP needs a clean reputation history. New IPs need a warm-up period.
-- **Content patterns** — spammy subject lines, suspicious link patterns, missing unsubscribe headers on bulk mail.
-- **Domain age and traffic patterns** — newly-registered domains and sudden volume bursts get extra scrutiny.
+- **OpenSSL can't find its configuration inside a PHP-FPM chroot.** This is the most common cause on managed hosting. See [Self-hosting](self-hosting.md#chroot-openssl-configuration)
+- **The PHP `openssl` extension isn't loaded.** Check with `php -m | grep openssl`, and enable it in your PHP configuration
 
-DKIM passing means *authentication* is satisfied; deliverability is a separate problem with its own diagnostic tools (delivery analytics in M365 admin, third-party tools like mail-tester.com).
+### The settings page shows a critical error
 
-### The plugin is enabled but mail is still unsigned
+If the PHP `openssl` extension is missing altogether, the settings page fails with a fatal *Call to undefined function openssl_...* once a key has been stored, and so does clicking **Generate key pair**. Enable the extension. A missing configuration file inside a chroot doesn't cause this: it produces the *Key generation failed* notice instead.
 
-Check the Verify tab's **Send test email** result. The skip reason field will tell you exactly why a given message wasn't signed — most commonly:
+### Mail lands in Microsoft's Junk folder despite `dkim=pass`
 
-- Plugin is disabled in settings (toggle on the Setup tab).
-- No key stored locally (generate one).
-- `From:` domain doesn't match the configured signing domain.
-- Another plugin has already configured PHPMailer's DKIM properties (first-write-wins; this plugin steps aside).
+DKIM and DMARC alignment are necessary for inbox delivery, but not enough on their own. Microsoft also weighs:
 
-### Activation works but the Settings page returns a fatal error
+- **Sending IP reputation.** A relay's IP needs a clean history, and new IPs need warming up
+- **Content.** Spammy subject lines, suspicious links, and bulk mail without unsubscribe headers
+- **Domain age and volume.** New domains and sudden bursts of mail get extra scrutiny
 
-Almost always caused by the OpenSSL config issue inside a chroot. See [Self-hosting → Chroot OpenSSL configuration](self-hosting.md#chroot-openssl-configuration).
+A DKIM pass means authentication is sorted. Deliverability is a separate problem, with its own tools, such as the delivery reports in the Microsoft 365 admin centre or a service like mail-tester.com.

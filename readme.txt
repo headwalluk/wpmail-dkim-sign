@@ -19,9 +19,9 @@ If your WordPress site sends transactional email through an SMTP relay that does
 **Key points:**
 
 * Self-service key generation in the WP admin — no shell access required.
-* Copy-paste DNS TXT record display, including a chunked-255 form for older DNS providers.
-* Built-in Send Test Email button (captures the prepared headers post-signing so you can see the DKIM-Signature without leaving the admin).
-* Built-in Check DNS Record button (fresh dns_get_record, compares published p= to the locally stored public key).
+* Copy-paste DNS TXT record display, including a chunked form for DNS providers that limit string length.
+* Built-in Send test email button (captures the prepared headers post-signing so you can see the DKIM-Signature without leaving the admin).
+* Built-in Check DNS record button (fresh dns_get_record, compares published p= to the locally stored public key).
 * Aligns the DKIM `d=` parameter with the `From:` header domain, so DMARC alignment passes.
 * Does not double-sign. If another plugin (e.g. WP Mail SMTP) is already configured for DKIM, this plugin steps aside.
 * RSA-2048 only for v1. Ed25519 (RFC 8463) is on the roadmap once receiver support broadens.
@@ -30,7 +30,7 @@ If your WordPress site sends transactional email through an SMTP relay that does
 
 * Sign mail that bypasses `wp_mail()` / PHPMailer (e.g. raw `mail()` calls, plugins that ship their own SMTP libraries).
 * Multi-domain signing within a single WordPress site.
-* Provide an automated key-rotation UI. Manual regenerate + republish is documented.
+* Rotate keys automatically. The manual rotation steps are in docs/configuration.md.
 
 == Installation ==
 
@@ -50,13 +50,17 @@ If your WordPress site sends transactional email through an SMTP relay that does
 
 Some MTAs (notably Amavis configured aggressively) rewrite the message body or headers in ways that break the signature. If you see `dkim=fail (body hash did not verify)` in the `Authentication-Results:` header, the relay is mutating the signed material. Either exclude the domain from body modification on the relay, or move signing onto the relay itself.
 
+= Can I choose the canonicalisation? =
+
+No. PHPMailer, the library WordPress sends mail through, always signs with relaxed/simple canonicalisation, and has no option to change it. Version 1.0.0 showed a canonicalisation setting, but it never took effect; 1.1.0 removes it, and the Setup tab now shows the fixed value. With simple body canonicalisation, any change to the message body after signing breaks the signature, including whitespace changes.
+
 = My DNS TXT record is too long for my DNS provider. =
 
 The settings page shows two forms of the record value: a single-string form and a chunked form (broken into quoted 255-character substrings). Most modern DNS providers handle the split transparently; if yours does not, paste the chunked form.
 
 = What happens if I deactivate or delete the plugin? =
 
-Deactivation leaves all data in place. Deletion (uninstall) removes the stored key and settings only if you have ticked the "Remove all data on uninstall" checkbox on the Setup tab first; otherwise data is preserved across reinstalls.
+Deactivation leaves all data in place. Deletion (uninstall) removes the stored key and settings only if you have ticked "Remove all plugin data (settings and key pair) on uninstall" on the Setup tab first; otherwise data is preserved across reinstalls.
 
 = Key generation fails with an OpenSSL error — what's going on? =
 
@@ -64,10 +68,20 @@ If your PHP-FPM pool runs inside a chroot jail, OpenSSL needs to be able to find
 
 == Changelog ==
 
+= 1.1.0 =
+* Removed: the Canonicalisation setting, which never took effect. PHPMailer always signs relaxed/simple, so signing is unchanged.
+* Added: a Settings link under the plugin on the Plugins screen.
+* Changed: the bundled GitHub updater now runs only on admin, cron and WP-CLI requests, and backs off after a failed check.
+* Fixed: "Creation of dynamic property" deprecation notices on PHP 8.2+ for every signed message.
+* Fixed: HTML entities such as &amp; in the test email subject.
+
 = 1.0.0 =
 * Initial release.
 
 == Upgrade Notice ==
+
+= 1.1.0 =
+Removes the Canonicalisation setting, which never took effect; signatures are relaxed/simple as before. No DNS changes needed.
 
 = 1.0.0 =
 Initial release.
