@@ -124,7 +124,7 @@ class Settings {
 			'settings'         => $settings,
 			'keypair_meta'     => $this->get_keypair_meta(),
 			'dns_record'       => $this->get_dns_record( $settings ),
-			'allowed_canon'    => ALLOWED_CANONICALISATIONS,
+			'canonicalisation' => PHPMAILER_CANONICALISATION,
 			'notice'           => $notice,
 			'admin_post'       => admin_url( 'admin-post.php' ),
 			'admin_email'      => (string) get_option( 'admin_email', '' ),
@@ -293,7 +293,7 @@ class Settings {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string $key     Field name (domain, selector, enabled, canonicalisation).
+	 * @param string $key     Field name (domain, selector, enabled, remove_on_uninstall).
 	 * @param mixed  $default_value Fallback if neither stored value nor a typed default exists.
 	 *
 	 * @return mixed
@@ -339,7 +339,6 @@ class Settings {
 			'domain'              => self::default_domain(),
 			'selector'            => DEF_SELECTOR,
 			'enabled'             => DEF_ENABLED,
-			'canonicalisation'    => DEF_CANONICALISATION,
 			'remove_on_uninstall' => false,
 		);
 	}
@@ -373,7 +372,6 @@ class Settings {
 			'domain'              => isset( $_POST['wpdkm_domain'] ) ? sanitize_text_field( wp_unslash( $_POST['wpdkm_domain'] ) ) : '',
 			'selector'            => isset( $_POST['wpdkm_selector'] ) ? sanitize_text_field( wp_unslash( $_POST['wpdkm_selector'] ) ) : '',
 			'enabled'             => isset( $_POST['wpdkm_enabled'] ) ? sanitize_text_field( wp_unslash( $_POST['wpdkm_enabled'] ) ) : '',
-			'canonicalisation'    => isset( $_POST['wpdkm_canonicalisation'] ) ? sanitize_text_field( wp_unslash( $_POST['wpdkm_canonicalisation'] ) ) : '',
 			'remove_on_uninstall' => isset( $_POST['wpdkm_remove_on_uninstall'] ) ? sanitize_text_field( wp_unslash( $_POST['wpdkm_remove_on_uninstall'] ) ) : '',
 		);
 		// phpcs:enable WordPress.Security.NonceVerification.Missing
@@ -396,18 +394,16 @@ class Settings {
 	private static function sanitize_settings( array $input ): ?array {
 		$domain   = self::sanitize_domain( $input['domain'] ?? '' );
 		$selector = self::sanitize_selector( $input['selector'] ?? '' );
-		$canon    = self::sanitize_canonicalisation( $input['canonicalisation'] ?? '' );
 
 		$result = null;
 
-		if ( is_null( $domain ) || is_null( $selector ) || is_null( $canon ) ) {
+		if ( is_null( $domain ) || is_null( $selector ) ) {
 			// At least one field failed validation — bail and let the caller surface a notice.
 		} else {
 			$result = array(
 				'domain'              => $domain,
 				'selector'            => $selector,
 				'enabled'             => self::sanitize_enabled( $input['enabled'] ?? '' ),
-				'canonicalisation'    => $canon,
 				'remove_on_uninstall' => self::sanitize_enabled( $input['remove_on_uninstall'] ?? '' ),
 			);
 		}
@@ -453,22 +449,6 @@ class Settings {
 		$matches   = (bool) preg_match( '/^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/', $candidate );
 
 		return $matches ? $candidate : null;
-	}
-
-	/**
-	 * Validate a canonicalisation choice against the allow-list.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param string $raw Raw input.
-	 *
-	 * @return string|null
-	 */
-	private static function sanitize_canonicalisation( string $raw ): ?string {
-		$candidate = trim( $raw );
-		$valid     = in_array( $candidate, ALLOWED_CANONICALISATIONS, true );
-
-		return $valid ? $candidate : null;
 	}
 
 	/**

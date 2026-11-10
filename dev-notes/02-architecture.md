@@ -69,7 +69,7 @@ Owns the admin UI and configuration persistence.
 - `render_page(): void` — builds data array, loads `admin-templates/settings-page.php`.
 - `handle_save(): void` — nonce + capability check, validate every field, persist, redirect with `settings_errors()`.
 - `get(string $key, mixed $default = null): mixed` — read accessor over the settings options row.
-- Sanitisers: `sanitize_domain()`, `sanitize_selector()`, `sanitize_canonicalisation()`, `sanitize_bool()` (the last via `filter_var(FILTER_VALIDATE_BOOLEAN)` per house style).
+- Sanitisers: `sanitize_domain()`, `sanitize_selector()`, `sanitize_bool()` (the last via `filter_var(FILTER_VALIDATE_BOOLEAN)` per house style).
 
 ### `WPMail_DKIM_Sign\Keypair` (in `includes/class-keypair.php`)
 
@@ -134,7 +134,7 @@ Signer::sign( $phpmailer )    ← priority 10 (us)
   ├─ check: DKIM_domain empty? → if no, log + return (don't override)
   ├─ check: From matches?      → if no, log + return (would misalign)
   └─ all good → set DKIM_domain, DKIM_selector, DKIM_private_string, DKIM_identity='',
-                    DKIM_passphrase='', DKIM_header_canonicalization, DKIM_body_canonicalization
+                    DKIM_passphrase='', DKIM_copyHeaderFields=false (c=relaxed/simple, fixed by PHPMailer)
   ↓
 [other phpmailer_init filters, if any]
   ↓
@@ -175,7 +175,6 @@ Settings page next render → reads transient → renders captured headers + ver
     'domain'           => 'example.com',          // signing domain (sanitised, lowercase)
     'selector'         => 'website',              // DNS label (sanitised)
     'enabled'          => false,                  // boolean (stored as bool; on read normalised via FILTER_VALIDATE_BOOLEAN)
-    'canonicalisation' => 'relaxed/relaxed',      // one of: simple/simple, relaxed/simple, relaxed/relaxed
     'remove_on_uninstall' => false,               // boolean — controls uninstall.php behaviour
 ]
 ```
@@ -203,7 +202,7 @@ All admin-post actions, nonces, and option keys live in `constants.php`. Names f
 - Action constants: `ACTION_SAVE`, `ACTION_GENERATE_KEY`, `ACTION_TEST_EMAIL`, etc. with values like `'wpmail_dkim_sign_save'`
 - Nonce constants: `NONCE_SAVE`, `NONCE_GENERATE_KEY`, etc. — single-use per form
 - Option-row key constants: `OPT_SETTINGS`, `OPT_KEYPAIR`
-- Default-value constants: `DEF_SELECTOR`, `DEF_CANONICALISATION`, etc.
+- Default-value constants: `DEF_SELECTOR`, `DEF_ENABLED`, etc.
 - Capability constant: `CAP_MANAGE` = `'manage_options'` (one definition, used everywhere)
 
 ---

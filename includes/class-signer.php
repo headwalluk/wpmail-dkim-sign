@@ -246,38 +246,13 @@ class Signer {
 	private function apply_dkim_config( PHPMailer $phpmailer ): void {
 		$settings = get_plugin()->get_settings();
 		$loaded   = get_plugin()->get_keypair()->load();
-		$canon    = self::parse_canonicalisation( (string) $settings->get( 'canonicalisation' ) );
 
-		$phpmailer->DKIM_domain                  = (string) $settings->get( 'domain' );
-		$phpmailer->DKIM_selector                = (string) $settings->get( 'selector' );
-		$phpmailer->DKIM_private_string          = $loaded['private_pem'];
-		$phpmailer->DKIM_identity                = '';
-		$phpmailer->DKIM_passphrase              = '';
-		$phpmailer->DKIM_copyHeaderFields        = false;
-		$phpmailer->DKIM_header_canonicalization = $canon['header'];
-		$phpmailer->DKIM_body_canonicalization   = $canon['body'];
-	}
-
-	/**
-	 * Split the "header/body" canonicalisation setting into its two parts.
-	 *
-	 * Settings values map to PHPMailer property values 1:1; PHPMailer
-	 * uses the American spelling ("canonicalization") which we mirror
-	 * only at the boundary.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param string $value Saved canonicalisation setting (e.g. "relaxed/relaxed").
-	 *
-	 * @return array{header: string, body: string}
-	 */
-	private static function parse_canonicalisation( string $value ): array {
-		$parts = explode( '/', $value );
-
-		return array(
-			'header' => $parts[0] ?? 'relaxed',
-			'body'   => $parts[1] ?? 'relaxed',
-		);
+		$phpmailer->DKIM_domain           = (string) $settings->get( 'domain' );
+		$phpmailer->DKIM_selector         = (string) $settings->get( 'selector' );
+		$phpmailer->DKIM_private_string   = $loaded['private_pem'];
+		$phpmailer->DKIM_identity         = '';
+		$phpmailer->DKIM_passphrase       = '';
+		$phpmailer->DKIM_copyHeaderFields = false;
 	}
 
 	/**

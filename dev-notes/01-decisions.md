@@ -47,7 +47,7 @@ Records architectural decisions and resolved open questions, with the reasoning.
 
 - **Decision:** Two separate `wp_options` rows: `OPT_SETTINGS` (autoload **on**) and `OPT_KEYPAIR` (autoload **off**).
 - **Reasoning:**
-    - Settings (domain, selector, enabled, canonicalisation) read on every request that hits `phpmailer_init` — must be in the autoloaded options to avoid an extra DB hit per mail.
+    - Settings (domain, selector, enabled) read on every request that hits `phpmailer_init` — must be in the autoloaded options to avoid an extra DB hit per mail.
     - Keypair (private PEM, public base64, created-at) is large (~3 KB for an RSA-2048 PEM) and only loaded during admin operations and during actual mail signing. Keeping it out of the autoload set saves memory on every other request.
     - Splitting also makes the "delete keypair" admin action atomic — settings (and the `enabled` flag) survive a key delete, so the user can't accidentally lose their configuration when rotating keys.
 
@@ -75,10 +75,12 @@ Records architectural decisions and resolved open questions, with the reasoning.
     - Doing this only during a deliberate test send (gated by a per-request flag) keeps the diagnostic out of the production mail path entirely — no performance hit for normal mail, no risk of leaking captured headers to other admins.
     - The one-shot pattern: filter calls `remove_action( 'phpmailer_init', $self, 999 )` from inside its own callback after writing the transient.
 
-### D11 — Canonicalisation default
+### D11 — Canonicalisation (revised 2026-11-10)
 
-- **Decision:** `relaxed/relaxed` (already specified in HANDOFF, recording the why here).
-- **Reasoning:** Tolerates whitespace normalisation, header-case changes, and header folding differences. Critical given the Amavis-on-nexus relay path: Amavis can rewrite headers in ways that break `simple` canonicalisation. The setting remains user-changeable for sites where the operator wants stricter signing and knows their relay path won't mutate.
+- **Original decision (1.0.0):** user-selectable, default `relaxed/relaxed`, to tolerate Amavis header rewriting on the nexus relay path.
+- **Finding:** PHPMailer (7.1.1 bundled with WP) hardcodes `$DKIMcanonicalization = 'relaxed/simple'` in `DKIM_Add()`, and `DKIM_HeaderC()` / `DKIM_BodyC()` implement only relaxed-header / simple-body. There are no `DKIM_header_canonicalization` / `DKIM_body_canonicalization` properties; setting them only created dynamic properties (PHP 8.2+ deprecation). Every 1.0.0 signature was `c=relaxed/simple`. Reported by a user; the production validation against outlook.com passed in `relaxed/simple`.
+- **Decision:** remove the setting. Show the fixed value on the Setup tab. Making it configurable would mean subclassing PHPMailer or doing our own signing — a crypto path to maintain, not worth it.
+- **Consequence:** simple body canonicalisation breaks on any body change, including whitespace. Header rewriting by Amavis is still tolerated.
 
 ---
 

@@ -48,11 +48,11 @@ const OPT_KEYPAIR  = 'wpdkm_keypair';
 
 /* ---------- Settings field defaults ---------- */
 
-const DEF_SELECTOR         = 'website';
-const DEF_CANONICALISATION = 'relaxed/relaxed';
-const DEF_ENABLED          = false;
+const DEF_SELECTOR = 'website';
+const DEF_ENABLED  = false;
 
-const ALLOWED_CANONICALISATIONS = array( 'simple/simple', 'relaxed/simple', 'relaxed/relaxed' );
+// PHPMailer hardcodes c=relaxed/simple in DKIM_Add(); display only, not passed to PHPMailer.
+const PHPMAILER_CANONICALISATION = 'relaxed/simple';
 
 /* ---------- admin-post.php action names ---------- */
 

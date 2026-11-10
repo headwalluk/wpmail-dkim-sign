@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-05-22T17:46:23+00:00\n"
+"POT-Creation-Date: 2026-11-10T17:45:00+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: wpmail-dkim-sign\n"
@@ -203,39 +203,39 @@ msgstr ""
 msgid "Canonicalisation"
 msgstr ""
 
-#: admin-templates/partials/settings-form.php:83
-msgid "Default relaxed/relaxed tolerates the whitespace and header changes a downstream relay (e.g. Postfix/Amavis) may apply. Use stricter modes only if your relay path does not mutate."
+#: admin-templates/partials/settings-form.php:73
+msgid "Set by PHPMailer, the library WordPress uses to send email. It cannot be changed."
 msgstr ""
 
-#: admin-templates/partials/settings-form.php:91
+#: admin-templates/partials/settings-form.php:81
 msgid "Signing"
 msgstr ""
 
-#: admin-templates/partials/settings-form.php:98
+#: admin-templates/partials/settings-form.php:88
 msgid "Enabled — sign outbound mail with DKIM"
 msgstr ""
 
-#: admin-templates/partials/settings-form.php:101
+#: admin-templates/partials/settings-form.php:91
 msgid "Leave off until the DNS TXT record is live and verified. With this off the plugin is a no-op."
 msgstr ""
 
-#: admin-templates/partials/settings-form.php:110
+#: admin-templates/partials/settings-form.php:100
 msgid "Data retention"
 msgstr ""
 
-#: admin-templates/partials/settings-form.php:114
+#: admin-templates/partials/settings-form.php:104
 msgid "On uninstall"
 msgstr ""
 
-#: admin-templates/partials/settings-form.php:120
+#: admin-templates/partials/settings-form.php:110
 msgid "Remove all plugin data (settings and key pair) on uninstall"
 msgstr ""
 
-#: admin-templates/partials/settings-form.php:123
+#: admin-templates/partials/settings-form.php:113
 msgid "Deactivating the plugin never removes data. Deleting the plugin removes data only if this box is ticked. Leave unticked to preserve settings + key across reinstalls."
 msgstr ""
 
-#: admin-templates/partials/settings-form.php:128
+#: admin-templates/partials/settings-form.php:118
 msgid "Save settings"
 msgstr ""
 
@@ -415,8 +415,8 @@ msgid "You do not have permission to view this page."
 msgstr ""
 
 #: includes/class-settings.php:218
-#: includes/class-settings.php:503
-#: includes/class-verifier.php:505
+#: includes/class-settings.php:483
+#: includes/class-verifier.php:506
 msgid "You do not have permission to perform this action."
 msgstr ""
 
@@ -427,7 +427,7 @@ msgid "[WP Mail DKIM] Test from %s"
 msgstr ""
 
 #. translators: %s: site URL.
-#: includes/class-verifier.php:100
+#: includes/class-verifier.php:101
 #, php-format
 msgid ""
 "This is a test email from the WP Mail DKIM Sign plugin on %s.\n"

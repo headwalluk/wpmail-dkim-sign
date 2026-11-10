@@ -7,9 +7,10 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-05-22T17:09:57+00:00\n"
+"POT-Creation-Date: 2026-05-22T17:55:40+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Language: el_GR\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: wpmail-dkim-sign\n"
 
@@ -31,7 +32,7 @@ msgstr "Το DKIM υπογράφει τα εξερχόμενα μηνύματα 
 #. Author of the plugin
 #: wpmail-dkim-sign.php
 msgid "Headwall Hosting"
-msgstr "Headwall Φιλοξενία"
+msgstr "Headwall Hosting"
 
 #. Author URI of the plugin
 #: wpmail-dkim-sign.php
@@ -102,7 +103,7 @@ msgstr "Τιμή (σε τμήματα)"
 
 #: admin-templates/partials/dns-record.php:101
 msgid "Use this form only if your DNS provider rejects the single-string value. The two forms encode the same record."
-msgstr "Χρησιμοποιήστε αυτή τη μορφή μόνο αν ο πάροχος DNS σας δεν δέχεται την τιμή μίας συμβολοσειράς. Και οι δύο μορφές κωδικοποιούν την ίδια εγγραφή."
+msgstr "Χρησιμοποιήστε αυτή τη μορφή μόνο αν ο πάροχος DNS σας δεν δέχεται την τιμή μονού συμβολοσειράς. Και οι δύο μορφές κωδικοποιούν την ίδια εγγραφή."
 
 #: admin-templates/partials/key-management.php:18
 msgid "Key pair"
@@ -168,7 +169,7 @@ msgstr "Αποστολή δοκιμαστικού email. Δείτε παρακά
 
 #: admin-templates/partials/notice.php:49
 msgid "wp_mail() returned false. The captured headers below (if any) show the prepared message; the failure is most likely at the SMTP layer."
-msgstr "Η συνάρτηση wp_mail() επέστρεψε την τιμή false. Οι παρακάτω καταγεγραμμένες κεφαλίδες (εάν υπάρχουν) παρουσιάζουν το έτοιμο μήνυμα· η αποτυχία πιθανότατα οφείλεται στο επίπεδο SMTP."
+msgstr "Η συνάρτηση wp_mail() επέστρεψε την τιμή false. Οι παρακάτω κεφαλίδες (εάν υπάρχουν) παρουσιάζουν το μήνυμα που ετοιμάστηκε· η αποτυχία πιθανότατα οφείλεται στο επίπεδο SMTP."
 
 #: admin-templates/partials/notice.php:53
 msgid "The recipient address is not a valid email. Please correct it and try again."
@@ -196,45 +197,41 @@ msgstr "Επιλογέας"
 
 #: admin-templates/partials/settings-form.php:61
 msgid "DNS label used as the subdomain in <selector>._domainkey.<domain>. Lowercase letters, digits, hyphens."
-msgstr "Ετικέτα DNS που χρησιμοποιείται ως υποτομέας στο <selector>._domainkey.<domain>. Μικρά γράμματα, ψηφία, παύλες."
+msgstr "Ετικέτα DNS που χρησιμοποιείται ως υποτομέας στο <selector>._domainkey.<domain>. Μικρά γράμματα, αριθμοί, παύλες."
 
 #: admin-templates/partials/settings-form.php:68
 msgid "Canonicalisation"
 msgstr "Κανονικοποίηση"
 
-#: admin-templates/partials/settings-form.php:83
-msgid "Default relaxed/relaxed tolerates the whitespace and header changes a downstream relay (e.g. Postfix/Amavis) may apply. Use stricter modes only if your relay path does not mutate."
-msgstr "Η προεπιλεγμένη ρύθμιση «relaxed/relaxed» επιτρέπει τις αλλαγές στα κενά και στις κεφαλίδες που ενδέχεται να επιφέρει ένα μεταγενέστερο διακομιστή αναμετάδοσης (π.χ. Postfix/Amavis). Χρησιμοποιήστε αυστηρότερες ρυθμίσεις μόνο εάν η διαδρομή αναμετάδοσης δεν υφίσταται αλλαγές."
-
-#: admin-templates/partials/settings-form.php:91
+#: admin-templates/partials/settings-form.php:81
 msgid "Signing"
 msgstr "Υπογραφή"
 
-#: admin-templates/partials/settings-form.php:98
+#: admin-templates/partials/settings-form.php:88
 msgid "Enabled — sign outbound mail with DKIM"
 msgstr "Ενεργοποιημένο — υπογραφή εξερχόμενης αλληλογραφίας με DKIM"
 
-#: admin-templates/partials/settings-form.php:101
+#: admin-templates/partials/settings-form.php:91
 msgid "Leave off until the DNS TXT record is live and verified. With this off the plugin is a no-op."
-msgstr "Αφήστε την επιλογή απενεργοποιημένη έως ότου η εγγραφή TXT του DNS τεθεί σε ισχύ και επαληθευτεί. Όσο αυτή η επιλογή είναι απενεργοποιημένη, το πρόσθετο δεν εκτελεί καμία ενέργεια."
+msgstr "Αφήστε το απενεργοποιημένο έως ότου η εγγραφή TXT του DNS τεθεί σε ισχύ και επαληθευτεί. Όσο παραμένει απενεργοποιημένο, το πρόσθετο δεν εκτελεί καμία ενέργεια."
 
-#: admin-templates/partials/settings-form.php:110
+#: admin-templates/partials/settings-form.php:100
 msgid "Data retention"
 msgstr "Διατήρηση δεδομένων"
 
-#: admin-templates/partials/settings-form.php:114
+#: admin-templates/partials/settings-form.php:104
 msgid "On uninstall"
 msgstr "Κατά την απεγκατάσταση"
 
-#: admin-templates/partials/settings-form.php:120
+#: admin-templates/partials/settings-form.php:110
 msgid "Remove all plugin data (settings and key pair) on uninstall"
 msgstr "Διαγραφή όλων των δεδομένων του πρόσθετου (ρυθμίσεις και ζεύγος κλειδιών) κατά την απεγκατάσταση"
 
-#: admin-templates/partials/settings-form.php:123
+#: admin-templates/partials/settings-form.php:113
 msgid "Deactivating the plugin never removes data. Deleting the plugin removes data only if this box is ticked. Leave unticked to preserve settings + key across reinstalls."
 msgstr "Η απενεργοποίηση του πρόσθετου δεν διαγράφει ποτέ τα δεδομένα. Η διαγραφή του πρόσθετου διαγράφει τα δεδομένα μόνο αν αυτό το πλαίσιο είναι επιλεγμένο. Αφήστε το μη επιλεγμένο για να διατηρηθούν οι ρυθμίσεις και το κλειδί σε περίπτωση επανεγκατάστασης."
 
-#: admin-templates/partials/settings-form.php:128
+#: admin-templates/partials/settings-form.php:118
 msgid "Save settings"
 msgstr "Αποθήκευση ρυθμίσεων"
 
@@ -252,7 +249,7 @@ msgstr "Αγώνας"
 
 #: admin-templates/partials/verify-dns-check.php:25
 msgid "The published p= value matches the locally-stored public key. DKIM verification at receivers should succeed (assuming the message body is not modified in transit)."
-msgstr "Η δημοσιευμένη τιμή p= ταιριάζει με το δημόσιο κλειδί που είναι αποθηκευμένο τοπικά. Ο έλεγχος DKIM στους παραλήπτες θα πρέπει να είναι επιτυχής (υποθέτοντας ότι το κύριο σώμα του μηνύματος δεν έχει τροποποιηθεί κατά τη μεταφορά)."
+msgstr "Η δημοσιευμένη τιμή p= ταιριάζει με το δημόσιο κλειδί που είναι αποθηκευμένο τοπικά. Ο έλεγχος DKIM στους παραλήπτες θα πρέπει να ολοκληρωθεί με επιτυχία (υποθέτοντας ότι το σώμα του μηνύματος δεν έχει τροποποιηθεί κατά τη μεταφορά)."
 
 #: admin-templates/partials/verify-dns-check.php:29
 msgid "Mismatch"
@@ -272,7 +269,7 @@ msgstr "Το DNS δεν εντοπίζει καμία εγγραφή TXT για 
 
 #: admin-templates/partials/verify-dns-check.php:39
 msgid "Record present but unparseable"
-msgstr "Το αρχείο υπάρχει, αλλά δεν μπορεί να αναλυθεί"
+msgstr "Το αρχείο υπάρχει, αλλά δεν είναι δυνατή η ανάλυση"
 
 #: admin-templates/partials/verify-dns-check.php:40
 msgid "TXT records were returned at this name but none contained a valid v=DKIM1 / p= structure. Check the DNS provider for a malformed entry."
@@ -292,7 +289,7 @@ msgstr "Λανθασμένη ρύθμιση DNS — η ζώνη έχει προ�
 
 #: admin-templates/partials/verify-dns-check.php:50
 msgid "Your DNS provider has duplicated the zone in the record name. This usually happens when the full FQDN is pasted into the provider's \"Host\" or \"Name\" field, which then auto-appends the zone. Edit the Host field to omit the zone part — use just the \"Host name (recommended)\" value from the Setup tab."
-msgstr "Ο πάροχος DNS σας έχει προσθέσει τη ζώνη στο όνομα της εγγραφής. Αυτό συμβαίνει συνήθως όταν το πλήρες FQDN επικολλάται στο πεδίο «Host» ή «Name» του παρόχου, ο οποίος στη συνέχεια προσθέτει αυτόματα τη ζώνη. Επεξεργαστείτε το πεδίο «Host» για να παραλείψετε το τμήμα της ζώνης — χρησιμοποιήστε μόνο την τιμή «Όνομα κεντρικού υπολογιστή (συνιστάται)» από την καρτέλα «Ρυθμίσεις»."
+msgstr "Ο πάροχος DNS σας έχει επαναλάβει τη ζώνη στο όνομα της εγγραφής. Αυτό συμβαίνει συνήθως όταν το πλήρες FQDN επικολλάται στο πεδίο «Host» ή «Name» του παρόχου, ο οποίος στη συνέχεια προσθέτει αυτόματα τη ζώνη. Επεξεργαστείτε το πεδίο «Host» για να παραλείψετε το τμήμα της ζώνης — χρησιμοποιήστε μόνο την τιμή «Όνομα κεντρικού υπολογιστή (συνιστάται)» από την καρτέλα «Ρυθμίσεις»."
 
 #: admin-templates/partials/verify-dns-check.php:54
 msgid "Misconfigured DNS — missing _domainkey label"
@@ -300,7 +297,7 @@ msgstr "Λανθασμένη ρύθμιση DNS — λείπει η ετικέτ
 
 #: admin-templates/partials/verify-dns-check.php:55
 msgid "A TXT record exists, but the \"_domainkey\" subdomain is missing from the name. The DKIM record name must include \"._domainkey.\" between the selector and the signing domain. Compare your DNS entry to the \"Host name (recommended)\" value on the Setup tab."
-msgstr "Υπάρχει μια εγγραφή TXT, αλλά ο υποτομέας «_domainkey» δεν περιλαμβάνεται στο όνομα. Το όνομα της εγγραφής DKIM πρέπει να περιλαμβάνει το «._domainkey.» μεταξύ του επιλογέα και του τομέα υπογραφής. Συγκρίνετε την καταχώρισή σας στο DNS με την τιμή «Όνομα κεντρικού υπολογιστή (συνιστάται)» στην καρτέλα «Ρυθμίσεις»."
+msgstr "Υπάρχει μια εγγραφή TXT, αλλά το υποτομέα \"_domainkey\" δεν περιλαμβάνεται στο όνομα. Το όνομα της εγγραφής DKIM πρέπει να περιλαμβάνει το \"._domainkey.\" μεταξύ του επιλογέα και του τομέα υπογραφής. Συγκρίνετε την καταχώρισή σας στο DNS με την τιμή «Όνομα κεντρικού υπολογιστή (συνιστάται)» στην καρτέλα «Ρυθμίσεις»."
 
 #: admin-templates/partials/verify-dns-check.php:60
 #: admin-templates/partials/verify-dns-check.php:71
@@ -309,7 +306,7 @@ msgstr "Ελέγξτε την εγγραφή DNS"
 
 #: admin-templates/partials/verify-dns-check.php:63
 msgid "Performs a fresh DNS lookup of <selector>._domainkey.<signing-domain> and compares the published p= value to the locally-stored public key. The result is not cached — propagation issues are the most common DNS gotcha and a fresh lookup is cheap."
-msgstr "Εκτελεί μια νέα αναζήτηση DNS για το <selector>._domainkey.<signing-domain> και συγκρίνει την δημοσιευμένη τιμή p= με το δημόσιο κλειδί που είναι αποθηκευμένο τοπικά. Το αποτέλεσμα δεν αποθηκεύεται στην κρυφή μνήμη — τα προβλήματα διάδοσης αποτελούν την πιο συνηθισμένη παγίδα του DNS και μια νέα αναζήτηση δεν κοστίζει τίποτα."
+msgstr "Εκτελεί μια νέα αναζήτηση DNS για το <selector>._domainkey.<signing-domain> και συγκρίνει την δημοσιευμένη τιμή p= με το δημόσιο κλειδί που είναι αποθηκευμένο τοπικά. Το αποτέλεσμα δεν αποθηκεύεται στην προσωρινή μνήμη — τα προβλήματα διάδοσης είναι η πιο συνηθισμένη παγίδα του DNS και μια νέα αναζήτηση δεν κοστίζει τίποτα."
 
 #: admin-templates/partials/verify-dns-check.php:81
 msgid "Unknown status"
@@ -337,7 +334,7 @@ msgstr "Δημοσιεύθηκε στις:"
 
 #: admin-templates/partials/verify-dns-check.php:128
 msgid "Local key"
-msgstr "Τοπικός κωδικός"
+msgstr "Τοπικό κλειδί"
 
 #: admin-templates/partials/verify-test-email.php:25
 #: admin-templates/partials/verify-test-email.php:53
@@ -414,8 +411,8 @@ msgid "You do not have permission to view this page."
 msgstr "Δεν έχετε δικαίωμα πρόσβασης σε αυτή τη σελίδα."
 
 #: includes/class-settings.php:218
-#: includes/class-settings.php:503
-#: includes/class-verifier.php:505
+#: includes/class-settings.php:483
+#: includes/class-verifier.php:506
 msgid "You do not have permission to perform this action."
 msgstr "Δεν έχετε δικαιώματα για να εκτελέσετε αυτήν την ενέργεια."
 
@@ -426,10 +423,17 @@ msgid "[WP Mail DKIM] Test from %s"
 msgstr "[WP Mail DKIM] Δοκιμή από %s"
 
 #. translators: %s: site URL.
-#: includes/class-verifier.php:100
+#: includes/class-verifier.php:101
 #, php-format
 msgid ""
 "This is a test email from the WP Mail DKIM Sign plugin on %s.\n"
 "\n"
 "If this message arrived, the basic delivery path is working. Inspect the Authentication-Results header at the receiving mailbox to confirm dkim=pass."
-msgstr "Αυτό είναι ένα δοκιμαστικό email από το πρόσθετο WP Mail DKIM Sign στο %s.\\n\\nΕάν λάβατε αυτό το μήνυμα, η βασική διαδρομή παράδοσης λειτουργεί κανονικά. Ελέγξτε την κεφαλίδα Authentication-Results στο γραμματοκιβώτιο παραλαβής για να βεβαιωθείτε ότι η τιμή dkim=pass."
+msgstr ""
+"Αυτό είναι ένα δοκιμαστικό email από το πρόσθετο WP Mail DKIM Sign στο %s.\n"
+"\n"
+"Εάν λάβατε αυτό το μήνυμα, η βασική διαδρομή παράδοσης λειτουργεί. Ελέγξτε την κεφαλίδα Authentication-Results στο γραμματοκιβώτιο παραλαβής για να βεβαιωθείτε ότι η τιμή dkim=pass."
+
+#: admin-templates/partials/settings-form.php:73
+msgid "Set by PHPMailer, the library WordPress uses to send email. It cannot be changed."
+msgstr "Ορίζεται από το PHPMailer, τη βιβλιοθήκη που χρησιμοποιεί το WordPress για την αποστολή email. Δεν μπορεί να τροποποιηθεί."

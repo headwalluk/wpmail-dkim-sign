@@ -2,8 +2,8 @@
 /**
  * Settings form partial.
  *
- * Renders the four configuration fields (domain, selector, enabled,
- * canonicalisation) and the save button.
+ * Renders the configuration fields (domain, selector, enabled), the
+ * fixed canonicalisation and the save button.
  *
  * Body wrapped in an immediately-invoked closure to scope locals.
  *
@@ -64,23 +64,13 @@ defined( 'ABSPATH' ) || die();
 
 	/* Canonicalisation. */
 	printf(
-		'<tr><th scope="row"><label for="wpdkm-canon">%s</label></th><td>',
-		esc_html__( 'Canonicalisation', 'wpmail-dkim-sign' )
+		'<tr><th scope="row">%s</th><td><code>%s</code>',
+		esc_html__( 'Canonicalisation', 'wpmail-dkim-sign' ),
+		esc_html( $data['canonicalisation'] )
 	);
-	printf( '<select id="wpdkm-canon" name="wpdkm_canonicalisation">' );
-	foreach ( $data['allowed_canon'] as $option ) {
-		$selected = ( $option === $data['settings']['canonicalisation'] ) ? ' selected="selected"' : '';
-		printf(
-			'<option value="%s"%s>%s</option>',
-			esc_attr( $option ),
-			esc_attr( $selected ),
-			esc_html( $option )
-		);
-	}
-	printf( '</select>' );
 	printf(
 		'<p class="description">%s</p>',
-		esc_html__( 'Default relaxed/relaxed tolerates the whitespace and header changes a downstream relay (e.g. Postfix/Amavis) may apply. Use stricter modes only if your relay path does not mutate.', 'wpmail-dkim-sign' )
+		esc_html__( 'Set by PHPMailer, the library WordPress uses to send email. It cannot be changed.', 'wpmail-dkim-sign' )
 	);
 	printf( '</td></tr>' );
 

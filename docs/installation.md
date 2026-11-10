@@ -12,14 +12,15 @@ The plugin does nothing on activation — no key is generated, no signing happen
 
 ## 2. Configure the signing domain
 
-On the **Setup** tab, confirm the four fields:
+On the **Setup** tab, confirm the three settings:
 
 | Field | Default | Notes |
 |---|---|---|
 | Signing domain | Site host with `www.` stripped | This is the `d=` value. Must match the From: header domain on outbound mail. |
 | Selector | `website` | DNS label used as the subdomain in `<selector>._domainkey.<domain>`. Lowercase letters, digits, hyphens. |
-| Canonicalisation | `relaxed/relaxed` | Tolerates whitespace and header changes a downstream relay may apply. Leave at default unless you have a reason. |
 | Signing | Off | Leave off until the DNS record is published and verified. |
+
+The Setup tab also shows the canonicalisation, `relaxed/simple`. PHPMailer, the library WordPress sends mail through, fixes this value, so it is not a setting.
 
 Click **Save settings**.
 

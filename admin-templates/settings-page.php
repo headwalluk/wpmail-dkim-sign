@@ -3,7 +3,7 @@
  * Settings page top-level template.
  *
  * Receives a $data array from Settings::render_page() with keys:
- * - page_title, settings, keypair_meta, allowed_canon, notice
+ * - page_title, settings, keypair_meta, canonicalisation, notice
  * - admin_post, actions[*], nonces[*]
  *
  * @package WPMail_DKIM_Sign

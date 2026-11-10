@@ -77,10 +77,9 @@ Common offenders:
 
 Mitigations (in order of preference):
 
-1. Make sure canonicalisation is `relaxed/relaxed` (the default) — it tolerates whitespace and header changes but not body content changes.
-2. Exclude the signing domain from any content-rewriting rules on the relay.
-3. For Amavis specifically, exclude the domain from disclaimer/footer addition and from any body-mangling content filters.
-4. If the relay genuinely needs to modify content, signing must happen *after* the relay — in which case this plugin can't help you. The fix is per-domain DKIM on the relay itself.
+1. Exclude the signing domain from any content-rewriting rules on the relay. Signatures use `relaxed/simple` canonicalisation (fixed by PHPMailer): header whitespace and case changes are tolerated, but any change to the body, including whitespace, breaks the body hash.
+2. For Amavis specifically, exclude the domain from disclaimer/footer addition and from any body-mangling content filters.
+3. If the relay genuinely needs to modify content, signing must happen *after* the relay — in which case this plugin can't help you. The fix is per-domain DKIM on the relay itself.
 
 ### `dkim=pass` at Gmail but fail at Microsoft
 

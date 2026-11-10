@@ -7,9 +7,10 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-05-22T17:09:57+00:00\n"
+"POT-Creation-Date: 2026-05-22T17:55:40+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Language: it_IT\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: wpmail-dkim-sign\n"
 
@@ -26,7 +27,7 @@ msgstr "https://headwall-hosting.com/wpmail-dkim-sign"
 #. Description of the plugin
 #: wpmail-dkim-sign.php
 msgid "DKIM-signs outbound wp_mail() messages at the WordPress layer, so the DKIM-Signature header is attached before the message leaves the site for the upstream MTA. RSA-2048, single signing domain."
-msgstr "DKIM firma i messaggi in uscita tramite wp_mail() a livello di WordPress, quindi l'intestazione DKIM-Signature viene aggiunta prima che il messaggio lasci il sito per essere inviato all'MTA a monte. RSA-2048, dominio di firma singolo."
+msgstr "DKIM firma i messaggi in uscita tramite wp_mail() a livello di WordPress, quindi l'intestazione DKIM-Signature viene aggiunta prima che il messaggio lasci il sito per raggiungere l'MTA a monte. RSA-2048, dominio di firma singolo."
 
 #. Author of the plugin
 #: wpmail-dkim-sign.php
@@ -56,7 +57,7 @@ msgstr "Nome host (consigliato)"
 
 #: admin-templates/partials/dns-record.php:45
 msgid "Most DNS provider UIs have a \"Host\" or \"Name\" field that automatically appends your zone. Paste just this part into that field."
-msgstr "La maggior parte delle interfacce utente dei provider DNS presenta un campo \"Host\" o \"Nome\" che aggiunge automaticamente la tua zona. Incolla solo questa parte in quel campo."
+msgstr "La maggior parte delle interfacce utente dei provider DNS presenta un campo \"Host\" o \"Nome\" in cui viene automaticamente aggiunta la tua zona. Incolla solo questa parte in quel campo."
 
 #: admin-templates/partials/dns-record.php:54
 msgid "Copy host name"
@@ -102,7 +103,7 @@ msgstr "Valore (formato a blocchi)"
 
 #: admin-templates/partials/dns-record.php:101
 msgid "Use this form only if your DNS provider rejects the single-string value. The two forms encode the same record."
-msgstr "Utilizza questo modulo solo se il tuo provider DNS non accetta il valore a stringa singola. I due moduli codificano lo stesso record."
+msgstr "Utilizza questo modulo solo se il tuo provider DNS non accetta il valore composto da una singola stringa. I due moduli codificano lo stesso record."
 
 #: admin-templates/partials/key-management.php:18
 msgid "Key pair"
@@ -196,45 +197,41 @@ msgstr "Selettore"
 
 #: admin-templates/partials/settings-form.php:61
 msgid "DNS label used as the subdomain in <selector>._domainkey.<domain>. Lowercase letters, digits, hyphens."
-msgstr "Etichetta DNS utilizzata come sottodominio in <selector>._domainkey.<domain>. Lettere minuscole, cifre, trattini."
+msgstr "Etichetta DNS utilizzata come sottodominio in <selettore>._domainkey.<dominio>. Lettere minuscole, cifre, trattini."
 
 #: admin-templates/partials/settings-form.php:68
 msgid "Canonicalisation"
 msgstr "Canonizzazione"
 
-#: admin-templates/partials/settings-form.php:83
-msgid "Default relaxed/relaxed tolerates the whitespace and header changes a downstream relay (e.g. Postfix/Amavis) may apply. Use stricter modes only if your relay path does not mutate."
-msgstr "L'impostazione predefinita \"relaxed/relaxed\" tollera le modifiche agli spazi bianchi e alle intestazioni che un relay a valle (ad es. Postfix/Amavis) potrebbe applicare. Utilizza modalità più rigorose solo se il tuo percorso di inoltro non subisce modifiche."
-
-#: admin-templates/partials/settings-form.php:91
+#: admin-templates/partials/settings-form.php:81
 msgid "Signing"
 msgstr "Firma"
 
-#: admin-templates/partials/settings-form.php:98
+#: admin-templates/partials/settings-form.php:88
 msgid "Enabled — sign outbound mail with DKIM"
 msgstr "Attivato — firma la posta in uscita con DKIM"
 
-#: admin-templates/partials/settings-form.php:101
+#: admin-templates/partials/settings-form.php:91
 msgid "Leave off until the DNS TXT record is live and verified. With this off the plugin is a no-op."
 msgstr "Lascia questa opzione disattivata finché il record TXT del DNS non sarà attivo e verificato. Se questa opzione è disattivata, il plugin non esegue alcuna operazione."
 
-#: admin-templates/partials/settings-form.php:110
+#: admin-templates/partials/settings-form.php:100
 msgid "Data retention"
 msgstr "Conservazione dei dati"
 
-#: admin-templates/partials/settings-form.php:114
+#: admin-templates/partials/settings-form.php:104
 msgid "On uninstall"
 msgstr "Al momento della disinstallazione"
 
-#: admin-templates/partials/settings-form.php:120
+#: admin-templates/partials/settings-form.php:110
 msgid "Remove all plugin data (settings and key pair) on uninstall"
 msgstr "Rimuovi tutti i dati del plugin (impostazioni e coppia di chiavi) al momento della disinstallazione"
 
-#: admin-templates/partials/settings-form.php:123
+#: admin-templates/partials/settings-form.php:113
 msgid "Deactivating the plugin never removes data. Deleting the plugin removes data only if this box is ticked. Leave unticked to preserve settings + key across reinstalls."
 msgstr "La disattivazione del plugin non comporta mai la rimozione dei dati. L'eliminazione del plugin comporta la rimozione dei dati solo se questa casella è spuntata. Lasciare deselezionata per conservare le impostazioni e la chiave in caso di reinstallazione."
 
-#: admin-templates/partials/settings-form.php:128
+#: admin-templates/partials/settings-form.php:118
 msgid "Save settings"
 msgstr "Salva impostazioni"
 
@@ -292,7 +289,7 @@ msgstr "DNS configurato in modo errato — zona aggiunta due volte"
 
 #: admin-templates/partials/verify-dns-check.php:50
 msgid "Your DNS provider has duplicated the zone in the record name. This usually happens when the full FQDN is pasted into the provider's \"Host\" or \"Name\" field, which then auto-appends the zone. Edit the Host field to omit the zone part — use just the \"Host name (recommended)\" value from the Setup tab."
-msgstr "Il tuo provider DNS ha duplicato la zona nel nome del record. Ciò accade solitamente quando si incolla il nome di dominio completo (FQDN) nel campo \"Host\" o \"Nome\" del provider, che quindi aggiunge automaticamente la zona. Modifica il campo \"Host\" per omettere la parte relativa alla zona: utilizza solo il valore \"Nome host (consigliato)\" presente nella scheda \"Configurazione\"."
+msgstr "Il tuo provider DNS ha duplicato la zona nel nome del record. Ciò accade solitamente quando si incolla il nome di dominio completo (FQDN) nel campo \"Host\" o \"Nome\" del provider, che quindi aggiunge automaticamente la zona. Modifica il campo Host per omettere la parte relativa alla zona: utilizza solo il valore \"Nome host (consigliato)\" dalla scheda Configurazione."
 
 #: admin-templates/partials/verify-dns-check.php:54
 msgid "Misconfigured DNS — missing _domainkey label"
@@ -329,7 +326,7 @@ msgstr "Il record è stato effettivamente trovato in:"
 
 #: admin-templates/partials/verify-dns-check.php:125
 msgid "Show published vs. local key"
-msgstr "Mostra chiave pubblicata rispetto a chiave locale"
+msgstr "Mostra chiave pubblicata vs. chiave locale"
 
 #: admin-templates/partials/verify-dns-check.php:126
 msgid "Published p="
@@ -393,7 +390,7 @@ msgstr "Nel messaggio preparato non è presente alcuna firma DKIM."
 #: admin-templates/partials/verify-test-email.php:97
 #, php-format
 msgid "Pre-flight skip reason: %s."
-msgstr "Motivo dell'esclusione dal controllo preliminare: %s."
+msgstr "Motivo dello skip pre-volo: %s."
 
 #: admin-templates/partials/verify-test-email.php:100
 msgid "No pre-flight skip reason was recorded; this is unexpected."
@@ -401,7 +398,7 @@ msgstr "Non è stato registrato alcun motivo per il salto del controllo prelimin
 
 #: admin-templates/partials/verify-test-email.php:105
 msgid "Full captured headers"
-msgstr "Intestazioni complete acquisite"
+msgstr "Intestazioni acquisite per intero"
 
 #: includes/class-settings.php:47
 #: includes/class-settings.php:48
@@ -414,8 +411,8 @@ msgid "You do not have permission to view this page."
 msgstr "Non disponi dei permessi necessari per visualizzare questa pagina."
 
 #: includes/class-settings.php:218
-#: includes/class-settings.php:503
-#: includes/class-verifier.php:505
+#: includes/class-settings.php:483
+#: includes/class-verifier.php:506
 msgid "You do not have permission to perform this action."
 msgstr "Non disponi dei permessi necessari per eseguire questa operazione."
 
@@ -426,10 +423,17 @@ msgid "[WP Mail DKIM] Test from %s"
 msgstr "[WP Mail DKIM] Test da %s"
 
 #. translators: %s: site URL.
-#: includes/class-verifier.php:100
+#: includes/class-verifier.php:101
 #, php-format
 msgid ""
 "This is a test email from the WP Mail DKIM Sign plugin on %s.\n"
 "\n"
 "If this message arrived, the basic delivery path is working. Inspect the Authentication-Results header at the receiving mailbox to confirm dkim=pass."
-msgstr "Questa è un'e-mail di prova inviata dal plugin WP Mail DKIM Sign su %s.\\n\\nSe hai ricevuto questo messaggio, significa che il percorso di consegna di base funziona correttamente. Controlla l'intestazione \"Authentication-Results\" nella casella di posta in arrivo per verificare che il valore dkim sia \"pass\"."
+msgstr ""
+"Questa è un'e-mail di prova inviata dal plugin WP Mail DKIM Sign su %s.\n"
+"\n"
+"Se hai ricevuto questo messaggio, significa che il percorso di consegna di base funziona correttamente. Controlla l'intestazione \"Authentication-Results\" nella casella di posta in arrivo per verificare che il valore dkim sia \"pass\"."
+
+#: admin-templates/partials/settings-form.php:73
+msgid "Set by PHPMailer, the library WordPress uses to send email. It cannot be changed."
+msgstr "Impostazione definita da PHPMailer, la libreria utilizzata da WordPress per l'invio delle e-mail. Non può essere modificata."
