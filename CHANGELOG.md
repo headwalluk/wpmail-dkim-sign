@@ -32,4 +32,4 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - Activates cleanly on a fresh WP install with `WP_DEBUG=true` and `WP_DEBUG_LOG=true`, no warnings.
 - Produces a properly-formed DKIM-Signature header (all 8 RFC 6376 tags: `v`, `a`, `c`, `d`, `s`, `h`, `bh`, `b`).
-- Real-world validation 2026-05-22: test mail from `permajet.com` (live client site, relayed via `nexus.headwall.co.uk`) → outlook.com personal mailbox returned `dkim=pass header.d=permajet.com; dmarc=pass action=none; compauth=pass reason=100` — Microsoft's strongest explicit authentication signal.
+- Real-world validation 2026-05-22: test mail from a live production site, relayed via a Postfix + Amavis smarthost, to an outlook.com personal mailbox returned `dkim=pass; dmarc=pass action=none; compauth=pass reason=100`, Microsoft's strongest explicit authentication signal.

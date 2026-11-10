@@ -2,8 +2,8 @@
 /**
  * Tab navigation partial.
  *
- * Hash-based tabs per dev-notes/patterns/admin-tabs.md — JS reads
- * the URL hash on load and on hashchange, toggles panel visibility.
+ * Hash-based tabs: JS reads the URL hash on load and on hashchange,
+ * and toggles panel visibility.
  *
  * Body is wrapped in an immediately-invoked closure so local
  * variables ($tabs, foreach vars) are function-scoped rather than

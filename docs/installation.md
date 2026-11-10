@@ -34,11 +34,11 @@ Once generated, the DNS record block becomes visible.
 
 This is where most mistakes happen — DNS provider UIs vary in how they want the record name. The plugin shows two forms:
 
-**Host name (recommended)** — e.g. `website._domainkey.devx`
-Paste this into the **Host**, **Name**, or **Subdomain** field at your DNS provider. The provider will automatically append your zone (e.g. `headwall.tech`) to produce the final record name `website._domainkey.devx.headwall.tech`.
+**Host name (recommended)** — e.g. `website._domainkey.shop`
+Paste this into the **Host**, **Name**, or **Subdomain** field at your DNS provider. The provider will automatically append your zone (e.g. `example.com`) to produce the final record name `website._domainkey.shop.example.com`.
 
-**Full record name (FQDN)** — e.g. `website._domainkey.devx.headwall.tech`
-Use this only if your DNS provider explicitly asks for the fully-qualified name. Most providers' Host fields will auto-append your zone, so pasting the FQDN here results in a doubled zone (`website._domainkey.devx.headwall.tech.headwall.tech`). See [Troubleshooting → Doubled zone](troubleshooting.md#doubled-zone) if you've done this by accident.
+**Full record name (FQDN)** — e.g. `website._domainkey.shop.example.com`
+Use this only if your DNS provider explicitly asks for the fully-qualified name. Most providers' Host fields will auto-append your zone, so pasting the FQDN here results in a doubled zone (`website._domainkey.shop.example.com.example.com`). See [Troubleshooting → Doubled zone](troubleshooting.md#doubled-zone) if you've done this by accident.
 
 For the value, use the single-string form first — most modern DNS providers handle the length transparently. If your provider rejects it as too long, use the chunked-255 form instead.
 

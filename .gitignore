@@ -35,3 +35,7 @@ dist/
 .env
 .env.local
 .env.*.local
+
+# Private development notes: untracked, backed up with the dev site,
+# and blocked from remote access by dev-notes/.htaccess.
+dev-notes/
