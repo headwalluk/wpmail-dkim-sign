@@ -92,7 +92,8 @@ class Verifier {
 		$subject = sprintf(
 			/* translators: %s: site name. */
 			__( '[WP Mail DKIM] Test from %s', 'wpmail-dkim-sign' ),
-			(string) get_bloginfo( 'name' )
+			// blogname is stored HTML-escaped; decode it for the plain-text subject, as core's own emails do.
+			wp_specialchars_decode( (string) get_option( 'blogname' ), ENT_QUOTES )
 		);
 
 		$body = sprintf(
