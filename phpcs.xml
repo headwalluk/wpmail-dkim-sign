@@ -21,7 +21,7 @@
 	<arg name="parallel" value="8"/>
 
 	<!-- Minimum WordPress version targeted -->
-	<config name="minimum_wp_version" value="6.2"/>
+	<config name="minimum_wp_version" value="6.9"/>
 
 	<!-- Rules -->
 	<rule ref="WordPress">

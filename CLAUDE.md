@@ -17,7 +17,7 @@ before the message leaves the site for the upstream MTA. Single signing domain, 
 
 - **Namespace:** `WPMail_DKIM_Sign` · **Text domain:** `wpmail-dkim-sign` · **Prefixes:**
   `WPDKM_` / `wpdkm_` (see **Prefixes**)
-- **PHP / WordPress floor:** 8.2 / 6.2, the skill's default
+- **PHP / WordPress floor:** 8.2 / 6.9, the skill's default
 - **No build system:** no npm, no Composer, no bundler. Assets are plain CSS/JS
 
 Commits before `chore: untrack dev-notes` still contain client material from `dev-notes/`;

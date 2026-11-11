@@ -6,11 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
-**Requires PHP 8.2 and WordPress 6.2.** Sites below either are not offered this update.
+**Requires PHP 8.2 and WordPress 6.9.** Sites below either are not offered this update.
 
 ### Changed
 
-- Minimum versions raised from PHP 8.0 and WordPress 6.0 to PHP 8.2 and WordPress 6.2.
+- Minimum versions raised from PHP 8.0 and WordPress 6.0 to PHP 8.2 and WordPress 6.9.
 - Signing, the test-email capture and the admin asset loader now check what `phpmailer_init` and `admin_enqueue_scripts` pass them. If another plugin passes something other than a PHPMailer object, the message goes out unsigned, with the reason logged when `WP_DEBUG` is on, instead of a fatal error.
 - The admin styles use CSS logical properties, so the result borders sit on the correct side in right-to-left languages.
 - `CLAUDE.md` now follows the shared Headwall plugin conventions and holds only what is specific to this plugin.

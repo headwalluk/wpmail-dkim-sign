@@ -4,7 +4,7 @@
 
 | Requirement | Minimum | Notes |
 |---|---|---|
-| WordPress | 6.2 | |
+| WordPress | 6.9 | |
 | PHP | 8.2 | |
 | `ext-openssl` | | Generates the key pair and reads it back. Enabled in almost every PHP build |
 | Outbound DNS | | **Check DNS record** and zone detection use PHP's `dns_get_record()`, through the server's resolver |
