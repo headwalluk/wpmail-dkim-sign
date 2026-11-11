@@ -4,8 +4,8 @@
 
 | Requirement | Minimum | Notes |
 |---|---|---|
-| WordPress | 6.0 | The plugin works with the namespaced PHPMailer class that WordPress has bundled since 5.5. 6.0 is the tested floor |
-| PHP | 8.0 | |
+| WordPress | 6.2 | |
+| PHP | 8.2 | |
 | `ext-openssl` | | Generates the key pair and reads it back. Enabled in almost every PHP build |
 | Outbound DNS | | **Check DNS record** and zone detection use PHP's `dns_get_record()`, through the server's resolver |
 | Outbound HTTPS to `api.github.com` | Optional | Used by the bundled updater. Turn it off with the [`wpdkm_updater_enabled`](developers/hooks-and-filters.md#wpdkm_updater_enabled) filter where outbound HTTPS isn't allowed |

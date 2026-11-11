@@ -4,8 +4,8 @@
  * Plugin URI:        https://headwall-hosting.com/wpmail-dkim-sign
  * Description:       DKIM-signs outbound wp_mail() messages at the WordPress layer, so the DKIM-Signature header is attached before the message leaves the site for the upstream MTA. RSA-2048, single signing domain.
  * Version:           1.1.0
- * Requires at least: 6.0
- * Requires PHP:      8.0
+ * Requires at least: 6.2
+ * Requires PHP:      8.2
  * Author:            Headwall Hosting
  * Author URI:        https://headwall-hosting.com
  * License:           GPL v2 or later

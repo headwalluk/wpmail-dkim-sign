@@ -1,5 +1,4 @@
 # Files and directories excluded from release builds.
-# readme.txt is the in-WP-admin equivalent of README.md and IS shipped in the zip.
 
 # Version control
 .git

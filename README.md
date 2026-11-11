@@ -1,8 +1,8 @@
 # WP Mail DKIM Sign
 
 [![Version](https://img.shields.io/github/v/release/headwalluk/wpmail-dkim-sign?label=version&color=blue)](https://github.com/headwalluk/wpmail-dkim-sign/releases/latest)
-[![PHP](https://img.shields.io/badge/PHP-8.0+-purple.svg)](https://www.php.net/)
-[![WordPress](https://img.shields.io/badge/WordPress-6.0+-21759B.svg)](https://wordpress.org/)
+[![PHP](https://img.shields.io/badge/PHP-8.2+-purple.svg)](https://www.php.net/)
+[![WordPress](https://img.shields.io/badge/WordPress-6.2+-21759B.svg)](https://wordpress.org/)
 [![License](https://img.shields.io/badge/license-GPL--2.0+-green.svg)](LICENSE)
 [![Coding Standards](https://img.shields.io/badge/WordPress-Coding%20Standards-blue.svg)](https://github.com/WordPress/WordPress-Coding-Standards)
 
@@ -35,8 +35,8 @@ Future updates arrive automatically via the bundled GitHub updater. See [`docs/i
 
 ### Requirements
 
-- WordPress 6.0 or later
-- PHP 8.0 or later
+- WordPress 6.2 or later
+- PHP 8.2 or later
 - OpenSSL extension for PHP (almost always present)
 
 If your PHP-FPM pool runs in a chroot jail, OpenSSL needs a small additional config inside the jail — see [`docs/self-hosting.md`](docs/self-hosting.md).

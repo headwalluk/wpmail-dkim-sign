@@ -2,56 +2,32 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+Repository: public
+
+Follows the **headwall-wp-plugin** skill, which holds the shared conventions: PHP style,
+templates, logging, comments, public-contract rules, testing, release and the GitHub updater.
+Load it before working on this plugin. This file holds only what is specific to WP Mail DKIM
+Sign.
+
 ## Project Overview
 
 WP Mail DKIM Sign DKIM-signs outbound `wp_mail()` messages at the WordPress layer. It sets
 PHPMailer's DKIM properties at `phpmailer_init`, so the `DKIM-Signature` header is attached
 before the message leaves the site for the upstream MTA. Single signing domain, RSA-2048.
 
-- **Namespace:** `WPMail_DKIM_Sign` for all classes
-- **Text Domain:** `wpmail-dkim-sign`
-- **PHP:** 8.0+ (do NOT use `declare(strict_types=1)`, it breaks WordPress interop). Check any
-  type syntax newer than 8.0 (`true`/`false`/`null` standalone types, `readonly`, `never`,
-  enums, first-class callables) against the floor before using it. Nothing enforces it mechanically
-- **WordPress:** 6.0+
+- **Namespace:** `WPMail_DKIM_Sign` · **Text domain:** `wpmail-dkim-sign` · **Prefixes:**
+  `WPDKM_` / `wpdkm_` (see **Prefixes**)
+- **PHP / WordPress floor:** 8.2 / 6.2, the skill's default
 - **No build system:** no npm, no Composer, no bundler. Assets are plain CSS/JS
 
-Structure and conventions come from the maintainer's **reference plugin**, Quick 2FA
-(`../quick-2fa/CLAUDE.md`). Where this file is silent, that one applies. Where this plugin
-deliberately differs (PHP floor, date storage, the dual prefix), this file says so.
-
-This plugin is published publicly on GitHub. Tracked files must contain no client names,
-client URLs, server host names, fleet measurements or client data of any kind: in code,
-comments, docs, fixtures or commit messages. Use `example.com` in examples.
-
-`dev-notes/` is **private and untracked** (`.gitignore`), backed up with the dev site, and
-blocked from the web by `dev-notes/.htaccess`. It is the right home for client-identifying
-material. Never copy content from `dev-notes/` into a tracked file without scrubbing it, and
-never reference a `dev-notes/` path from a file that ships in the release zip. Commits before
-`chore: untrack dev-notes` still contain that material; history was not rewritten.
-
-## Commands
-
-```bash
-phpcs                          # Check WordPress Coding Standards (configured in phpcs.xml)
-phpcbf                         # Auto-fix coding standards violations
-phpcs includes/class-signer.php  # Check a specific file
-```
-
-```bash
-wp-translate . --check-instructions   # Is the block at the end of this file still current?
-wp-translate . --sync-instructions    # Update it; review the diff afterwards
-wp-translate . --dry-run              # Preview; no DeepL calls, no writes
-```
-
-Run `--check-instructions` after a `wp-translate` upgrade; if it reports drift, run
-`--sync-instructions` and review the diff. Never hand-edit inside the
-`wp-translate:begin`/`end` markers: the block is hash-validated and edits break it.
+Commits before `chore: untrack dev-notes` still contain client material from `dev-notes/`;
+the history was not rewritten.
 
 ## Testing
 
-There is no unit-test framework and none is wanted. Behaviour is exercised against the dev
-site through WP-CLI. Private methods are reached with `ReflectionMethod`:
+There are no harnesses in `dev-notes/testing/` yet (see `dev-notes/03-snagging-list.md`).
+Until there are, exercise changes through WP-CLI against the dev site. Private methods are
+reached with `ReflectionMethod`:
 
 ```bash
 # Run the settings sanitiser without saving anything
@@ -78,8 +54,9 @@ file (no autoloader), then `wpdkm_run()` constructs `Plugin` into the `$wpdkm_pl
 and calls `run()`. Sub-services reach the orchestrator through `get_plugin()` in
 `functions-private.php`, and the orchestrator creates each sub-service lazily on first access.
 
-The GitHub updater is loaded separately from the main file, on admin, cron and WP-CLI requests
-only. See **Porting the GitHub updater**.
+The GitHub updater is constructed in the main file, on admin, cron and WP-CLI requests only,
+with `WPDKM_FILE`, `UPDATER_GITHUB_REPO`, `WPDKM_VERSION` and the `wpdkm_updater_enabled`
+filter name.
 
 ### Hook Strategy
 
@@ -96,8 +73,8 @@ All hooks other than the updater's are registered in `Plugin::run()`.
 
 ### Signing Flow
 
-`Signer::sign()` runs four pre-flight checks and skips signing, with a `WP_DEBUG` log line,
-if any fails:
+`Signer::sign()` checks it was given a `PHPMailer` instance, then runs four pre-flight checks,
+and skips signing, with a `WP_DEBUG` log line, if any fails:
 
 1. Signing is enabled
 2. The stored private key loads
@@ -124,7 +101,7 @@ declares: any other name creates a dynamic property, which is deprecated from PH
 | `includes/class-keypair.php` | RSA key generation, storage and loading, public key for the DNS record |
 | `includes/class-signer.php` | `phpmailer_init` signing and its pre-flight checks |
 | `includes/class-verifier.php` | Verify tab: test email with header capture, DNS check and misconfiguration probes |
-| `includes/class-github-updater.php` | Shared GitHub updater. Never edit here; see **Porting the GitHub updater** |
+| `includes/class-github-updater.php` | The shared updater, ported from Quick 2FA. Never edit it here; see the skill's `github-updater.md` |
 | `admin-templates/` | Settings page and its partials (code-first templates) |
 | `uninstall.php` | Opt-in data removal |
 
@@ -154,26 +131,17 @@ cache transients are the one exception: the shared updater names them from the s
 
 ## Public Contracts
 
-Treat everything in this table as a contract, whether or not it is documented as public:
+The skill's `public-contracts.md` has the rules. This plugin's contracts:
 
 | Contract | Examples | Breaks when |
 |----------|----------|-------------|
 | Filters | `wpdkm_updater_enabled`, `wpdkm_dns_zone` | renamed or removed, or an argument is removed or reordered |
 | Stored keys and formats | `wpdkm_settings` and its field names, `wpdkm_keypair` | a constant's **value** or a stored format changes. A changed keypair key loses the private key, and signing stops until DNS is republished |
+| Stored date format | keypair metadata dates, `DATE_FORMAT` (`Y-m-d H:i:s T`) | the format changes. Dates are stored as these strings, not Unix timestamps |
 | Script and style handles | `wpdkm-admin` | renamed |
 | Settings page URL | `options-general.php?page=wpmail-dkim-sign` (`MENU_SLUG`) | `MENU_SLUG` changes. Bookmarks and docs break |
 | DKIM selector default | `website` (`DEF_SELECTOR`) | changed. New installs would publish a different DNS record name from the docs |
 | Release assets | `wpmail-dkim-sign.zip`, `wpmail-dkim-sign-<version>.zip` | renamed. Every installed copy stops finding updates |
-
-- **Add, don't change.** New filter arguments go at the end. New behaviour gets a new filter
-- **Deprecate, don't rename.** Fire the old name through `apply_filters_deprecated()` and pass
-  its result into the new filter. Remove the old name no earlier than the next major version
-- **Stored data has no migration path.** Changing a stored key or value format is a breaking
-  change: stop and ask
-
-Before changing anything in the table: name the contract, assume there are consumers you can't
-see, take the additive path if one exists, record it in `CHANGELOG.md`, and if you can't tell
-whether anything depends on it, stop and ask.
 
 ### High-Impact Code
 
@@ -183,96 +151,34 @@ These paths decide whether mail is signed, and whether the signature verifies:
 - `Keypair` generation, storage and `load()`
 - `Settings::sanitize_domain()` and `sanitize_selector()`, which produce `d=` and `s=`
 
-When a change touches one, say so, and recommend the maintainer read that diff line by line
-before tagging. A review by an AI agent, your own included, does not count as that read.
-
 ### Where the Plugin Runs
 
 - **Request context.** `Signer::sign()` runs under cron, REST, AJAX, WP-CLI and front-end
   requests, where there may be no current user or admin screen. Check for what the code needs
-- **Install layout.** Build URLs and paths with `admin_url()`, `home_url()`, `WPDKM_URL` and
-  `WPDKM_PATH`, never by joining strings onto the domain
 - **Multisite is untested.** Settings and the key are per-site options
 
-## Code Conventions
+## Conventions specific to this plugin
 
-Quick 2FA's **Code Conventions** apply in full: SESE, a plain `else` closing every `if` with
-`elseif` branches, no assignment in conditions, no unreachable `return`, constants for magic
-values, type hints everywhere, `mixed` parameters on callbacks for hooks the plugin doesn't
-own, checking what a filter returns, `instanceof` guards on object lookups, casting at the
-boundary, code-first `printf()` templates, logical CSS properties, plain JavaScript,
-`filter_var( ..., FILTER_VALIDATE_BOOLEAN )` for booleans, and the comment rules. The
-differences and additions for this plugin:
+- **Template partials scope their locals in an immediately-invoked closure** rather than
+  prefixing them, and list what they receive in a `@var` docblock
+- **Short translatable strings:** avoid words with two common senses ("Fixed by" came back
+  from DeepL as "repaired by")
 
-- **Dates are stored as `DATE_FORMAT` strings** (`Y-m-d H:i:s T`, from
-  `DateTime( 'now', wp_timezone() )`), not Unix timestamps as in Quick 2FA. The keypair
-  metadata already holds them, so the format is a stored contract: don't change it
-- **Template partials scope their locals in an immediately-invoked closure** rather than prefixing
-  them, and list what they receive in a `@var` docblock
-- **Logging.** Hard failures (OpenSSL errors in `Keypair`) log unconditionally. Routine flow
-  (signing skip reasons in `Signer`) logs only under `WP_DEBUG`. There is no logging
-  dependency; `error_log()` with a `phpcs:ignore` naming the sniff and a reason is correct
-- **Translatable strings follow the wp-translate block below.** Avoid words with two common
-  senses in short strings ("Fixed by" came back from DeepL as "repaired by")
+## Release
 
-### Commit Messages
-
-Format: `type: brief description` where type is one of: `feat:`, `fix:`, `chore:`,
-`refactor:`, `docs:`, `style:`, `test:`
-
-### Pre-Commit Workflow
-
-1. `phpcs`: check violations
-2. `phpcbf`: auto-fix
-3. `phpcs`: verify clean, with no errors **and no warnings**
-4. Stage and commit
-
-Every `phpcs:ignore` and `phpcs:disable` names the exact sniff and ends with `-- reason`.
-
-## Porting the GitHub updater
-
-`includes/class-github-updater.php` is a copy of the shared Headwall updater, maintained in
-Quick 2FA. It differs from that copy only in its `namespace` and `@package` lines. **Never
-edit it here:** fix it in Quick 2FA, test it there, then copy it across. To check for drift:
-
-```bash
-diff <(grep -v '^namespace \|@package ' ../quick-2fa/includes/class-github-updater.php) \
-     <(grep -v '^namespace \|@package ' includes/class-github-updater.php)
-```
-
-It is constructed in `wpmail-dkim-sign.php` with `WPDKM_FILE`, `UPDATER_GITHUB_REPO`,
-`WPDKM_VERSION` and the `wpdkm_updater_enabled` filter name. `uninstall.php` calls
-`Github_Updater::delete_cache()` on opt-in removal.
-
-## Release Workflow
-
-1. Update the version in `wpmail-dkim-sign.php`: **both** the `Version:` header and the
-   `WPDKM_VERSION` constant
-2. Update `CHANGELOG.md`: move the `[Unreleased]` entries under the new version, and give each
-   bug fix the version that introduced it, when known. Update any new `@since` tags to match
-3. Update `readme.txt` stable tag
-4. Run `phpcs` (clean) and `wp-translate . --check-instructions`
-5. If the release touches **High-Impact Code**, the maintainer reads that diff line by line
-6. Tag the release in git (`vX.Y.Z`)
-
-The version lives in **three** places that must agree with the git tag: the header `Version:`,
-`WPDKM_VERSION`, and the `readme.txt` stable tag. `.github/workflows/release.yml` refuses to
-build on a mismatch. The `Version` must always correspond to a real GitHub Release tag, or the
-updater advertises an update that doesn't exist.
+Follow the skill's `release.md` (public). The version lives in the `Version:` header and
+`WPDKM_VERSION`; `.github/workflows/release.yml` refuses to build unless both match the tag.
 
 ## Reference Files
 
-`docs/` is tracked and public. **One audience per document:**
+`docs/` is tracked and public, one audience per document:
 
 - `docs/installation.md`, `docs/how-it-works.md`, `docs/configuration.md`,
   `docs/troubleshooting.md`: site administrators
 - `docs/self-hosting.md`: server administrators
 - `docs/developers/hooks-and-filters.md`: the public extension surface
 
-Rationale, evidence and history belong in docs, not in code comments. Where a mechanism needs
-more than a sentence to justify, write it up and reference the file from the code.
-
-Supporting material (private, untracked):
+`dev-notes/` (private, untracked):
 
 - `dev-notes/00-project-tracker.md`: milestones and validation records
 - `dev-notes/01-decisions.md`: numbered design decisions (D1, D2, ...), including the prefix
@@ -280,9 +186,14 @@ Supporting material (private, untracked):
 - `dev-notes/02-architecture.md`: architecture notes
 - `dev-notes/03-snagging-list.md`: small agreed items awaiting a convenient moment. Check it
   before starting work: an item there may already cover the file you are about to touch
-- `dev-notes/archive/`: superseded material, including the retired
-  `copilot-instructions.md` and the old `patterns/` and `workflows/` guides. Archived, not
-  authoritative: **this file is the standard**
+- `dev-notes/archive/`: superseded material, including the retired `copilot-instructions.md`
+  and the old `patterns/` and `workflows/` guides. Archived, not authoritative
+
+## Translations
+
+Run `wp-translate . --check-instructions` after a `wp-translate` upgrade; if it reports drift,
+run `wp-translate . --sync-instructions` and review the diff. Never hand-edit inside the
+`wp-translate:begin`/`end` markers: the block is hash-validated and edits break it.
 
 <!-- wp-translate:begin v=1.2.0 hash=29b7e4d6bfac8a4c97a450265016f270234ae13c4b35f17195732c5543efc7d0 -->
 ## Translating this plugin (wp-translate conventions)

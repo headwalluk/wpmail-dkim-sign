@@ -21,25 +21,23 @@
 	<arg name="parallel" value="8"/>
 
 	<!-- Minimum WordPress version targeted -->
-	<config name="minimum_supported_wp_version" value="6.0"/>
+	<config name="minimum_supported_wp_version" value="6.2"/>
 
 	<!-- Rules -->
 	<rule ref="WordPress">
 		<exclude name="Generic.Arrays.DisallowShortArraySyntax"/>
 
-		<!--
-			House-style rule: "enumerate every branch" — empty if/else
-			blocks (with a comment explaining why no action is taken) are
-			an explicit coding-style preference per
-			.github/copilot-instructions.md. Exclude PHPCS's default sniffs
-			that flag these as dead code.
-		-->
-		<exclude name="Generic.CodeAnalysis.EmptyStatement.DetectedElse"/>
+		<!-- An if with elseif branches ends in an explicit else, with no-op branches
+		     holding only a comment. This sniff counts a comment as
+		     empty, so only its if/elseif/else codes are excluded; empty catch, loop and
+		     switch bodies are still errors. -->
 		<exclude name="Generic.CodeAnalysis.EmptyStatement.DetectedIf"/>
+		<exclude name="Generic.CodeAnalysis.EmptyStatement.DetectedElseif"/>
+		<exclude name="Generic.CodeAnalysis.EmptyStatement.DetectedElse"/>
 	</rule>
 
 	<!--
-		Prefix allow-list. Per dev-notes/01-decisions.md D12:
+		Prefix allow-list:
 		- `WPMail_DKIM_Sign` — namespace for class code
 		- `wpdkm` / `WPDKM` — short prefix for everything in the global PHP
 		  namespace (define() constants, root functions) and for external
@@ -81,8 +79,6 @@
 				<element value="DKIM_identity"/>
 				<element value="DKIM_passphrase"/>
 				<element value="DKIM_copyHeaderFields"/>
-				<element value="DKIM_header_canonicalization"/>
-				<element value="DKIM_body_canonicalization"/>
 			</property>
 		</properties>
 	</rule>
