@@ -150,13 +150,16 @@ class Verifier {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param PHPMailer $phpmailer PHPMailer instance.
+	 * @param mixed $phpmailer PHPMailer instance.
 	 *
 	 * @return void
 	 */
-	public function capture_headers( PHPMailer $phpmailer ): void {
+	public function capture_headers( mixed $phpmailer ): void {
 		if ( ! self::$capturing ) {
 			// Not in a test send — ignore. Defense in depth against accidental fires.
+		} elseif ( ! ( $phpmailer instanceof PHPMailer ) ) {
+			// Nothing to capture; handle_test_email() records its stub result.
+			self::$capturing = false;
 		} else {
 			self::$capturing = false;
 

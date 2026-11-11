@@ -80,11 +80,11 @@ class Settings {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string $hook_suffix Current admin page hook suffix.
+	 * @param mixed $hook_suffix Current admin page hook suffix.
 	 *
 	 * @return void
 	 */
-	public function enqueue_admin_assets( string $hook_suffix ): void {
+	public function enqueue_admin_assets( mixed $hook_suffix ): void {
 		if ( 'settings_page_' . MENU_SLUG !== $hook_suffix ) {
 			// Not our page — skip.
 		} else {

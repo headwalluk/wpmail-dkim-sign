@@ -60,14 +60,18 @@ class Signer {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param PHPMailer $phpmailer PHPMailer instance, passed by reference by WP core.
+	 * @param mixed $phpmailer PHPMailer instance, passed by reference by WP core.
 	 *
 	 * @return void
 	 */
-	public function sign( PHPMailer $phpmailer ): void {
+	public function sign( mixed $phpmailer ): void {
 		self::$last_skip_reason = null;
 
-		$skip_reason = self::should_skip( $phpmailer );
+		if ( ! ( $phpmailer instanceof PHPMailer ) ) {
+			$skip_reason = 'phpmailer_init passed something other than a PHPMailer instance';
+		} else {
+			$skip_reason = self::should_skip( $phpmailer );
+		}
 
 		if ( is_null( $skip_reason ) ) {
 			$this->apply_dkim_config( $phpmailer );
